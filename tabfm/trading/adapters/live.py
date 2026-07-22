@@ -16,6 +16,22 @@ import robin_stocks.robinhood as rh
 from .base import DataAdapter
 
 
+def _rsi(closes: pd.Series, period: int = 14) -> float:
+  delta = closes.diff()
+  gain = delta.clip(lower=0).ewm(com=period - 1, adjust=False).mean()
+  loss = (-delta.clip(upper=0)).ewm(com=period - 1, adjust=False).mean()
+  rs = gain.iloc[-1] / loss.iloc[-1] if loss.iloc[-1] != 0 else float("inf")
+  return float(100 - 100 / (1 + rs))
+
+
+def _macd(closes: pd.Series) -> tuple[float, float, float]:
+  ema12 = closes.ewm(span=12, adjust=False).mean()
+  ema26 = closes.ewm(span=26, adjust=False).mean()
+  line = ema12 - ema26
+  signal = line.ewm(span=9, adjust=False).mean()
+  return float(line.iloc[-1]), float(signal.iloc[-1]), float(line.iloc[-1] - signal.iloc[-1])
+
+
 class LiveAdapter(DataAdapter):
   def get_underlying(self, ticker: str, as_of: date) -> dict:
     quote = rh.get_stock_quote_by_symbol(ticker)
@@ -34,6 +50,7 @@ class LiveAdapter(DataAdapter):
     vol_mean = float(volumes.rolling(20).mean().iloc[-1])
     vol_std = float(volumes.rolling(20).std().iloc[-1])
     vol_z = (volumes.iloc[-1] - vol_mean) / vol_std if vol_std > 0 else 0.0
+    macd_line, macd_signal, macd_hist = _macd(closes)
     return {
       "close": price,
       "sma20": sma20,
@@ -44,6 +61,10 @@ class LiveAdapter(DataAdapter):
       "volume_zscore": float(vol_z),
       "momentum_5d": float(closes.pct_change(5).iloc[-1]),
       "momentum_20d": float(closes.pct_change(20).iloc[-1]),
+      "rsi_14": _rsi(closes),
+      "macd_line": macd_line,
+      "macd_signal": macd_signal,
+      "macd_histogram": macd_hist,
     }
 
   def get_options_chain(self, ticker: str, as_of: date) -> pd.DataFrame:

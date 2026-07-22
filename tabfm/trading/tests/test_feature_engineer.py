@@ -43,6 +43,7 @@ def _make_chain_data(as_of: date) -> dict:
       "close": 100.0, "sma20": 98.0, "sma50": 95.0, "atr14": 1.5,
       "hv20": 0.18, "volume": 5e7, "volume_zscore": 0.4,
       "momentum_5d": 0.01, "momentum_20d": 0.03,
+      "rsi_14": 55.0, "macd_line": 0.5, "macd_signal": 0.3, "macd_histogram": 0.2,
     },
   }
 
@@ -81,6 +82,7 @@ def test_engineer_features_required_columns():
     "max_loss", "short_delta", "bid_ask_pct", "open_interest",
     "price_close", "momentum_5d", "momentum_20d", "atr_14", "volume_zscore",
     "price_vs_sma20", "vix_level", "iv_rank", "hv20", "hv_iv_ratio",
+    "rsi_14", "macd_line", "macd_signal", "macd_histogram",
     "vix_bucket", "trend_direction", "iv_regime", "earnings_flag",
     "expiry_type", "direction",
   ]

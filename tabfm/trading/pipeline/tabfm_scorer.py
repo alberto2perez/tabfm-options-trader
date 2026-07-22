@@ -4,7 +4,8 @@ from tabfm import TabFMClassifier, TabFMRegressor
 FEATURE_COLS = [
   "price_close", "momentum_5d", "momentum_20d", "atr_14", "volume_zscore",
   "price_vs_sma20", "vix_level", "vix_5d_change", "iv_rank", "hv20",
-  "hv_iv_ratio", "dte", "short_delta", "strike_distance_pct",
+  "hv_iv_ratio", "rsi_14", "macd_line", "macd_signal", "macd_histogram",
+  "dte", "short_delta", "strike_distance_pct",
   "spread_width_dollars", "bid_ask_pct",
   "vix_bucket", "trend_direction", "iv_regime", "earnings_flag",
   "direction", "expiry_type", "sector",
