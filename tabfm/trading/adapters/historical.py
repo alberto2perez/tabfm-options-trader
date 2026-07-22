@@ -69,6 +69,10 @@ class HistAdapter(DataAdapter):
   def get_underlying(self, ticker: str, as_of: date) -> dict:
     self._assert_no_lookahead(as_of)
     df = self._history(ticker)
+    # Filter to dates on or before the requested date so callers asking for
+    # a historical settlement price (e.g. expiry date < self._as_of) get the
+    # correct price, not the adapter's own most-recent close.
+    df = df[df.index <= pd.Timestamp(as_of)]
     if df.empty or len(df) < 50:
       raise ValueError(f"Insufficient history for {ticker}")
 

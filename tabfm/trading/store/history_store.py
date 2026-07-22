@@ -1,3 +1,4 @@
+from datetime import date
 from pathlib import Path
 import pandas as pd
 
@@ -20,6 +21,46 @@ def load_store(path: Path = _DEFAULT_STORE) -> pd.DataFrame:
   return pd.read_parquet(path)
 
 
+def label_expired_rows(path: Path, adapter, as_of: date) -> int:
+  """Fetch settlement prices for expired spread rows and write profitable/return_pct labels.
+
+  Returns the count of newly labeled rows.
+  """
+  df = load_store(path)
+  if df.empty:
+    return 0
+  if "profitable" not in df.columns:
+    df["profitable"] = float("nan")
+  if "return_pct" not in df.columns:
+    df["return_pct"] = float("nan")
+
+  mask = (df["expiry"] < str(as_of)) & (df["profitable"].isna())
+  if not mask.any():
+    return 0
+
+  labeled = 0
+  for idx, row in df[mask].iterrows():
+    try:
+      expiry_date = date.fromisoformat(str(row["expiry"]))
+      u = adapter.get_underlying(row["ticker"], expiry_date)
+      price = u["close"]
+      won = (
+        price > row["strike_short"]
+        if row["direction"] == "put_spread"
+        else price < row["strike_short"]
+      )
+      df.at[idx, "profitable"] = 1 if won else 0
+      df.at[idx, "return_pct"] = (
+        float(row["entry_credit"]) / float(row["max_loss"]) if won else -1.0
+      )
+      labeled += 1
+    except Exception:
+      continue
+
+  df.to_parquet(path, index=False)
+  return labeled
+
+
 def get_regime_rows(
   vix_bucket: str,
   trend_direction: str,
@@ -29,6 +70,11 @@ def get_regime_rows(
   path: Path = _DEFAULT_STORE,
 ) -> pd.DataFrame:
   df = load_store(path)
+  if df.empty:
+    return df
+  # Only labeled rows carry signal for TabFM in-context learning
+  if "profitable" in df.columns:
+    df = df[df["profitable"].notna()]
   if df.empty:
     return df
   df = df[df["date"] < before_date].copy()

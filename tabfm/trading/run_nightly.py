@@ -17,7 +17,7 @@ from .pipeline.tabfm_scorer import score_candidate
 from .pipeline.trade_recommender import select_trade
 from .pipeline.paper_executor import execute_paper_trade, format_recommendation
 from .pipeline.position_auditor import audit_positions
-from .store.history_store import append_rows, compute_iv_rank, _DEFAULT_STORE
+from .store.history_store import append_rows, label_expired_rows, compute_iv_rank, _DEFAULT_STORE
 from .store.journal import _DEFAULT_DB
 
 
@@ -61,6 +61,9 @@ def run(
     all_feature_rows.extend(feature_rows)
 
   append_rows(all_feature_rows, store_path)
+  n_labeled = label_expired_rows(store_path, adapter, as_of)
+  if n_labeled:
+    print(f"[HistoryStore] Labeled {n_labeled} expired rows")
 
   best = select_trade(all_candidates)
   if best is None:
