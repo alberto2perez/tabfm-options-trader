@@ -1,0 +1,109 @@
+[project]
+# Project metadata. Available keys are documented at:
+# https://packaging.python.org/en/latest/specifications/declaring-project-metadata
+name = "tabfm"
+description = ""
+readme = "README.md"
+requires-python = ">=3.11"
+license = {file = "LICENSE"}
+authors = [{name = "tabfm authors", email="tabfm@google.com"}]
+classifiers = [  # List of https://pypi.org/classifiers/
+    "License :: OSI Approved :: Apache Software License",
+    "Intended Audience :: Science/Research",
+]
+keywords = []
+
+# pip dependencies of the project
+# Installed locally with `pip install -e .`
+# Pinned versions for the full reproducible environment are in requirements.txt.
+# Only the deps with known incompatibilities are constrained; the rest float.
+#   - flax>=0.12.7 provides nnx.ModelAndOptimizer (used in checkpointing.py);
+#     it also requires Python >=3.11.
+#   - jaxtyping<0.3 / typeguard<3: jaxtyping 0.2.x integrates with typeguard 2.x;
+#     newer typeguard (4.x) rejects jaxtyping's shape-string annotations.
+# requirements.txt remains the full pinned lock for a reproducible environment.
+dependencies = [
+    "absl-py",
+    "jaxtyping<0.3",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "scipy",
+    "typeguard<3",
+    "huggingface-hub",
+]
+
+# `version` is automatically set by flit to use `tabfm.__version__`
+dynamic = ["version"]
+
+[project.urls]
+homepage = "https://github.com/google-research/tabfm"
+repository = "https://github.com/google-research/tabfm"
+changelog = "https://github.com/google-research/tabfm/blob/main/CHANGELOG.md"
+# documentation = ""
+
+[project.optional-dependencies]
+# Backend extras
+jax = [
+    "chex",
+    "einops",
+    "flax>=0.12.7",
+    "jax",
+    "jaxlib",
+    "optax",
+    "orbax-checkpoint",
+]
+pytorch = [
+    "torch",
+]
+
+# Development deps (unittest, linting, formating,...)
+# Installed through `pip install -e .[dev]`
+dev = [
+    "pytest",
+    "pytest-xdist",
+    "pylint>=2.6.0",
+    "pyink",
+]
+
+# Dependencies for the runnable scripts under examples/. The TabArena examples
+# pull datasets from OpenML; scikit-learn (a core dep) supplies the metrics.
+# Installed through `pip install tabfm[examples]`.
+examples = [
+    "openml",
+]
+
+# GPU support. The base `jax`/`jaxlib` deps are CPU-only; install this extra
+# (`pip install tabfm[cuda]`) to pull the CUDA 12 plugin + NVIDIA libraries for
+# GPU execution. Kept optional so CPU-only / macOS / CI installs stay light.
+cuda = [
+    "jax[cuda12]",
+]
+
+trading = [
+    "yfinance",
+    "pyarrow",
+    "robin-stocks",
+]
+
+[tool.pyink]
+# Formatting configuration to follow Google style-guide
+line-length = 80
+unstable = true
+pyink-indentation = 2
+pyink-use-majority-quotes = true
+
+[build-system]
+# Build system specify which backend is used to build/install the project (flit,
+# poetry, setuptools,...). All backends are supported by `pip install`
+requires = ["flit_core >=3.8,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.sdist]
+# Flit specific options (files to exclude from the PyPI package).
+# If using another build backend (setuptools, poetry), you can remove this
+# section.
+exclude = [
+  # Do not release tests files on PyPI
+  "**/*_test.py",
+]
