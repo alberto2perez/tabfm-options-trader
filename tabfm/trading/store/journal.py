@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS paper_trades (
   max_loss      REAL NOT NULL,
   max_profit    REAL NOT NULL,
   pop_predicted REAL NOT NULL,
+  pop_raw       REAL,
   exp_return    REAL NOT NULL,
   regime        TEXT NOT NULL,
   status        TEXT NOT NULL DEFAULT 'open',
@@ -31,6 +32,10 @@ CREATE TABLE IF NOT EXISTS paper_trades (
 def init_db(path: Path = _DEFAULT_DB) -> None:
   with sqlite3.connect(path) as conn:
     conn.execute(_SCHEMA)
+    # Migration for DBs created before the pop_raw column existed
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(paper_trades)")}
+    if "pop_raw" not in cols:
+      conn.execute("ALTER TABLE paper_trades ADD COLUMN pop_raw REAL")
 
 
 def insert_trade(trade: dict, path: Path = _DEFAULT_DB) -> int:
@@ -39,11 +44,11 @@ def insert_trade(trade: dict, path: Path = _DEFAULT_DB) -> int:
       """INSERT INTO paper_trades
          (date_entered, ticker, direction, strike_short, strike_long, expiry,
           dte, entry_credit, spread_width, contracts, max_loss, max_profit,
-          pop_predicted, exp_return, regime)
+          pop_predicted, pop_raw, exp_return, regime)
          VALUES (:date_entered, :ticker, :direction, :strike_short, :strike_long,
                  :expiry, :dte, :entry_credit, :spread_width, :contracts,
-                 :max_loss, :max_profit, :pop_predicted, :exp_return, :regime)""",
-      trade,
+                 :max_loss, :max_profit, :pop_predicted, :pop_raw, :exp_return, :regime)""",
+      {**trade, "pop_raw": trade.get("pop_raw")},
     )
     return cur.lastrowid
 

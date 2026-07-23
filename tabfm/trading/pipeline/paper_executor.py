@@ -41,6 +41,7 @@ def execute_paper_trade(trade: dict, as_of: date, path: Path = _DEFAULT_DB) -> i
     "max_loss": trade["contracts"] * (trade["spread_width_dollars"] - trade["entry_credit"]) * 100,
     "max_profit": trade["contracts"] * trade["entry_credit"] * 100,
     "pop_predicted": trade["pop_predicted"],
+    "pop_raw": trade.get("pop_raw", trade["pop_predicted"]),
     "exp_return": trade["exp_return"],
     "regime": f"{trade['vix_bucket']}|{trade['trend_direction']}|{trade['iv_regime']}",
   }

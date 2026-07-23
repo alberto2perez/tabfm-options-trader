@@ -14,6 +14,7 @@ from .pipeline.chain_fetcher import fetch_chains
 from .pipeline.feature_engineer import engineer_features
 from .pipeline.context_builder import build_context
 from .pipeline.tabfm_scorer import score_candidates_batch
+from .pipeline.calibrator import fit_calibration, calibrate_pop
 from .pipeline.trade_recommender import select_trade, _passes_filters
 from .pipeline.paper_executor import execute_paper_trade, format_recommendation
 from .pipeline.position_auditor import audit_positions
@@ -32,14 +33,24 @@ def run(
   if as_of is None:
     as_of = date.today()
   if adapter is None:
+    import os
+    import robin_stocks.robinhood as rh
+    try:
+      from dotenv import load_dotenv
+      load_dotenv()
+    except ImportError:
+      pass
+    rh.login(os.environ["RH_USER"], os.environ["RH_PASS"])
     from .adapters.live import LiveAdapter
     adapter = LiveAdapter()
-  if clf_model is None:
+  if clf_model is None or reg_model is None:
+    import torch
     from tabfm import tabfm_v1_0_0_pytorch as tabfm_backend
-    clf_model = tabfm_backend.load(model_type="classification")
-  if reg_model is None:
-    from tabfm import tabfm_v1_0_0_pytorch as tabfm_backend
-    reg_model = tabfm_backend.load(model_type="regression")
+    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    if clf_model is None:
+      clf_model = tabfm_backend.load(model_type="classification", device=device)
+    if reg_model is None:
+      reg_model = tabfm_backend.load(model_type="regression", device=device)
 
   print(f"[NightlyPipeline] {as_of}")
 
@@ -69,6 +80,15 @@ def run(
       scored = score_candidates_batch(group_rows, context, clf_model, reg_model)
       all_candidates.extend(scored)
     all_feature_rows.extend(feature_rows)
+
+  # Platt calibration: map raw POP% onto realized win rates from the journal.
+  calib = fit_calibration(db_path)
+  if calib is not None:
+    for c in all_candidates:
+      if c["pop_predicted"] == 0.5 and c["exp_return"] == 0.0:
+        continue  # fallback-scored — nothing to calibrate
+      c["pop_raw"] = c["pop_predicted"]
+      c["pop_predicted"] = round(calibrate_pop(c["pop_raw"], calib), 4)
 
   append_rows(all_feature_rows, store_path)
   n_labeled = label_expired_rows(store_path, adapter, as_of)

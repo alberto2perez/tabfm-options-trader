@@ -67,6 +67,20 @@ class LiveAdapter(DataAdapter):
       "macd_histogram": macd_hist,
     }
 
+  def get_close(self, ticker: str, as_of: date) -> float:
+    """Close on or before as_of from daily historicals (settlement lookups)."""
+    historicals = rh.get_stock_historicals(
+      ticker, interval="day", span="3month", bounds="regular"
+    )
+    closes = [
+      (datetime.strptime(h["begins_at"][:10], "%Y-%m-%d").date(), float(h["close_price"]))
+      for h in (historicals or [])
+    ]
+    valid = [c for d, c in closes if d <= as_of]
+    if not valid:
+      raise ValueError(f"No historical close for {ticker} on or before {as_of}")
+    return valid[-1]
+
   def get_options_chain(self, ticker: str, as_of: date) -> pd.DataFrame:
     expirations = rh.get_chains(ticker)["expiration_dates"]
     rows = []
