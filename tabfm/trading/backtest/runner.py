@@ -37,8 +37,11 @@ def run_backtest(
 
   print(f"[Backtest] {len(days)} trading days from {start} to {as_of}")
 
+  # One adapter for the whole run — yfinance history is downloaded once per
+  # ticker and cached. get_underlying() filters to each sim_date internally.
+  adapter = HistAdapter(as_of=days[-1])
+
   for i, sim_date in enumerate(days):
-    adapter = HistAdapter(as_of=sim_date)
     run(adapter, clf_model, reg_model, as_of=sim_date,
         db_path=db_path, store_path=store_path)
     if (i + 1) % 20 == 0:
