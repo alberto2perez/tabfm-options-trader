@@ -7,7 +7,8 @@ from .base import DataAdapter
 
 _RISK_FREE_RATE = 0.045
 _DTE_WINDOWS = [7, 14, 21, 30, 45]
-_STRIKE_RANGE = np.arange(0.70, 1.31, 0.025)
+# 1% steps — keeps spread width ≤ 1% of spot price per contract (~$7 for SPY at $744)
+_STRIKE_RANGE = np.arange(0.85, 1.16, 0.01)
 
 
 def _rsi(closes: pd.Series, period: int = 14) -> float:

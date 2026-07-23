@@ -36,8 +36,18 @@ def select_trade(scored_candidates: list[dict]) -> dict | None:
     c["total_risk"] = c["contracts"] * c["spread_width_dollars"] * 100
     c["score"] = c["pop_predicted"] * c["exp_return"]
 
-  positive_ev = [c for c in survivors if c["score"] > 0]
-  if not positive_ev:
-    return None
+  # Candidates where TabFM gave a real (non-fallback) prediction
+  tabfm_scored = [
+    c for c in survivors
+    if not (c["pop_predicted"] == 0.5 and c["exp_return"] == 0.0)
+  ]
+  if tabfm_scored:
+    positive_ev = [c for c in tabfm_scored if c["score"] > 0]
+    if not positive_ev:
+      return None  # model has predictions and all are negative EV → skip
+    return max(positive_ev, key=lambda c: c["score"])
 
-  return max(positive_ev, key=lambda c: c["score"])
+  # Cold-start: no TabFM context yet → rank structurally by credit yield
+  best = max(survivors, key=lambda c: c["entry_credit"] / c["spread_width_dollars"])
+  best["score"] = round(best["entry_credit"] / best["spread_width_dollars"], 4)
+  return best
