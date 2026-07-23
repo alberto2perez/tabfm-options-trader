@@ -49,9 +49,11 @@ def execute_paper_trade(trade: dict, as_of: date, path: Path = _DEFAULT_DB) -> i
 
 
 def format_recommendation(trade: dict, trade_id: int, as_of: date) -> str:
+  # These are CREDIT spreads: short call spread profits when price stays below
+  # the short strike (bearish); short put spread profits above it (bullish).
   label = (
-    "CALL SPREAD  (bullish)" if trade["direction"] == "call_spread"
-    else "PUT SPREAD  (bearish)"
+    "CALL CREDIT SPREAD  (bearish/neutral)" if trade["direction"] == "call_spread"
+    else "PUT CREDIT SPREAD  (bullish/neutral)"
   )
   return _TEMPLATE.format(
     date=as_of,

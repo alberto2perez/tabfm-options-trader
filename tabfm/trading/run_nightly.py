@@ -19,7 +19,7 @@ from .pipeline.trade_recommender import select_trade, _passes_filters
 from .pipeline.paper_executor import execute_paper_trade, format_recommendation
 from .pipeline.position_auditor import audit_positions
 from .store.history_store import append_rows, label_expired_rows, compute_iv_rank, _DEFAULT_STORE
-from .store.journal import _DEFAULT_DB
+from .store.journal import init_db, _DEFAULT_DB
 
 
 def run(
@@ -58,6 +58,7 @@ def run(
 
   print(f"[NightlyPipeline] {as_of}")
 
+  init_db(db_path)
   closed = audit_positions(adapter, as_of, db_path)
   if closed:
     print(f"[PositionAuditor] Closed {len(closed)} position(s)")

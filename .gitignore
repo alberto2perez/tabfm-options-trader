@@ -33,3 +33,7 @@ docs/api
 tabfm/trading/paper_journal.db
 tabfm/trading/history_store.parquet
 
+
+# Trading pipeline local data
+tabfm/trading/paper_journal.db
+tabfm/trading/history_store*.parquet
