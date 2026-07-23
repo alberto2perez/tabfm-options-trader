@@ -40,7 +40,11 @@ def run(
       load_dotenv()
     except ImportError:
       pass
-    rh.login(os.environ["RH_USER"], os.environ["RH_PASS"])
+    user, pw = os.environ.get("RH_USER"), os.environ.get("RH_PASS")
+    if user and pw:
+      rh.login(user, pw)
+    else:
+      rh.login()  # cached session from a prior interactive login
     from .adapters.live import LiveAdapter
     adapter = LiveAdapter()
   if clf_model is None or reg_model is None:
