@@ -31,9 +31,12 @@ def run_backtest(
   days = trading_days(start, as_of - timedelta(days=1))
 
   init_db(db_path)
+  import torch
   from tabfm import tabfm_v1_0_0_pytorch as tabfm_backend
-  clf_model = tabfm_backend.load(model_type="classification")
-  reg_model = tabfm_backend.load(model_type="regression")
+  device = "mps" if torch.backends.mps.is_available() else "cpu"
+  clf_model = tabfm_backend.load(model_type="classification", device=device)
+  reg_model = tabfm_backend.load(model_type="regression", device=device)
+  print(f"[Backtest] TabFM models on {device}")
 
   print(f"[Backtest] {len(days)} trading days from {start} to {as_of}")
 

@@ -1,6 +1,12 @@
 import pandas as pd
 from tabfm import TabFMClassifier, TabFMRegressor
 
+# Wrapper defaults (n_estimators=32, batch_size=1) run 64 serial forward
+# passes of the 1.6B model per scoring call — ~90s each on CPU. A 4-member
+# ensemble forwarded in one batch is ~40x faster with near-identical output.
+_N_ESTIMATORS = 4
+_BATCH_SIZE = None  # None = all ensemble members in one forward pass
+
 FEATURE_COLS = [
   "price_close", "momentum_5d", "momentum_20d", "atr_14", "volume_zscore",
   "price_vs_sma20", "vix_level", "vix_5d_change", "iv_rank", "hv20",
@@ -39,11 +45,11 @@ def score_candidates_batch(
   X_train = context[FEATURE_COLS].copy()
   X_test = pd.DataFrame([{col: c.get(col) for col in FEATURE_COLS} for c in candidates])
 
-  clf = TabFMClassifier(model=clf_model)
+  clf = TabFMClassifier(model=clf_model, n_estimators=_N_ESTIMATORS, batch_size=_BATCH_SIZE)
   clf.fit(X_train, y_clf)
   probas = clf.predict_proba(X_test)
 
-  reg = TabFMRegressor(model=reg_model)
+  reg = TabFMRegressor(model=reg_model, n_estimators=_N_ESTIMATORS, batch_size=_BATCH_SIZE)
   reg.fit(X_train, y_reg)
   exp_returns = reg.predict(X_test)
 
