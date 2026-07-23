@@ -38,24 +38,32 @@ def label_expired_rows(path: Path, adapter, as_of: date) -> int:
   if not mask.any():
     return 0
 
-  labeled = 0
-  for idx, row in df[mask].iterrows():
+  # Fetch settlement price once per unique (ticker, expiry) pair — not per row.
+  pairs = df[mask][["ticker", "expiry"]].drop_duplicates()
+  price_map: dict[tuple, float] = {}
+  for _, pair in pairs.iterrows():
     try:
-      expiry_date = date.fromisoformat(str(row["expiry"]))
-      u = adapter.get_underlying(row["ticker"], expiry_date)
-      price = u["close"]
-      won = (
-        price > row["strike_short"]
-        if row["direction"] == "put_spread"
-        else price < row["strike_short"]
-      )
-      df.at[idx, "profitable"] = 1 if won else 0
-      df.at[idx, "return_pct"] = (
-        float(row["entry_credit"]) / float(row["max_loss"]) if won else -1.0
-      )
-      labeled += 1
+      expiry_date = date.fromisoformat(str(pair["expiry"]))
+      price_map[(pair["ticker"], pair["expiry"])] = adapter.get_close(pair["ticker"], expiry_date)
     except Exception:
       continue
+
+  labeled = 0
+  for idx, row in df[mask].iterrows():
+    key = (row["ticker"], row["expiry"])
+    if key not in price_map:
+      continue
+    price = price_map[key]
+    won = (
+      price > row["strike_short"]
+      if row["direction"] == "put_spread"
+      else price < row["strike_short"]
+    )
+    df.at[idx, "profitable"] = 1 if won else 0
+    df.at[idx, "return_pct"] = (
+      float(row["entry_credit"]) / float(row["max_loss"]) if won else -1.0
+    )
+    labeled += 1
 
   df.to_parquet(path, index=False)
   return labeled

@@ -104,6 +104,15 @@ class HistAdapter(DataAdapter):
       "macd_histogram": macd_hist,
     }
 
+  def get_close(self, ticker: str, as_of: date) -> float:
+    """Lightweight price-only lookup — skips indicator computation."""
+    self._assert_no_lookahead(as_of)
+    df = self._history(ticker)
+    df = df[df.index <= pd.Timestamp(as_of)]
+    if df.empty:
+      raise ValueError(f"No data for {ticker} on {as_of}")
+    return float(df["Close"].iloc[-1])
+
   def get_options_chain(self, ticker: str, as_of: date) -> pd.DataFrame:
     self._assert_no_lookahead(as_of)
     u = self.get_underlying(ticker, as_of)

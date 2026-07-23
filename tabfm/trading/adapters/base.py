@@ -19,3 +19,7 @@ class DataAdapter(ABC):
   @abstractmethod
   def get_vix(self, as_of: date) -> float:
     ...
+
+  def get_close(self, ticker: str, as_of: date) -> float:
+    """Return closing price for ticker on as_of. Default delegates to get_underlying."""
+    return self.get_underlying(ticker, as_of)["close"]

@@ -26,15 +26,19 @@ def score_candidate(
   if context.empty or "profitable" not in context.columns:
     return {**candidate, "pop_predicted": 0.5, "exp_return": 0.0}
 
-  X_train = context[FEATURE_COLS].copy()
+  # Need both classes in training set for meaningful POP%; fall back otherwise.
   y_clf = context["profitable"].values
-  y_reg = context["return_pct"].values
+  if len(set(y_clf)) < 2:
+    return {**candidate, "pop_predicted": 0.5, "exp_return": 0.0}
 
+  y_reg = context["return_pct"].values
+  X_train = context[FEATURE_COLS].copy()
   X_test = pd.DataFrame([{col: candidate.get(col) for col in FEATURE_COLS}])
 
   clf = TabFMClassifier(model=clf_model)
   clf.fit(X_train, y_clf)
-  pop = float(clf.predict_proba(X_test)[0][1])
+  proba = clf.predict_proba(X_test)[0]
+  pop = float(proba[1]) if len(proba) > 1 else float(proba[0])
 
   reg = TabFMRegressor(model=reg_model)
   reg.fit(X_train, y_reg)
