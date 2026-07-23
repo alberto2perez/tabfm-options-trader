@@ -12,36 +12,58 @@ FEATURE_COLS = [
 ]
 
 
+def score_candidates_batch(
+  candidates: list[dict],
+  context: pd.DataFrame,
+  clf_model,
+  reg_model,
+) -> list[dict]:
+  """Score all candidates sharing the same regime context in a single TabFM fit+predict.
+
+  Fits the model once on the shared context, then predicts on all candidates
+  together — O(1) model calls instead of O(N) per candidate.
+  Falls back to neutral defaults (0.5, 0.0) when context is insufficient.
+  """
+  fallback = [
+    {**c, "pop_predicted": 0.5, "exp_return": 0.0} for c in candidates
+  ]
+
+  if context.empty or "profitable" not in context.columns:
+    return fallback
+
+  y_clf = context["profitable"].values
+  if len(y_clf) < 20 or len(set(y_clf)) < 2:
+    return fallback
+
+  y_reg = context["return_pct"].values
+  X_train = context[FEATURE_COLS].copy()
+  X_test = pd.DataFrame([{col: c.get(col) for col in FEATURE_COLS} for c in candidates])
+
+  clf = TabFMClassifier(model=clf_model)
+  clf.fit(X_train, y_clf)
+  probas = clf.predict_proba(X_test)
+
+  reg = TabFMRegressor(model=reg_model)
+  reg.fit(X_train, y_reg)
+  exp_returns = reg.predict(X_test)
+
+  results = []
+  for i, candidate in enumerate(candidates):
+    proba = probas[i]
+    pop = float(proba[1]) if len(proba) > 1 else float(proba[0])
+    results.append({
+      **candidate,
+      "pop_predicted": round(pop, 4),
+      "exp_return": round(float(exp_returns[i]), 4),
+    })
+  return results
+
+
 def score_candidate(
   candidate: dict,
   context: pd.DataFrame,
   clf_model,
   reg_model,
 ) -> dict:
-  """Score a candidate spread with TabFMClassifier (POP%) and TabFMRegressor.
-
-  Returns the candidate dict with pop_predicted and exp_return added.
-  Falls back to neutral defaults (0.5, 0.0) when context is empty.
-  """
-  if context.empty or "profitable" not in context.columns:
-    return {**candidate, "pop_predicted": 0.5, "exp_return": 0.0}
-
-  # Need both classes in training set for meaningful POP%; fall back otherwise.
-  y_clf = context["profitable"].values
-  if len(set(y_clf)) < 2:
-    return {**candidate, "pop_predicted": 0.5, "exp_return": 0.0}
-
-  y_reg = context["return_pct"].values
-  X_train = context[FEATURE_COLS].copy()
-  X_test = pd.DataFrame([{col: candidate.get(col) for col in FEATURE_COLS}])
-
-  clf = TabFMClassifier(model=clf_model)
-  clf.fit(X_train, y_clf)
-  proba = clf.predict_proba(X_test)[0]
-  pop = float(proba[1]) if len(proba) > 1 else float(proba[0])
-
-  reg = TabFMRegressor(model=reg_model)
-  reg.fit(X_train, y_reg)
-  exp_return = float(reg.predict(X_test)[0])
-
-  return {**candidate, "pop_predicted": round(pop, 4), "exp_return": round(exp_return, 4)}
+  """Single-candidate scoring — delegates to batch for consistency."""
+  return score_candidates_batch([candidate], context, clf_model, reg_model)[0]

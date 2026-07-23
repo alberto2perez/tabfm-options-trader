@@ -13,7 +13,7 @@ from pathlib import Path
 from .pipeline.chain_fetcher import fetch_chains
 from .pipeline.feature_engineer import engineer_features
 from .pipeline.context_builder import build_context
-from .pipeline.tabfm_scorer import score_candidate
+from .pipeline.tabfm_scorer import score_candidates_batch
 from .pipeline.trade_recommender import select_trade, _passes_filters
 from .pipeline.paper_executor import execute_paper_trade, format_recommendation
 from .pipeline.position_auditor import audit_positions
@@ -54,13 +54,20 @@ def run(
   for chain_data in chain_data_list:
     iv_rank = compute_iv_rank(adapter.get_vix(as_of), store_path)
     feature_rows = engineer_features(chain_data, as_of, iv_rank)
-    for row in feature_rows:
-      if not _passes_filters(row):
-        all_candidates.append({**row, "pop_predicted": 0.5, "exp_return": 0.0})
-        continue
-      context = build_context(row, str(as_of), path=store_path)
-      scored = score_candidate(row, context, clf_model, reg_model)
-      all_candidates.append(scored)
+    # Pre-filter: only passing rows go to TabFM; failing rows get fallback.
+    passing = [r for r in feature_rows if _passes_filters(r)]
+    failing = [r for r in feature_rows if not _passes_filters(r)]
+    for row in failing:
+      all_candidates.append({**row, "pop_predicted": 0.5, "exp_return": 0.0})
+    # Batch score: group passing rows by regime, fit TabFM once per group.
+    groups: dict[tuple, list[dict]] = {}
+    for row in passing:
+      key = (row["vix_bucket"], row["trend_direction"], row["iv_regime"])
+      groups.setdefault(key, []).append(row)
+    for group_rows in groups.values():
+      context = build_context(group_rows[0], str(as_of), path=store_path)
+      scored = score_candidates_batch(group_rows, context, clf_model, reg_model)
+      all_candidates.extend(scored)
     all_feature_rows.extend(feature_rows)
 
   append_rows(all_feature_rows, store_path)
