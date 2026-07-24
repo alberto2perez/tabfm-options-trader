@@ -139,5 +139,10 @@ def engineer_features(
           "trend_direction": trend,
           "iv_regime": iv_reg,
           "earnings_flag": "no_earnings",
+          "pop_market": (
+            float(short["pop_market"])
+            if "pop_market" in short.index and pd.notna(short.get("pop_market"))
+            else None
+          ),
         })
   return rows

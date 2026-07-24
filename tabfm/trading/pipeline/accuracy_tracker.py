@@ -52,6 +52,17 @@ def report(db_path: Path = _DEFAULT_DB, verbose: bool = True) -> dict:
     "worst_regime": worst,
   }
 
+  benchmarked = [t for t in trades if t.get("pop_market") is not None]
+  if benchmarked:
+    def _brier(key: str) -> float:
+      return sum(
+        (float(t[key]) - (1 if t["status"] in ("won", "partial") else 0)) ** 2
+        for t in benchmarked
+      ) / len(benchmarked)
+    metrics["brier_tabfm"] = round(_brier("pop_predicted"), 4)
+    metrics["brier_market"] = round(_brier("pop_market"), 4)
+    metrics["brier_n"] = len(benchmarked)
+
   if verbose:
     print(f"""
 ╔══════════════════════════════════════╗
@@ -65,5 +76,9 @@ def report(db_path: Path = _DEFAULT_DB, verbose: bool = True) -> dict:
   Best Regime:     {best}
   Worst Regime:    {worst}
 ╚══════════════════════════════════════╝""")
+
+  if "brier_tabfm" in metrics and verbose:
+    print(f"  Brier (lower=better): TabFM {metrics['brier_tabfm']:.4f} vs "
+          f"market {metrics['brier_market']:.4f}  (n={metrics['brier_n']})")
 
   return metrics

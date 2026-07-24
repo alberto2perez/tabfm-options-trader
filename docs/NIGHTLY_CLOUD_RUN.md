@@ -30,7 +30,10 @@ The agent starts with a fresh clone of this repo and must push state back.
      with cursor = base64("p=<strike>.0000"); keep strikes 0.90–1.10 × spot at
      roughly $5 spacing (large underlyings) or $3 (IWM-sized). Then
      `get_option_quotes` for those instrument ids (batches ≤40). Skip rows
-     with zero bid or null greeks.
+     with zero bid or null greeks. Chain rows must also carry
+     `"pop_market": <float chance_of_profit_short>` from the SHORT-capable
+     quote fields (`quote.chance_of_profit_short`); omit the key when the
+     field is null.
    - RECOVERY-MODE SPACING: before fetching, run
      `python3 -c "import sys; sys.path.insert(0,'.'); from tabfm.trading.pipeline.bankroll import get_bankroll; bk=get_bankroll(); print(bk.recovery_mode, bk.slice_limit)"`.
      If recovery_mode is True (or slice_limit < 200), fetch $1-spaced strikes
