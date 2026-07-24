@@ -60,6 +60,7 @@ def portfolio_summary(db_path: Path = _DEFAULT_DB, as_of: date | None = None) ->
     b_pnl = sum(float(t["actual_pnl"] or 0) for t in b_closed)
     lines.append(
       f"  BASELINE (shadow): {len(b_open)} open · {len(b_closed)} closed · P&L ${b_pnl:,.2f}"
+      f"  (model − baseline: ${realized - b_pnl:,.2f})"
     )
   lines.append("╚══════════════════════════════════════════════════════╝")
   return "\n".join(lines)

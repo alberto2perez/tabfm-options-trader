@@ -49,3 +49,14 @@ def test_no_variance_returns_none(tmp_path):
     tid = insert_trade(_trade(0.20), db)   # constant prediction
     close_trade(tid, "won", 30.0, f"2026-07-{(i % 27) + 1:02d}", db)
   assert fit_return_calibration(db) is None
+
+
+def test_inverted_fit_returns_none(tmp_path):
+  db = tmp_path / "j.db"
+  init_db(db)
+  # Anti-correlated: higher prediction -> worse outcome
+  for i in range(30):
+    pred = 0.10 + (i % 10) * 0.02
+    tid = insert_trade(_trade(pred), db)
+    close_trade(tid, "won", (0.30 - pred) * 300.0, f"2026-07-{(i % 27) + 1:02d}", db)
+  assert fit_return_calibration(db) is None

@@ -72,7 +72,10 @@ def run(
 
   # Baseline shadow book: sell one SPY ~30-delta put spread every night
   # regardless of event gate — this is intentionally dumb.
-  enter_baseline_trade(chain_data_list, as_of, db_path)
+  try:
+    enter_baseline_trade(chain_data_list, as_of, db_path)
+  except Exception as e:
+    print(f"[Baseline] entry failed (shadow book only): {e}")
 
   # --- Event risk gate -------------------------------------------------
   data_dir = Path(db_path).parent

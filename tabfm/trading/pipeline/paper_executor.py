@@ -26,22 +26,28 @@ _TEMPLATE = """
 """
 
 
-def _apply_friction(mid_credit: float, bid_ask_pct: float) -> float:
-  """Round-trip fill friction applied at entry: half the combined bid/ask
-  spread plus regulatory fees. Keeps every downstream number (P&L, bankroll,
-  calibration) compounding on realistic fills."""
-  slip_frac = float(os.environ.get("TABFM_SLIPPAGE_FRAC", "0.50"))
+def _apply_friction(natural_credit: float, bid_ask_pct: float) -> float:
+  """Fill friction on top of the NATURAL credit (short bid − long ask).
+
+  The natural credit already pays the entry half-spread (worst-case fill);
+  exits are marked at mids, so entry-side crossing approximates the intended
+  half-combined-spread round trip. We add regulatory fees, plus an optional
+  extra-slippage knob (default 0) for further pessimism.
+  """
+  slip_frac = float(os.environ.get("TABFM_SLIPPAGE_FRAC", "0.0"))
   fees_rt = float(os.environ.get("TABFM_FEES_RT", "0.20"))
-  combined_spread = (bid_ask_pct or 0.0) * mid_credit
-  return round(max(mid_credit - slip_frac * combined_spread - fees_rt / 100.0, 0.01), 2)
+  combined_spread = (bid_ask_pct or 0.0) * natural_credit
+  return round(max(natural_credit - slip_frac * combined_spread - fees_rt / 100.0, 0.01), 2)
 
 
 def execute_paper_trade(
   trade: dict, as_of: date, path: Path = _DEFAULT_DB, strategy: str = "model"
 ) -> int:
   init_db(path)
-  mid_credit = trade["entry_credit"]
-  fill_credit = _apply_friction(mid_credit, float(trade.get("bid_ask_pct") or 0.0))
+  natural_credit = trade["entry_credit"]
+  ba_pct = float(trade.get("bid_ask_pct") or 0.0)
+  fill_credit = _apply_friction(natural_credit, ba_pct)
+  approx_mid = round(natural_credit * (1 + ba_pct / 2), 2)  # mid ≈ natural + half combined spread
   record = {
     "date_entered": str(as_of),
     "ticker": trade["ticker"],
@@ -51,7 +57,7 @@ def execute_paper_trade(
     "expiry": trade["expiry"],
     "dte": trade["dte"],
     "entry_credit": fill_credit,
-    "entry_credit_mid": mid_credit,
+    "entry_credit_mid": approx_mid,
     "spread_width": trade["spread_width_dollars"],
     "contracts": trade["contracts"],
     "max_loss": round(trade["contracts"] * (trade["spread_width_dollars"] - fill_credit) * 100, 2),
@@ -74,8 +80,10 @@ def format_recommendation(trade: dict, trade_id: int, as_of: date) -> str:
     "CALL CREDIT SPREAD  (bearish/neutral)" if trade["direction"] == "call_spread"
     else "PUT CREDIT SPREAD  (bullish/neutral)"
   )
-  mid_credit = trade["entry_credit"]
-  fill_credit = _apply_friction(mid_credit, float(trade.get("bid_ask_pct") or 0.0))
+  natural_credit = trade["entry_credit"]
+  ba_pct = float(trade.get("bid_ask_pct") or 0.0)
+  fill_credit = _apply_friction(natural_credit, ba_pct)
+  approx_mid = round(natural_credit * (1 + ba_pct / 2), 2)  # mid ≈ natural + half combined spread
   return _TEMPLATE.format(
     date=as_of,
     ticker=trade["ticker"],
@@ -86,7 +94,7 @@ def format_recommendation(trade: dict, trade_id: int, as_of: date) -> str:
     dte=trade["dte"],
     spread_width_dollars=trade["spread_width_dollars"],
     entry_credit=fill_credit,
-    entry_credit_mid=mid_credit,
+    entry_credit_mid=approx_mid,
     max_profit_per=round(fill_credit, 2),
     max_loss_per=round(trade["spread_width_dollars"] - fill_credit, 2),
     contracts=trade["contracts"],

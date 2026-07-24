@@ -4,6 +4,7 @@ One virtual contract every run — no gates, no model, no bankroll. Exists
 purely to measure what the full stack adds over the simplest premium-selling
 rule. Never touches sizing or learning (journal helpers filter by strategy).
 """
+import os
 from datetime import date
 from pathlib import Path
 
@@ -22,9 +23,15 @@ def enter_baseline_trade(
   puts = puts[(puts["delta"] >= 0.15) & (puts["delta"] <= 0.40)]
   if puts.empty:
     return None
-  short = puts.iloc[(puts["delta"] - 0.30).abs().argsort().iloc[0]]
+  manage_dte = int(os.environ.get("TABFM_MANAGE_DTE", "21"))
+  puts = puts[(puts["dte"] >= manage_dte + 7) & (puts["dte"] <= 45)]
+  if puts.empty:
+    return None
+  short = puts.loc[(puts["delta"] - 0.30).abs().idxmin()]
   longs = chain[
-    (chain["option_type"] == "put") & (chain["strike"] < short["strike"])
+    (chain["option_type"] == "put")
+    & (chain["expiry"] == short["expiry"])
+    & (chain["strike"] < short["strike"])
   ].sort_values("strike")
   if longs.empty:
     return None
@@ -47,5 +54,5 @@ def enter_baseline_trade(
   }
   tid = execute_paper_trade(trade, as_of, db_path, strategy="baseline")
   print(f"[Baseline] sold SPY {trade['strike_short']:g}/{trade['strike_long']:g} "
-        f"exp {trade['expiry']} (trade {tid})")
+        f"exp {trade['expiry']} (~${trade['entry_credit']} credit, trade {tid})")
   return tid

@@ -108,3 +108,22 @@ adjusted_credit = round(max(
 
 Exact exit-time slippage repricing; capital-normalized baseline comparison;
 gated-baseline arm; risk pack and ops pack (next sub-projects).
+
+## Amendment (2026-07-24, post-review): friction semantics corrected
+
+`entry_credit` throughout the pipeline is the NATURAL credit (short bid −
+long ask), which already pays the entry half-spread. The original formula
+subtracted half the spread again — double-counting. Corrected model: fill =
+natural credit − fees (TABFM_FEES_RT, default $0.20/contract RT), with
+TABFM_SLIPPAGE_FRAC now an OPTIONAL extra-pessimism knob defaulting to 0.
+Exits are marked at mids, so entry-side crossing ≈ the intended half-spread
+round trip. `entry_credit_mid` stores the reconstructed mid (natural ×
+(1 + bid_ask_pct/2)). Sizing uses the natural credit — after this
+correction it differs from the fill only by fees (<1%), negligible.
+
+Baseline corrections from the same review: long leg is now same-expiry
+(was cross-expiry — corrupt diagonals/silent no-entry on multi-expiry
+chains); shorts restricted to the manage_dte+7..45 window so the benchmark
+isn't churned by DTE management; entry wrapped in try/except so the shadow
+book can never abort the nightly run; return calibration falls back to
+identity on non-positive slope.

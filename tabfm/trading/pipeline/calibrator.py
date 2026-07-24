@@ -81,6 +81,8 @@ def fit_return_calibration(
   if float(x_arr.std()) < 1e-9:
     return None
   slope, intercept = np.polyfit(x_arr, y_arr, 1)
+  if slope <= 0:
+    return None  # inverted/degenerate fit — identity is safer than flipping EV ranking
   return float(slope), float(intercept)
 
 
