@@ -1,50 +1,5 @@
 # Nightly Recommendations
 
-## 2026-07-24
-
-```
-══════════════════════════════════════════════
-  NIGHTLY RECOMMENDATION  ·  2026-07-24
-══════════════════════════════════════════════
-  Ticker       SPY
-  Direction    CALL CREDIT SPREAD  (bearish/neutral)
-  Strikes      $750.0 / $755.0
-  Expiry       2026-08-21  (28 DTE)
-  Spread Width $5.0
-  Entry Credit $2.25 mid-price
-  Max Profit   $2.25 / contract
-  Max Loss     $2.75 / contract
-  Contracts    2  →  max exposure $1000
-  ─────────────────────────────────────────────
-  POP%         50.0%
-  Exp. Return  $0 expected paper P&L
-  IV Rank      100.0  (expensive IV)
-  Regime       normal VIX · sideways · expensive IV
-══════════════════════════════════════════════
-  [PAPER LOGGED]  trade_id: 2
-```
-
-## 2026-07-23
-
-```
-══════════════════════════════════════════════
-  NIGHTLY RECOMMENDATION  ·  2026-07-23
-══════════════════════════════════════════════
-  Ticker       SPY
-  Direction    CALL CREDIT SPREAD  (bearish/neutral)
-  Strikes      $750.0 / $755.0
-  Expiry       2026-08-21  (29 DTE)
-  Spread Width $5.0
-  Entry Credit $2.25 mid-price
-  Max Profit   $2.25 / contract
-  Max Loss     $2.75 / contract
-  Contracts    2  →  max exposure $1000
-  ─────────────────────────────────────────────
-  POP%         50.0%
-  Exp. Return  $0 expected paper P&L
-  IV Rank      50.0  (fair IV)
-  Regime       normal VIX · sideways · fair IV
-══════════════════════════════════════════════
-  [PAPER LOGGED]  trade_id: 1
-```
-
+_Book reset 2026-07-24: restarted from scratch under the bankroll-managed
+sizing strategy (tracked equity, 15% slices, 45% exposure cap). Prior trades
+(#1, #2 — SPY 750/755 call credit spreads) are preserved in git history._
