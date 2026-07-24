@@ -4,6 +4,8 @@ import pandas as pd
 
 
 class DataAdapter(ABC):
+  persists_market_history = True
+
   @abstractmethod
   def get_underlying(self, ticker: str, as_of: date) -> dict:
     """Return dict with keys: close, sma20, sma50, atr14, hv20, volume,

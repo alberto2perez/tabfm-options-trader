@@ -89,6 +89,17 @@ def test_ungated_night_reaches_selection(tmp_path, monkeypatch, capsys):
     def get_events(self, as_of):
       return {"earnings": []}
 
+    def get_options_chain(self, ticker, as_of):
+      # Tighter bid/ask so bid_ask_pct (~0.14) passes the 0.15 filter.
+      return pd.DataFrame([
+        {"strike": 680.0, "expiry": pd.Timestamp("2026-08-21"), "option_type": "put",
+         "bid": 2.20, "ask": 2.24, "mid": 2.22, "open_interest": 500,
+         "delta": 0.25, "iv": 0.20, "dte": 28},
+        {"strike": 675.0, "expiry": pd.Timestamp("2026-08-21"), "option_type": "put",
+         "bid": 1.60, "ask": 1.64, "mid": 1.62, "open_interest": 500,
+         "delta": 0.20, "iv": 0.20, "dte": 28},
+      ])
+
   db = tmp_path / "journal.db"
   store = tmp_path / "store.parquet"
   result = run(_CalmStub(), clf_model=object(), reg_model=object(),
@@ -96,3 +107,31 @@ def test_ungated_night_reaches_selection(tmp_path, monkeypatch, capsys):
   # Cold start on an empty store: fallback scoring, credit-yield pick.
   out = capsys.readouterr().out
   assert "[EventGate] NO NEW ENTRIES" not in out
+  assert result is not None  # cold-start credit-yield pick places a paper trade
+  conn = sqlite3.connect(db)
+  assert conn.execute("SELECT COUNT(*) FROM paper_trades").fetchone()[0] == 1
+
+
+def test_second_run_same_night_still_gated_on_iv_spike(tmp_path, monkeypatch):
+  _patch_watchlist(monkeypatch)
+
+  class _IvSpikeStub(_GatedStubAdapter):
+    def get_events(self, as_of):
+      return {"earnings": []}
+
+    def get_options_chain(self, ticker, as_of):
+      df = super().get_options_chain(ticker, as_of)
+      df["iv"] = 0.35  # IV/HV = 0.35/0.15 = 2.33 > 1.6
+      return df
+
+  db = tmp_path / "journal.db"
+  store = tmp_path / "store.parquet"
+  from tabfm.trading.store.market_history import record_market_day
+  from datetime import date as _date
+  record_market_day(tmp_path, _date(2026, 7, 23), 18.7, 0.20)  # prior day IV
+
+  r1 = run(_IvSpikeStub(), clf_model=object(), reg_model=object(),
+           as_of=date(2026, 7, 24), db_path=db, store_path=store)
+  r2 = run(_IvSpikeStub(), clf_model=object(), reg_model=object(),
+           as_of=date(2026, 7, 24), db_path=db, store_path=store)
+  assert r1 is None and r2 is None  # re-run must stay gated

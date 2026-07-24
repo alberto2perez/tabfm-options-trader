@@ -43,7 +43,9 @@ def score_candidates_batch(
     return fallback
 
   y_reg = context["return_pct"].values
-  X_train = context[FEATURE_COLS].copy()
+  # reindex: legacy context rows may predate newer FEATURE_COLS — missing
+  # columns become NaN and are handled by the wrapper's imputer.
+  X_train = context.reindex(columns=FEATURE_COLS).copy()
   X_test = pd.DataFrame([{col: c.get(col) for col in FEATURE_COLS} for c in candidates])
 
   clf = TabFMClassifier(model=clf_model, n_estimators=_N_ESTIMATORS, batch_size=_BATCH_SIZE)

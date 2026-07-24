@@ -45,6 +45,8 @@ def _bs_price(S: float, K: float, T: float, sigma: float, opt: str) -> float:
 
 
 class HistAdapter(DataAdapter):
+  persists_market_history = False  # backtests must not pollute live market_history.csv
+
   def __init__(self, as_of: date) -> None:
     self._as_of = as_of
     self._cache: dict = {}
@@ -144,6 +146,7 @@ class HistAdapter(DataAdapter):
   def get_vix(self, as_of: date) -> float:
     self._assert_no_lookahead(as_of)
     df = self._history("^VIX", lookback=30)
+    df = df[df.index <= pd.Timestamp(as_of)]
     if df.empty:
       return 20.0
     return float(df["Close"].iloc[-1])

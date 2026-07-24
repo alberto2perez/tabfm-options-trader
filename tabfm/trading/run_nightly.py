@@ -77,8 +77,8 @@ def run(
   )
   chain_stats = {}
   if spy_chain is not None and len(spy_chain["chain"]):
-    prior = load_market_history(data_dir, n=1)
-    prior_iv = prior[-1]["median_iv"] if prior and prior[-1]["date"] != str(as_of) else None
+    prior_rows = [r for r in load_market_history(data_dir, n=2) if r["date"] < str(as_of)]
+    prior_iv = prior_rows[-1]["median_iv"] if prior_rows else None
     chain_stats = {
       "median_iv": float(spy_chain["chain"]["iv"].median()),
       "hv20": float(spy_chain["underlying"]["hv20"]),
@@ -89,7 +89,8 @@ def run(
     vix_history = [[h["date"], h["vix"]] for h in load_market_history(data_dir, n=10)]
   if not any(str(as_of) == str(d) for d, _ in vix_history):
     vix_history = vix_history + [[str(as_of), vix_now]]
-  record_market_day(data_dir, as_of, vix_now, chain_stats.get("median_iv"))
+  if getattr(adapter, "persists_market_history", True):
+    record_market_day(data_dir, as_of, vix_now, chain_stats.get("median_iv"))
 
   gate = evaluate_event_gate(
     events=adapter.get_events(as_of),

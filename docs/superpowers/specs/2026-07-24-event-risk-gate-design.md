@@ -79,8 +79,8 @@ rows alongside the global features via a new
 
 ### Degraded mode
 
-Missing/empty `events["earnings"]` on a live run → `degraded=True`, layers
-B + macro still evaluated, and the nightly report prints
+events=None or a payload missing the "earnings" key → degraded=True; a well-formed {"earnings": []} is a quiet calendar, not degraded.
+Layers B + macro still evaluated, and the nightly report prints
 `[EventGate] DEGRADED — earnings calendar unavailable`. Fail-open by design:
 data hiccups must not silently halt trading; the warning is visible in every
 report the user reads.
@@ -99,10 +99,10 @@ Order of operations on every run:
    summary, return None
 6. else: scoring, calibration, selection, execution as today
 
-VIX persistence: each live run appends `(as_of, vix)` to
-`data/vix_history.csv` (deduped by date). Backtests pass HistAdapter's
+VIX persistence: each live run appends `(as_of, vix, median_iv)` to
+`data/market_history.csv` (deduped by date; stores date, vix, and SPY median IV). Backtests pass HistAdapter's
 `^VIX` series instead. `SnapshotAdapter` gains a `vix_history` passthrough
-if present in the snapshot; the run falls back to `data/vix_history.csv`.
+if present in the snapshot; the run falls back to `data/market_history.csv`.
 
 ## Component 3: Strategy-C features
 
@@ -111,7 +111,7 @@ Added to every feature row (feature_engineer) and to `FEATURE_COLS`
 
 | Column | Definition |
 |---|---|
-| `days_to_next_megacap_earnings` | trading-day distance to nearest MEGA_CAPS report; 99 when none within 14 days or data unavailable |
+| `days_to_next_megacap_earnings` | trading-day distance to nearest MEGA_CAPS report; 99 when none within 21 calendar days or data unavailable |
 | `days_to_next_macro_event` | same for macro calendar |
 | `vix_5d_change` | real value (replaces hardcoded 0.0): `(vix - vix_5_sessions_ago) / vix_5_sessions_ago` |
 | `iv_spike_score` | `median_chain_iv / hv20` for the ticker |
