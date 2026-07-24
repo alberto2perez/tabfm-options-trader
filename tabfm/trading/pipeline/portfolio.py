@@ -44,7 +44,7 @@ def portfolio_summary(db_path: Path = _DEFAULT_DB, as_of: date | None = None) ->
 
   lines.append("  ──────────────────────────────────────────────────────")
   wins = sum(1 for t in closed if t["status"] in ("won", "partial"))
-  losses = sum(1 for t in closed if t["status"] == "lost")
+  losses = sum(1 for t in closed if t["status"] in ("lost", "stopped"))
   realized = sum(float(t["actual_pnl"] or 0) for t in closed)
   lines.append(f"  CLOSED: {len(closed)}  ({wins}W / {losses}L)"
                + (f"  ·  win rate {wins / len(closed) * 100:.0f}%" if closed else ""))

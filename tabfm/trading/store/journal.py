@@ -21,6 +21,9 @@ CREATE TABLE IF NOT EXISTS paper_trades (
   max_profit    REAL NOT NULL,
   pop_predicted REAL NOT NULL,
   pop_raw       REAL,
+  pop_market    REAL,
+  mfe           REAL,
+  mae           REAL,
   exp_return    REAL NOT NULL,
   regime        TEXT NOT NULL,
   status        TEXT NOT NULL DEFAULT 'open',
@@ -35,8 +38,9 @@ def init_db(path: Path = _DEFAULT_DB) -> None:
     conn.execute(_SCHEMA)
     # Migration for DBs created before the pop_raw column existed
     cols = {r[1] for r in conn.execute("PRAGMA table_info(paper_trades)")}
-    if "pop_raw" not in cols:
-      conn.execute("ALTER TABLE paper_trades ADD COLUMN pop_raw REAL")
+    for col in ("pop_raw", "pop_market", "mfe", "mae"):
+      if col not in cols:
+        conn.execute(f"ALTER TABLE paper_trades ADD COLUMN {col} REAL")
 
 
 def insert_trade(trade: dict, path: Path = _DEFAULT_DB) -> int:
@@ -45,11 +49,12 @@ def insert_trade(trade: dict, path: Path = _DEFAULT_DB) -> int:
       """INSERT INTO paper_trades
          (date_entered, ticker, direction, strike_short, strike_long, expiry,
           dte, entry_credit, spread_width, contracts, max_loss, max_profit,
-          pop_predicted, pop_raw, exp_return, regime)
+          pop_predicted, pop_raw, pop_market, exp_return, regime)
          VALUES (:date_entered, :ticker, :direction, :strike_short, :strike_long,
                  :expiry, :dte, :entry_credit, :spread_width, :contracts,
-                 :max_loss, :max_profit, :pop_predicted, :pop_raw, :exp_return, :regime)""",
-      {**trade, "pop_raw": trade.get("pop_raw")},
+                 :max_loss, :max_profit, :pop_predicted, :pop_raw, :pop_market,
+                 :exp_return, :regime)""",
+      {**trade, "pop_raw": trade.get("pop_raw"), "pop_market": trade.get("pop_market")},
     )
     return cur.lastrowid
 
@@ -80,3 +85,13 @@ def get_all_closed_trades(path: Path = _DEFAULT_DB) -> list[dict]:
     conn.row_factory = sqlite3.Row
     cur = conn.execute("SELECT * FROM paper_trades WHERE status != 'open'")
     return [dict(r) for r in cur.fetchall()]
+
+
+def update_excursions(
+  trade_id: int, mfe: float, mae: float, path: Path = _DEFAULT_DB
+) -> None:
+  with sqlite3.connect(path) as conn:
+    conn.execute(
+      "UPDATE paper_trades SET mfe=?, mae=? WHERE trade_id=?",
+      (mfe, mae, trade_id),
+    )

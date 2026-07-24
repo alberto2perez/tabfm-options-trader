@@ -13,7 +13,7 @@ def report(db_path: Path = _DEFAULT_DB, verbose: bool = True) -> dict:
   total = len(trades)
   wins = sum(1 for t in trades if t["status"] == "won")
   partials = sum(1 for t in trades if t["status"] == "partial")
-  losses = sum(1 for t in trades if t["status"] == "lost")
+  losses = sum(1 for t in trades if t["status"] in ("lost", "stopped"))
   win_rate = (wins + partials) / total
   avg_pop = sum(t["pop_predicted"] for t in trades) / total
   cumulative_pnl = sum(t["actual_pnl"] or 0 for t in trades)

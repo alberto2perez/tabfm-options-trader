@@ -1,6 +1,7 @@
+import os
 from datetime import date
 from pathlib import Path
-from ..store.journal import get_open_trades, close_trade, _DEFAULT_DB
+from ..store.journal import get_open_trades, close_trade, update_excursions, _DEFAULT_DB
 from ..adapters.base import DataAdapter
 
 _EARLY_CLOSE_THRESHOLD = 0.50
@@ -48,7 +49,17 @@ def _spread_mark(adapter: DataAdapter, trade: dict, as_of: date) -> float | None
 def audit_positions(
   adapter: DataAdapter, as_of: date, db_path: Path = _DEFAULT_DB
 ) -> list[dict]:
-  """Close expired or 50%-profit positions and record actual P&L."""
+  """Close positions per four ordered rules and record actual P&L.
+
+  Evaluation order per position:
+    1. Expiry settlement — uses underlying price at expiry.
+    2. Stop-loss — fires when real mark >= stop_mult x entry credit.
+    3. Profit target — close at 50% of max profit (either valuation).
+    4. DTE management — exit the gamma zone when DTE <= manage_dte (real marks only).
+
+  MFE/MAE excursion tracking is updated from real marks only; the intrinsic
+  fallback must never trigger the stop-loss or DTE rules.
+  """
   open_trades = get_open_trades(db_path)
   closed = []
 
@@ -65,17 +76,7 @@ def audit_positions(
     width = trade["spread_width"]
     contracts = trade["contracts"]
 
-    current_val = _spread_mark(adapter, trade, as_of)
-    if current_val is None:
-      current_val = _estimate_current_value(trade, S)
-    unrealized = (credit - current_val) * contracts * 100
-    max_profit = credit * contracts * 100
-
-    if as_of < expiry and unrealized >= max_profit * _EARLY_CLOSE_THRESHOLD:
-      close_trade(trade["trade_id"], "partial", round(unrealized, 2), str(as_of), db_path)
-      closed.append({**trade, "status": "partial", "actual_pnl": round(unrealized, 2)})
-      continue
-
+    # 1. Expiry settlement
     if as_of >= expiry:
       if _is_winner(trade, S):
         pnl = round(credit * contracts * 100, 2)
@@ -83,6 +84,45 @@ def audit_positions(
       else:
         pnl = round(-(width - credit) * contracts * 100, 2)
         status = "lost"
+      close_trade(trade["trade_id"], status, pnl, str(as_of), db_path)
+      closed.append({**trade, "status": status, "actual_pnl": pnl})
+      continue
+
+    mark = _spread_mark(adapter, trade, as_of)
+    current_val = mark if mark is not None else _estimate_current_value(trade, S)
+    unrealized = (credit - current_val) * contracts * 100
+    max_profit = credit * contracts * 100
+
+    # Track excursions from real marks only (intrinsic has no time value)
+    if mark is not None:
+      prev_mfe = trade["mfe"] if trade.get("mfe") is not None else unrealized
+      prev_mae = trade["mae"] if trade.get("mae") is not None else unrealized
+      update_excursions(
+        trade["trade_id"],
+        round(max(prev_mfe, unrealized), 2),
+        round(min(prev_mae, unrealized), 2),
+        db_path,
+      )
+
+    # 2. Stop-loss: closing cost reached stop_mult x credit (real marks only)
+    stop_mult = float(os.environ.get("TABFM_STOP_LOSS_MULT", "2.0"))
+    if mark is not None and mark >= stop_mult * credit:
+      pnl = round(unrealized, 2)
+      close_trade(trade["trade_id"], "stopped", pnl, str(as_of), db_path)
+      closed.append({**trade, "status": "stopped", "actual_pnl": pnl})
+      continue
+
+    # 3. Profit target (existing behavior, either valuation)
+    if unrealized >= max_profit * _EARLY_CLOSE_THRESHOLD:
+      close_trade(trade["trade_id"], "partial", round(unrealized, 2), str(as_of), db_path)
+      closed.append({**trade, "status": "partial", "actual_pnl": round(unrealized, 2)})
+      continue
+
+    # 4. DTE management: exit the gamma zone (real marks only)
+    manage_dte = int(os.environ.get("TABFM_MANAGE_DTE", "21"))
+    if mark is not None and (expiry - as_of).days <= manage_dte:
+      pnl = round(unrealized, 2)
+      status = "partial" if pnl >= 0 else "stopped"
       close_trade(trade["trade_id"], status, pnl, str(as_of), db_path)
       closed.append({**trade, "status": status, "actual_pnl": pnl})
 
