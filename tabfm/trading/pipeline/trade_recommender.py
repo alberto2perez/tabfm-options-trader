@@ -19,7 +19,6 @@ def _passes_filters(row: dict) -> bool:
   return True
 
 
-
 def _is_open_duplicate(candidate: dict, open_trades: list[dict]) -> bool:
   """True when an identical spread (ticker/direction/strikes/expiry) is already open."""
   for t in open_trades:
@@ -76,7 +75,9 @@ def select_trade(
     return None
 
   for c in survivors:
-    c["total_risk"] = c["contracts"] * c["spread_width_dollars"] * 100
+    c["total_risk"] = round(
+      c["contracts"] * (c["spread_width_dollars"] - c.get("entry_credit", 0.0)) * 100, 2
+    )
     c["score"] = c["pop_predicted"] * c["exp_return"]
 
   # Candidates where TabFM gave a real (non-fallback) prediction

@@ -101,7 +101,7 @@ def test_slice_sizes_one_contract_at_default_equity():
   # slice $300, (5 - 2.25) * 100 = $275/contract → exactly 1 contract
   best = select_trade([dict(_GOOD)], bankroll=_bk())
   assert best["contracts"] == 1
-  assert best["total_risk"] == 500.0  # contracts * width * 100
+  assert best["total_risk"] == 275.0  # credit-adjusted: 1 * (5 - 2.25) * 100
 
 
 def test_larger_equity_sizes_more_contracts():

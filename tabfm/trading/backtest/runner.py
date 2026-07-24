@@ -4,8 +4,7 @@ from pathlib import Path
 from ..adapters.historical import HistAdapter
 from ..pipeline.accuracy_tracker import report
 from ..run_nightly import run
-from ..store.journal import _DEFAULT_DB, init_db
-from ..store.history_store import _DEFAULT_STORE
+from ..store.journal import init_db
 
 
 def trading_days(start: date, end: date) -> list[date]:
@@ -20,10 +19,22 @@ def trading_days(start: date, end: date) -> list[date]:
 def run_backtest(
   lookback_days: int = 252,
   as_of: date | None = None,
-  db_path: Path = _DEFAULT_DB,
-  store_path: Path = _DEFAULT_STORE,
+  db_path: Path | None = None,
+  store_path: Path | None = None,
 ) -> dict:
-  """Walk-forward backtest over lookback_days calendar days ending at as_of."""
+  """Walk-forward backtest over lookback_days calendar days ending at as_of.
+
+  With no explicit paths, journal/store live in a fresh temp directory so a
+  backtest can never contaminate the live data/ journal, equity walk, or
+  calibrator.
+  """
+  if db_path is None or store_path is None:
+    import tempfile
+    scratch = Path(tempfile.mkdtemp(prefix="tabfm_backtest_"))
+    db_path = db_path or scratch / "journal.db"
+    store_path = store_path or scratch / "store.parquet"
+    print(f"[Backtest] isolated data dir: {db_path.parent}")
+
   if as_of is None:
     as_of = date.today()
 

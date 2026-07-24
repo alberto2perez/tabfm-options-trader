@@ -3,6 +3,7 @@ from datetime import date
 from tabfm.trading.pipeline.bankroll import get_bankroll
 from tabfm.trading.pipeline.portfolio import portfolio_summary
 from tabfm.trading.store.journal import init_db, insert_trade, close_trade
+from tabfm.trading.pipeline.trade_recommender import select_trade
 
 
 def _trade():
@@ -37,3 +38,33 @@ def test_summary_shows_recovery_mode(tmp_path):
   out = portfolio_summary(db, as_of=date(2026, 7, 24))
   assert "RECOVERY" in out
   assert get_bankroll(db).recovery_mode is True
+
+
+def test_sizing_shrinks_after_losses(tmp_path):
+  candidate = {
+    "ticker": "SPY", "direction": "put_spread",
+    "spread_width_dollars": 5.0, "entry_credit": 2.25,
+    "strike_short": 480.0, "strike_long": 475.0, "expiry": "2026-08-21",
+    "bid_ask_pct": 0.10, "open_interest": 200, "dte": 14, "short_delta": 0.25,
+    "earnings_flag": "no_earnings", "pop_predicted": 0.72, "exp_return": 0.20,
+  }
+
+  db = tmp_path / "j.db"
+  init_db(db)
+  # Fresh journal: $2k equity -> $300 slice -> 1 contract ($275 loss each)
+  best = select_trade([dict(candidate)], bankroll=get_bankroll(db))
+  assert best["contracts"] == 1
+
+  # Win big: equity 6000 -> slice 900 -> 3 contracts
+  tid = insert_trade(_trade(), db)
+  close_trade(tid, "won", 4000.0, "2026-07-20", db)
+  best = select_trade([dict(candidate)], bankroll=get_bankroll(db))
+  assert best["contracts"] == 3
+
+  # Crash below the brake: equity 2000, peak 6000 -> 66% drawdown -> recovery
+  tid = insert_trade(_trade(), db)
+  close_trade(tid, "lost", -4000.0, "2026-07-21", db)
+  bk = get_bankroll(db)
+  assert bk.recovery_mode is True
+  # slice 2000 * 0.075 = 150 < 275 -> no trade fits
+  assert select_trade([dict(candidate)], bankroll=bk) is None
