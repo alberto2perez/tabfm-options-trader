@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS paper_trades (
   expiry        TEXT NOT NULL,
   dte           INTEGER NOT NULL,
   entry_credit  REAL NOT NULL,
+  entry_credit_mid REAL,
   spread_width  REAL NOT NULL,
   contracts     INTEGER NOT NULL,
   max_loss      REAL NOT NULL,
@@ -38,7 +39,7 @@ def init_db(path: Path = _DEFAULT_DB) -> None:
     conn.execute(_SCHEMA)
     # Migration for DBs created before the pop_raw column existed
     cols = {r[1] for r in conn.execute("PRAGMA table_info(paper_trades)")}
-    for col in ("pop_raw", "pop_market", "mfe", "mae"):
+    for col in ("pop_raw", "pop_market", "mfe", "mae", "entry_credit_mid"):
       if col not in cols:
         conn.execute(f"ALTER TABLE paper_trades ADD COLUMN {col} REAL")
 
@@ -48,13 +49,18 @@ def insert_trade(trade: dict, path: Path = _DEFAULT_DB) -> int:
     cur = conn.execute(
       """INSERT INTO paper_trades
          (date_entered, ticker, direction, strike_short, strike_long, expiry,
-          dte, entry_credit, spread_width, contracts, max_loss, max_profit,
+          dte, entry_credit, entry_credit_mid, spread_width, contracts, max_loss, max_profit,
           pop_predicted, pop_raw, pop_market, exp_return, regime)
          VALUES (:date_entered, :ticker, :direction, :strike_short, :strike_long,
-                 :expiry, :dte, :entry_credit, :spread_width, :contracts,
+                 :expiry, :dte, :entry_credit, :entry_credit_mid, :spread_width, :contracts,
                  :max_loss, :max_profit, :pop_predicted, :pop_raw, :pop_market,
                  :exp_return, :regime)""",
-      {**trade, "pop_raw": trade.get("pop_raw"), "pop_market": trade.get("pop_market")},
+      {
+        **trade,
+        "pop_raw": trade.get("pop_raw"),
+        "pop_market": trade.get("pop_market"),
+        "entry_credit_mid": trade.get("entry_credit_mid"),
+      },
     )
     return cur.lastrowid
 
