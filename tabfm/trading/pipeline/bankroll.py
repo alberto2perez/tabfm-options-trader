@@ -27,7 +27,9 @@ class Bankroll:
 def _config() -> tuple[float, float, float, float]:
   return (
     float(os.environ.get("TABFM_STARTING_CAPITAL", "2000")),
-    float(os.environ.get("TABFM_RISK_PER_TRADE", "0.15")),
+    # 18% slice: a realistic $5-wide S&P credit spread risks ~$335/contract,
+    # which does not fit a 15% ($300) slice at $2k. 18% ($360) affords one.
+    float(os.environ.get("TABFM_RISK_PER_TRADE", "0.18")),
     float(os.environ.get("TABFM_MAX_EXPOSURE", "0.45")),
     float(os.environ.get("TABFM_DRAWDOWN_BRAKE", "0.25")),
   )

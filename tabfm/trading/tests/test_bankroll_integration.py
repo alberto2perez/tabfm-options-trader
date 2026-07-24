@@ -25,7 +25,7 @@ def test_summary_contains_bankroll_block(tmp_path):
   assert "BANKROLL" in out
   assert "1,700" in out          # equity after the loss
   assert "NORMAL" in out         # 15% drawdown < 25% brake
-  assert "Slice $255.00" in out  # 1700 * 0.15
+  assert "Slice $306.00" in out  # 1700 * 0.15
 
 
 def test_summary_shows_recovery_mode(tmp_path):

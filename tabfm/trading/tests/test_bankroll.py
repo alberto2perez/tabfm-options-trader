@@ -33,7 +33,7 @@ def test_empty_journal_defaults(tmp_path):
   assert bk.peak_equity == 2000.0
   assert bk.drawdown_pct == 0.0
   assert bk.recovery_mode is False
-  assert bk.slice_limit == pytest.approx(300.0)
+  assert bk.slice_limit == pytest.approx(360.0)
   assert bk.exposure_limit == pytest.approx(900.0)
 
 
@@ -43,7 +43,7 @@ def test_wins_raise_equity_and_peak(tmp_path):
   bk = get_bankroll(db)
   assert bk.equity == 2400.0
   assert bk.peak_equity == 2400.0
-  assert bk.slice_limit == pytest.approx(360.0)
+  assert bk.slice_limit == pytest.approx(432.0)
 
 
 def test_losses_shrink_slice(tmp_path):
@@ -54,7 +54,7 @@ def test_losses_shrink_slice(tmp_path):
   assert bk.peak_equity == 2000.0
   assert bk.drawdown_pct == pytest.approx(0.15)
   assert bk.recovery_mode is False
-  assert bk.slice_limit == pytest.approx(255.0)
+  assert bk.slice_limit == pytest.approx(306.0)
 
 
 def test_drawdown_over_brake_triggers_recovery(tmp_path):
@@ -66,8 +66,8 @@ def test_drawdown_over_brake_triggers_recovery(tmp_path):
   assert bk.peak_equity == 2400.0
   assert bk.drawdown_pct == pytest.approx(700 / 2400, abs=1e-4)
   assert bk.recovery_mode is True
-  # Recovery halves the fraction: 1700 * 0.075
-  assert bk.slice_limit == pytest.approx(127.5)
+  # Recovery halves the fraction: 1700 * 0.09
+  assert bk.slice_limit == pytest.approx(153.0)
 
 
 def test_recovery_exits_on_new_high(tmp_path):
@@ -78,7 +78,7 @@ def test_recovery_exits_on_new_high(tmp_path):
   assert bk.equity == 2500.0
   assert bk.peak_equity == 2500.0
   assert bk.recovery_mode is False
-  assert bk.slice_limit == pytest.approx(375.0)
+  assert bk.slice_limit == pytest.approx(450.0)
 
 
 def test_equity_floor_zeroes_limits(tmp_path):
@@ -105,7 +105,7 @@ def test_env_overrides(tmp_path, monkeypatch):
 def test_default_bankroll_matches_empty_journal():
   bk = default_bankroll()
   assert bk.equity == 2000.0
-  assert bk.slice_limit == pytest.approx(300.0)
+  assert bk.slice_limit == pytest.approx(360.0)
   assert bk.recovery_mode is False
 
 
@@ -129,4 +129,4 @@ def test_brake_env_override(tmp_path, monkeypatch):
   _seed(db, [200.0, 200.0, -300.0, -300.0, -100.0])  # 29.2% drawdown
   bk = get_bankroll(db)
   assert bk.recovery_mode is False  # 29.2% < overridden 50% brake
-  assert bk.slice_limit == pytest.approx(255.0)  # full 15% of 1700
+  assert bk.slice_limit == pytest.approx(306.0)  # full 18% of 1700
