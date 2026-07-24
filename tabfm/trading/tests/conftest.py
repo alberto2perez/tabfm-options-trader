@@ -7,5 +7,6 @@ def _clean_bankroll_env(monkeypatch):
   for var in (
     "TABFM_STARTING_CAPITAL", "TABFM_RISK_PER_TRADE",
     "TABFM_MAX_EXPOSURE", "TABFM_DRAWDOWN_BRAKE",
+    "TABFM_MIN_CREDIT_RATIO", "TABFM_MIN_IV_RANK",
   ):
     monkeypatch.delenv(var, raising=False)

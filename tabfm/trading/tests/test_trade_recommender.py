@@ -129,7 +129,8 @@ def test_recovery_mode_halves_slice():
 
 def test_max_contracts_cap_binds():
   # Huge equity, tiny per-contract loss: slice 15000, loss $75 → 200 raw, capped 10
-  cheap = {**_GOOD, "spread_width_dollars": 1.0, "entry_credit": 0.25}
+  # Raised entry_credit to 0.30 to clear 0.30 credit ratio floor
+  cheap = {**_GOOD, "spread_width_dollars": 1.0, "entry_credit": 0.30}
   best = select_trade([cheap], bankroll=_bk(equity=100_000.0))
   assert best["contracts"] == 10
 
@@ -145,3 +146,40 @@ def test_legacy_none_bankroll_uses_defaults(monkeypatch):
   best = select_trade([dict(_GOOD)])  # no bankroll arg
   assert best is not None
   assert best["contracts"] == 1  # default $2k equity → $300 slice → 1 contract
+
+
+# ---- entry-quality gates ----
+
+def test_filter_rejects_thin_credit():
+  thin = {**_GOOD, "entry_credit": 1.40}  # 1.40 / 5.0 = 0.28 < 0.30
+  assert not _passes_filters(thin)
+
+
+def test_filter_accepts_adequate_credit():
+  ok = {**_GOOD, "entry_credit": 1.55}  # 0.31
+  assert _passes_filters(ok)
+
+
+def test_filter_skips_credit_check_when_absent():
+  no_credit = {k: v for k, v in _GOOD.items() if k != "entry_credit"}
+  assert _passes_filters(no_credit)
+
+
+def test_filter_rejects_cheap_iv():
+  assert not _passes_filters({**_GOOD, "iv_rank": 29.0})
+
+
+def test_filter_accepts_rich_iv():
+  assert _passes_filters({**_GOOD, "iv_rank": 31.0})
+
+
+def test_filter_iv_defaults_neutral_when_absent():
+  assert _passes_filters(_GOOD)  # fixture has no iv_rank key -> neutral 50
+
+
+def test_entry_gate_env_overrides(monkeypatch):
+  monkeypatch.setenv("TABFM_MIN_CREDIT_RATIO", "0.50")
+  assert not _passes_filters(dict(_GOOD))  # 0.45 < 0.50 now
+  monkeypatch.setenv("TABFM_MIN_CREDIT_RATIO", "0.30")
+  monkeypatch.setenv("TABFM_MIN_IV_RANK", "60")
+  assert not _passes_filters({**_GOOD, "iv_rank": 50.0})

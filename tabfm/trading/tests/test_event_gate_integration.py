@@ -92,12 +92,13 @@ def test_ungated_night_reaches_selection(tmp_path, monkeypatch, capsys):
 
     def get_options_chain(self, ticker, as_of):
       # Tighter bid/ask so bid_ask_pct (~0.14) passes the 0.15 filter.
+      # Raised credits to clear 0.30 credit ratio floor (entry_credit=1.50+).
       return pd.DataFrame([
         {"strike": 680.0, "expiry": pd.Timestamp("2026-08-21"), "option_type": "put",
-         "bid": 2.20, "ask": 2.24, "mid": 2.22, "open_interest": 500,
+         "bid": 3.50, "ask": 3.54, "mid": 3.52, "open_interest": 500,
          "delta": 0.25, "iv": 0.20, "dte": 28},
         {"strike": 675.0, "expiry": pd.Timestamp("2026-08-21"), "option_type": "put",
-         "bid": 1.60, "ask": 1.64, "mid": 1.62, "open_interest": 500,
+         "bid": 1.95, "ask": 1.99, "mid": 1.97, "open_interest": 500,
          "delta": 0.20, "iv": 0.20, "dte": 28},
       ])
 

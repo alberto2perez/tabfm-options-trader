@@ -1,4 +1,5 @@
 import math
+import os
 
 from .bankroll import Bankroll, default_bankroll
 
@@ -15,6 +16,15 @@ def _passes_filters(row: dict) -> bool:
   if not (0.15 <= row["short_delta"] <= 0.40):
     return False
   if row["earnings_flag"] == "earnings_week":
+    return False
+  # Entry quality: enough credit for the width, and only sell rich premium.
+  credit = row.get("entry_credit")
+  if credit is not None:
+    min_ratio = float(os.environ.get("TABFM_MIN_CREDIT_RATIO", "0.30"))
+    if credit / row["spread_width_dollars"] < min_ratio:
+      return False
+  min_iv_rank = float(os.environ.get("TABFM_MIN_IV_RANK", "30.0"))
+  if float(row.get("iv_rank", 50.0)) < min_iv_rank:
     return False
   return True
 
