@@ -147,3 +147,14 @@ class HistAdapter(DataAdapter):
     if df.empty:
       return 20.0
     return float(df["Close"].iloc[-1])
+
+  def get_events(self, as_of: date) -> dict | None:
+    # No historical earnings calendar in v1: layer A inactive, not degraded.
+    return {"earnings": []}
+
+  def get_vix_history(self, as_of: date, n: int = 6) -> list:
+    self._assert_no_lookahead(as_of)
+    df = self._history("^VIX", lookback=60)
+    df = df[df.index <= pd.Timestamp(as_of)]
+    tail = df["Close"].tail(n)
+    return [[str(idx.date()), float(v)] for idx, v in tail.items()]

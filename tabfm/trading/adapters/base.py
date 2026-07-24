@@ -23,3 +23,11 @@ class DataAdapter(ABC):
   def get_close(self, ticker: str, as_of: date) -> float:
     """Return closing price for ticker on as_of. Default delegates to get_underlying."""
     return self.get_underlying(ticker, as_of)["close"]
+
+  def get_events(self, as_of: date) -> dict | None:
+    """Upcoming market events ({"earnings": [...]}) or None when unavailable."""
+    return None
+
+  def get_vix_history(self, as_of: date, n: int = 6) -> list:
+    """Recent [date_str, vix] pairs on/before as_of, oldest first."""
+    return []

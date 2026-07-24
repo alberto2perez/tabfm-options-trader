@@ -61,3 +61,15 @@ class SnapshotAdapter(DataAdapter):
     if not valid:
       raise ValueError(f"No close for {ticker} on or before {as_of}")
     return float(valid[-1])
+
+  def get_events(self, as_of: date) -> dict | None:
+    return self._s.get("events")
+
+  def get_vix_history(self, as_of: date, n: int = 6) -> list:
+    hist = self._s.get("vix_history") or []
+    valid = [
+      [str(h[0]), float(h[1])]
+      for h in hist
+      if date.fromisoformat(str(h[0])) <= as_of
+    ]
+    return valid[-n:]
