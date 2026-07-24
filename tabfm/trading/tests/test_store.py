@@ -106,16 +106,11 @@ def test_get_regime_rows_fallback(tmp_parquet):
 
 
 def test_compute_iv_rank_no_history(tmp_parquet):
-  rank = compute_iv_rank(20.0, tmp_parquet)
-  assert rank == 50.0  # neutral default when no history
+  rank = compute_iv_rank(20.0, [15.0] * 10)   # < 30 points
+  assert rank == 50.0  # neutral default when insufficient history
 
 
 def test_compute_iv_rank_with_history(tmp_parquet):
-  rows = [{"date": "2025-01-0%d" % i, "vix_level": float(10 + i),
-            "vix_bucket": "normal", "trend_direction": "uptrend",
-            "iv_regime": "fair", "iv_rank": 50.0, "profitable": 1, "return_pct": 0.2}
-          for i in range(1, 10)]
-  append_rows(rows, tmp_parquet)
-  # vix_levels are 11,12,...,19. current_vix=15 → ~44th percentile
-  rank = compute_iv_rank(15.0, tmp_parquet)
+  series = [float(10 + i) for i in range(40)]  # 10..49, ≥ 30 points
+  rank = compute_iv_rank(15.0, series)          # 15 → 5 values below → 12.5
   assert 0.0 <= rank <= 100.0

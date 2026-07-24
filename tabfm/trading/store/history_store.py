@@ -114,9 +114,13 @@ def get_regime_rows(
   return df.tail(n)
 
 
-def compute_iv_rank(current_vix: float, path: Path = _DEFAULT_STORE) -> float:
-  df = load_store(path)
-  if df.empty or "vix_level" not in df.columns or len(df) < 5:
+def compute_iv_rank(current_vix: float, vix_series: list) -> float:
+  """IV rank = percentile of current VIX within a trailing VIX series.
+
+  Neutral 50 when the series has < 30 points (cold-start friendly — fresh
+  systems still trade)."""
+  clean = [float(v) for v in vix_series if v is not None]
+  if len(clean) < 30:
     return 50.0
-  hist = df["vix_level"].dropna()
-  return float((hist < current_vix).mean() * 100)
+  below = sum(1 for v in clean if v < current_vix)
+  return round(below / len(clean) * 100, 2)

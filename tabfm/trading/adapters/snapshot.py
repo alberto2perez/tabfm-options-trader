@@ -73,3 +73,7 @@ class SnapshotAdapter(DataAdapter):
       if date.fromisoformat(str(h[0])) <= as_of
     ]
     return valid[-n:]
+
+  def get_vix_series(self, as_of: date, days: int = 252) -> list:
+    series = self._s.get("vix_series") or []
+    return [float(v) for v in series][-days:]

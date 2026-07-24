@@ -173,3 +173,9 @@ class HistAdapter(DataAdapter):
     df = df[df.index <= pd.Timestamp(as_of)]
     tail = df["Close"].tail(n)
     return [[str(idx.date()), float(v)] for idx, v in tail.items()]
+
+  def get_vix_series(self, as_of: date, days: int = 252) -> list:
+    self._assert_no_lookahead(as_of)
+    df = self._history("^VIX", lookback=400)
+    df = df[df.index <= pd.Timestamp(as_of)]
+    return [float(v) for v in df["Close"].tail(days)]

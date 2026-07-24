@@ -116,8 +116,10 @@ def run(
   all_feature_rows = []
   scoring_groups: dict[tuple, list[dict]] = {}
 
+  vix_series = adapter.get_vix_series(as_of)
+  iv_rank = compute_iv_rank(vix_now, vix_series)
+
   for chain_data in chain_data_list:
-    iv_rank = compute_iv_rank(vix_now, store_path)
     hv20 = float(chain_data["underlying"]["hv20"]) or 0.0
     chain_df = chain_data["chain"]
     iv_spike = (

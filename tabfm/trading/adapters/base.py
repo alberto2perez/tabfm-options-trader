@@ -33,3 +33,7 @@ class DataAdapter(ABC):
   def get_vix_history(self, as_of: date, n: int = 6) -> list:
     """Recent [date_str, vix] pairs on/before as_of, oldest first."""
     return []
+
+  def get_vix_series(self, as_of: date, days: int = 252) -> list:
+    """Trailing daily VIX closes (floats, oldest→newest) on/before as_of."""
+    return []
