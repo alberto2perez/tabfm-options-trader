@@ -1,0 +1,16 @@
+[
+  {"date": "2026-07-29", "event": "FOMC rate decision"},
+  {"date": "2026-08-07", "event": "Jobs report (NFP)"},
+  {"date": "2026-08-12", "event": "CPI release"},
+  {"date": "2026-09-04", "event": "Jobs report (NFP)"},
+  {"date": "2026-09-11", "event": "CPI release"},
+  {"date": "2026-09-16", "event": "FOMC rate decision"},
+  {"date": "2026-10-02", "event": "Jobs report (NFP)"},
+  {"date": "2026-10-13", "event": "CPI release"},
+  {"date": "2026-10-28", "event": "FOMC rate decision"},
+  {"date": "2026-11-06", "event": "Jobs report (NFP)"},
+  {"date": "2026-11-12", "event": "CPI release"},
+  {"date": "2026-12-04", "event": "Jobs report (NFP)"},
+  {"date": "2026-12-09", "event": "FOMC rate decision"},
+  {"date": "2026-12-10", "event": "CPI release"}
+]
