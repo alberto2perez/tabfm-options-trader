@@ -19,7 +19,7 @@ from .pipeline.trade_recommender import select_trade, _passes_filters
 from .pipeline.paper_executor import execute_paper_trade, format_recommendation
 from .pipeline.position_auditor import audit_positions
 from .store.history_store import append_rows, label_expired_rows, compute_iv_rank, _DEFAULT_STORE
-from .store.journal import init_db, _DEFAULT_DB
+from .store.journal import init_db, get_open_trades, _DEFAULT_DB
 
 
 def run(
@@ -100,7 +100,7 @@ def run(
   if n_labeled:
     print(f"[HistoryStore] Labeled {n_labeled} expired rows")
 
-  best = select_trade(all_candidates)
+  best = select_trade(all_candidates, open_trades=get_open_trades(db_path))
   if best is None:
     print("[TradeRecommender] No qualifying trade found today.")
     return None

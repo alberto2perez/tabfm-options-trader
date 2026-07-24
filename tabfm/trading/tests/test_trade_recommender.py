@@ -62,3 +62,51 @@ def test_select_trade_returns_none_when_all_fail_filters():
 def test_select_trade_skips_negative_ev():
   candidates = [{**_GOOD, "pop_predicted": 0.72, "exp_return": -0.10}]
   assert select_trade(candidates) is None
+
+
+_FULL = {
+  **_GOOD,
+  "strike_short": 480.0, "strike_long": 475.0, "expiry": "2026-08-21",
+  "entry_credit": 2.25,
+}
+
+_OPEN_SAME = {
+  "ticker": "SPY", "direction": "put_spread",
+  "strike_short": 480.0, "strike_long": 475.0, "expiry": "2026-08-21",
+  "max_loss": 550.0,
+}
+
+
+def test_dedup_skips_identical_open_position():
+  assert select_trade([dict(_FULL)], open_trades=[_OPEN_SAME]) is None
+
+
+def test_dedup_allows_different_strikes():
+  different = {**_FULL, "strike_short": 470.0, "strike_long": 465.0}
+  best = select_trade([different], open_trades=[_OPEN_SAME])
+  assert best is not None
+  assert best["strike_short"] == 470.0
+
+
+def test_portfolio_cap_blocks_when_budget_exhausted():
+  # Two open positions totaling $1,450 of max loss; candidate needs $275/contract
+  opens = [{**_OPEN_SAME, "max_loss": 900.0},
+           {**_OPEN_SAME, "strike_short": 470.0, "max_loss": 550.0}]
+  assert select_trade([{**_FULL, "strike_short": 460.0, "strike_long": 455.0}],
+                      open_trades=opens, max_portfolio_risk=1500.0) is None
+
+
+def test_portfolio_cap_sizes_contracts_down_to_fit():
+  # $1,100 open risk, $400 budget: (5 - 2.25) * 100 = $275/contract -> 1 contract
+  opens = [{**_OPEN_SAME, "max_loss": 550.0},
+           {**_OPEN_SAME, "strike_short": 470.0, "max_loss": 550.0}]
+  best = select_trade([{**_FULL, "strike_short": 460.0, "strike_long": 455.0}],
+                      open_trades=opens, max_portfolio_risk=1500.0)
+  assert best is not None
+  assert best["contracts"] == 1
+
+
+def test_portfolio_cap_full_size_when_no_open_positions():
+  best = select_trade([dict(_FULL)], open_trades=[], max_portfolio_risk=1500.0)
+  assert best is not None
+  assert best["contracts"] == 2  # per-trade sizing unchanged
