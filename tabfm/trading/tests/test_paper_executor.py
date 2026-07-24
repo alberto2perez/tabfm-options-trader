@@ -28,7 +28,7 @@ def test_execute_paper_trade_inserts_record(tmp_path):
 def test_format_recommendation_contains_key_fields():
   output = format_recommendation(_TRADE, 42, AS_OF)
   assert "SPY" in output
-  assert "PUT SPREAD" in output
+  assert "PUT CREDIT SPREAD" in output
   assert "480" in output
   assert "72.0%" in output
   assert "trade_id: 42" in output
