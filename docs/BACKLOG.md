@@ -44,3 +44,9 @@ from the 2026-07-24 trader-analyst review. Ordered roughly by value.
     (currently weekday approximation).
 11. Deferred review minors: duplicate gated-day entries in RECOMMENDATIONS.md
     on same-night re-runs; `market_history.csv` write not atomic.
+
+## Hardening (from 2026-07-24 backtest-realism review)
+12. turning_points.py imports _DEFAULT_STORE/_DEFAULT_DB as private default args — expose public defaults.
+13. Add pnl_after assertion + trend-dedup regression test to test_turning_points.py.
+14. run_audit.py: add --db PATH / --store PATH CLI flags.
+15. Synthetic chain has flat vol (no skew) — puts slightly under-credited vs real markets; add put/call vol skew for higher-fidelity backtests.
