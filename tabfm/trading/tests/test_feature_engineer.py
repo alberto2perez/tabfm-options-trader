@@ -85,6 +85,7 @@ def test_engineer_features_required_columns():
     "rsi_14", "macd_line", "macd_signal", "macd_histogram",
     "vix_bucket", "trend_direction", "iv_regime", "earnings_flag",
     "expiry_type", "direction",
+    "days_to_next_megacap_earnings", "days_to_next_macro_event", "iv_spike_score",
   ]
   for col in required:
     assert col in rows[0], f"Missing column: {col}"
@@ -99,3 +100,25 @@ def test_engineer_features_direction_values():
 def test_engineer_features_filters_zero_credit():
   rows = engineer_features(_make_chain_data(AS_OF), AS_OF, iv_rank=55.0)
   assert all(r["entry_credit"] > 0 for r in rows)
+
+
+def test_extra_features_merged_into_rows():
+  rows = engineer_features(_make_chain_data(AS_OF), AS_OF, 50.0, extra_features={
+    "days_to_next_megacap_earnings": 2.0,
+    "days_to_next_macro_event": 5.0,
+    "vix_5d_change": 0.04,
+    "iv_spike_score": 1.33,
+  })
+  assert rows, "fixture must produce at least one candidate"
+  assert rows[0]["days_to_next_megacap_earnings"] == 2.0
+  assert rows[0]["days_to_next_macro_event"] == 5.0
+  assert rows[0]["vix_5d_change"] == 0.04
+  assert rows[0]["iv_spike_score"] == 1.33
+
+
+def test_event_feature_defaults_without_extra():
+  rows = engineer_features(_make_chain_data(AS_OF), AS_OF, 50.0)
+  assert rows[0]["days_to_next_megacap_earnings"] == 99.0
+  assert rows[0]["days_to_next_macro_event"] == 99.0
+  assert rows[0]["iv_spike_score"] == 0.0
+  assert rows[0]["vix_5d_change"] == 0.0

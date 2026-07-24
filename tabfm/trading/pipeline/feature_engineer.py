@@ -29,7 +29,7 @@ def _iv_regime(iv_rank: float) -> str:
 
 
 def engineer_features(
-  chain_data: dict, as_of: date, iv_rank: float
+  chain_data: dict, as_of: date, iv_rank: float, extra_features: dict | None = None
 ) -> list[dict]:
   """Generate one feature row per candidate vertical spread.
 
@@ -37,9 +37,17 @@ def engineer_features(
     chain_data: dict from ChainFetcher with ticker/sector/underlying/chain/vix
     as_of: signal date
     iv_rank: IV percentile for this ticker (0-100)
+    extra_features: optional dict of event-context features to merge into rows
 
   Returns: list of feature dicts, one per viable spread candidate
   """
+  extra = {
+    "days_to_next_megacap_earnings": 99.0,
+    "days_to_next_macro_event": 99.0,
+    "vix_5d_change": 0.0,
+    "iv_spike_score": 0.0,
+    **(extra_features or {}),
+  }
   ticker = chain_data["ticker"]
   sector = chain_data["sector"]
   u = chain_data["underlying"]
@@ -113,7 +121,10 @@ def engineer_features(
         "volume_zscore": round(u["volume_zscore"], 4),
         "price_vs_sma20": round((S - u["sma20"]) / u["sma20"] * 100, 4),
         "vix_level": round(vix, 2),
-        "vix_5d_change": 0.0,
+        "vix_5d_change": extra["vix_5d_change"],
+        "days_to_next_megacap_earnings": extra["days_to_next_megacap_earnings"],
+        "days_to_next_macro_event": extra["days_to_next_macro_event"],
+        "iv_spike_score": extra["iv_spike_score"],
         "rsi_14": round(u["rsi_14"], 2),
         "macd_line": round(u["macd_line"], 4),
         "macd_signal": round(u["macd_signal"], 4),
