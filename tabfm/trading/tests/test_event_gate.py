@@ -35,6 +35,7 @@ def test_megacap_earnings_next_session_gates_over_weekend():
 
 
 def test_earnings_three_sessions_out_does_not_gate():
+  # 2026-07-29 is 3 business days from Friday 2026-07-24 — outside the {today, next-session} danger window.
   r = _gate(events={"earnings": [{"symbol": "AAPL", "date": "2026-07-29", "when": "amc"}]})
   assert r.gated is False
 
@@ -133,3 +134,8 @@ def test_load_macro_calendar(tmp_path):
 
 def test_load_macro_calendar_missing_file(tmp_path):
   assert load_macro_calendar(tmp_path / "nope.json") == []
+
+
+def test_zero_hv20_skips_iv_check_without_error():
+  chain = {"median_iv": 0.30, "hv20": 0.0, "prev_median_iv": 0.20}
+  assert _gate(chain=chain).gated is False

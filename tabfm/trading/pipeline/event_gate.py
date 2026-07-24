@@ -45,6 +45,7 @@ def _next_session(d: date) -> date:
 def _busdays_until(as_of: date, target: date) -> float:
   if target < as_of:
     return _FEATURE_SENTINEL
+  # Horizon measured in CALENDAR days; the returned distance is in business days.
   if (target - as_of).days > _EVENT_HORIZON_DAYS:
     return _FEATURE_SENTINEL
   return float(np.busday_count(as_of, target))
@@ -66,6 +67,7 @@ def evaluate_event_gate(
     (SPY); may be empty when no chain was fetched.
   """
   reasons: list[str] = []
+  # None (fetch failed) and structurally malformed payloads (missing "earnings" key) both degrade loudly; a well-formed {"earnings": []} is a legitimate quiet calendar and does NOT degrade.
   degraded = events is None or "earnings" not in (events or {})
   danger = {as_of, _next_session(as_of)}
 
@@ -112,7 +114,7 @@ def evaluate_event_gate(
   median_iv = (chain_stats or {}).get("median_iv")
   hv20 = (chain_stats or {}).get("hv20")
   prev_iv = (chain_stats or {}).get("prev_median_iv")
-  if median_iv and hv20 and prev_iv:
+  if median_iv is not None and prev_iv and hv20 is not None and hv20 > 0:
     iv_hv = float(os.environ.get("TABFM_GATE_IV_HV", "1.6"))
     iv_jump = float(os.environ.get("TABFM_GATE_IV_JUMP", "1.2"))
     if median_iv / hv20 > iv_hv and median_iv > prev_iv * iv_jump:
