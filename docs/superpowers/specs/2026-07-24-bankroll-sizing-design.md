@@ -140,3 +140,13 @@ User decision: **keep trading through recovery with narrower spreads.**
 - Marking open positions to market for equity purposes
 - Broker-synced buying power
 - Per-regime or per-ticker slice differentiation
+
+## Amendment (2026-07-24): default slice raised to 18%
+
+The backtest-realism work (realistic $5-wide spreads risking ~$335/contract)
+showed the 15% ($300) slice at $2k starting capital could not afford a
+standard S&P credit spread — sizing rejected nearly everything. Default
+`TABFM_RISK_PER_TRADE` raised 0.15 → 0.18 ($360 slice at $2k). Exposure cap
+unchanged at 45% ($900 → ~2 concurrent $5-wides). Recovery still halves the
+fraction (9%). Trade-off accepted: 18%/trade is more aggressive than the
+originally-chosen 15%.
