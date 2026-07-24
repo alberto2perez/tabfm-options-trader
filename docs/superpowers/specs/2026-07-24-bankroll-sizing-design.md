@@ -110,6 +110,30 @@ in every run output (trade, no-trade, and gated nights).
   portfolio summary contains the bankroll block.
 - Full suite stays green.
 
+## Amendment (2026-07-24): recovery-mode continuation via narrower spreads
+
+Whole-branch review finding: with the halved slice (7.5%), no $5-wide spread
+fits (~$275/contract vs ~$112 slice at $1.5k equity) — recovery mode could
+deadlock with an empty book (no trades → no wins → no new ATH → no exit).
+User decision: **keep trading through recovery with narrower spreads.**
+
+- `engineer_features` generates candidates at MULTIPLE long-leg offsets
+  (adjacent strike AND 2 strikes away), producing several spread widths per
+  short strike from the same chain. Sizing already skips whatever doesn't
+  fit, so no sizing changes are needed: in normal mode wider spreads compete
+  on EV; in recovery only the narrow ones survive the budget.
+- Live snapshot fetch rule (docs/NIGHTLY_CLOUD_RUN.md): before fetching,
+  check `get_bankroll().recovery_mode` (or slice < $200) — if so, fetch
+  $1-spaced strikes across the short-delta band instead of $5-spaced, so
+  $1–2-wide spreads exist in the chain ($1-wide ≈ $65–70/contract risk fits
+  even a ~$112 slice).
+- Honest limits: $1-wide spreads have proportionally wider bid/ask
+  (combined spread ÷ credit often near the 15% gauntlet cap) — recovery
+  nights may still legitimately no-trade on liquidity quality; the quality
+  filter is NOT relaxed. Backtests use a synthetic chain with 1%-of-spot
+  strike spacing (min width ≈ $7 for SPY), so backtest recovery mode
+  remains an effective halt — documented, not fixed, in v1.
+
 ## Out of scope (v1)
 
 - Kelly/half-Kelly sizing from calibrated POP (v2, needs calibrator maturity)

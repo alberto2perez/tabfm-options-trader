@@ -31,6 +31,14 @@ The agent starts with a fresh clone of this repo and must push state back.
      roughly $5 spacing (large underlyings) or $3 (IWM-sized). Then
      `get_option_quotes` for those instrument ids (batches ≤40). Skip rows
      with zero bid or null greeks.
+   - RECOVERY-MODE SPACING: before fetching, run
+     `python3 -c "import sys; sys.path.insert(0,'.'); from tabfm.trading.pipeline.bankroll import get_bankroll; bk=get_bankroll(); print(bk.recovery_mode, bk.slice_limit)"`.
+     If recovery_mode is True (or slice_limit < 200), fetch $1-spaced strikes
+     across the short-delta band (0.92–1.00 × spot for puts, 1.00–1.08 for
+     calls) instead of $5 spacing — the pipeline builds spreads from adjacent
+     strikes, so $1-spaced chains yield $1–2-wide spreads whose per-contract
+     risk fits the halved slice. Do NOT relax any quality filter: recovery
+     nights may legitimately end with no qualifying trade.
    - `get_earnings_calendar` (read-only) for the next 7 days; keep entries
      whose symbol is in MEGA_CAPS (AAPL MSFT NVDA GOOGL AMZN META TSLA AVGO)
      and write them into the snapshot as

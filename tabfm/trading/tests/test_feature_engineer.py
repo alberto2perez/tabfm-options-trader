@@ -122,3 +122,12 @@ def test_event_feature_defaults_without_extra():
   assert rows[0]["days_to_next_macro_event"] == 99.0
   assert rows[0]["iv_spike_score"] == 0.0
   assert rows[0]["vix_5d_change"] == 0.0
+
+
+def test_multiple_spread_widths_per_short():
+  # Recovery-mode support: each short leg pairs with the adjacent long AND
+  # the 2-strikes-away long, giving sizing narrow and wide candidates.
+  rows = engineer_features(_make_chain_data(AS_OF), AS_OF, iv_rank=55.0)
+  put_95 = [r for r in rows if r["direction"] == "put_spread" and r["strike_short"] == 95.0]
+  widths = sorted(r["spread_width_dollars"] for r in put_95)
+  assert widths == [5.0, 10.0]
