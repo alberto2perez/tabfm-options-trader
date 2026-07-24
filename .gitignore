@@ -30,10 +30,7 @@ docs/api
 .venv/
 
 # Trading data files
-tabfm/trading/paper_journal.db
-tabfm/trading/history_store.parquet
 
 
-# Trading pipeline local data
-tabfm/trading/paper_journal.db
-tabfm/trading/history_store*.parquet
+# Archived debug data only — data/ directory IS committed (cloud-run state)
+tabfm/trading/history_store.debug-archive.parquet

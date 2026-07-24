@@ -1,7 +1,8 @@
 import sqlite3
 from pathlib import Path
 
-_DEFAULT_DB = Path(__file__).parent.parent / "paper_journal.db"
+# Committed state: the data/ directory at repo root persists across cloud runs
+_DEFAULT_DB = Path(__file__).parents[3] / "data" / "journal.db"
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS paper_trades (

@@ -2,7 +2,8 @@ from datetime import date
 from pathlib import Path
 import pandas as pd
 
-_DEFAULT_STORE = Path(__file__).parent.parent / "history_store.parquet"
+# Committed state: the data/ directory at repo root persists across cloud runs
+_DEFAULT_STORE = Path(__file__).parents[3] / "data" / "history_store.parquet"
 
 
 def append_rows(rows: list[dict], path: Path = _DEFAULT_STORE) -> None:

@@ -106,8 +106,26 @@ def run(
     return None
 
   trade_id = execute_paper_trade(best, as_of, db_path)
-  print(format_recommendation(best, trade_id, as_of))
+  rec_text = format_recommendation(best, trade_id, as_of)
+  print(rec_text)
+  _log_recommendation(rec_text, as_of, db_path)
   return best
+
+
+def _log_recommendation(rec_text: str, as_of: date, db_path: Path) -> None:
+  """Prepend the recommendation to RECOMMENDATIONS.md next to the journal.
+
+  Newest-first so the latest trade is at the top when read on GitHub.
+  """
+  md = Path(db_path).parent / "RECOMMENDATIONS.md"
+  header = "# Nightly Recommendations\n\n"
+  existing = ""
+  if md.exists():
+    existing = md.read_text()
+    if existing.startswith(header):
+      existing = existing[len(header):]
+  entry = f"## {as_of}\n\n```\n{rec_text.strip()}\n```\n\n"
+  md.write_text(header + entry + existing)
 
 
 if __name__ == "__main__":
