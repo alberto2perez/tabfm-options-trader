@@ -1,4 +1,3 @@
-from datetime import date
 from pathlib import Path
 
 import pytest
@@ -65,6 +64,7 @@ def test_drawdown_over_brake_triggers_recovery(tmp_path):
   bk = get_bankroll(db)
   assert bk.equity == 1700.0
   assert bk.peak_equity == 2400.0
+  assert bk.drawdown_pct == pytest.approx(700 / 2400, abs=1e-4)
   assert bk.recovery_mode is True
   # Recovery halves the fraction: 1700 * 0.075
   assert bk.slice_limit == pytest.approx(127.5)
@@ -121,3 +121,12 @@ def test_closed_trades_ordered_by_close_date(tmp_path):
   # Walk: 2000 -> 2400 (07-11) -> 2100 (07-20); peak 2400
   assert bk.peak_equity == 2400.0
   assert bk.equity == 2100.0
+
+
+def test_brake_env_override(tmp_path, monkeypatch):
+  monkeypatch.setenv("TABFM_DRAWDOWN_BRAKE", "0.50")
+  db = tmp_path / "j.db"
+  _seed(db, [200.0, 200.0, -300.0, -300.0, -100.0])  # 29.2% drawdown
+  bk = get_bankroll(db)
+  assert bk.recovery_mode is False  # 29.2% < overridden 50% brake
+  assert bk.slice_limit == pytest.approx(255.0)  # full 15% of 1700

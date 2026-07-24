@@ -46,6 +46,8 @@ def _build(starting: float, risk_frac: float, max_exposure: float,
     realized += pnl
     equity += pnl
     peak = max(peak, equity)
+  # Floor AFTER the walk: peak tracking must see the true (possibly negative)
+  # path; only the exposed equity is clamped to zero.
   equity = max(equity, 0.0)
   drawdown = (peak - equity) / peak if peak > 0 else 0.0
   recovery = drawdown > brake
@@ -64,10 +66,10 @@ def _build(starting: float, risk_frac: float, max_exposure: float,
 
 def get_bankroll(db_path: Path = _DEFAULT_DB) -> Bankroll:
   starting, risk_frac, max_exposure, brake = _config()
-  try:
+  if not Path(db_path).exists():
+    closed = []  # journal not created yet → fresh bankroll
+  else:
     closed = get_all_closed_trades(db_path)
-  except Exception:
-    closed = []  # missing/uninitialized journal → fresh bankroll
   return _build(starting, risk_frac, max_exposure, brake, closed)
 
 
