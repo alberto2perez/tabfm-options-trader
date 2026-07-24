@@ -45,7 +45,7 @@ def test_sizing_shrinks_after_losses(tmp_path):
     "ticker": "SPY", "direction": "put_spread",
     "spread_width_dollars": 5.0, "entry_credit": 2.25,
     "strike_short": 480.0, "strike_long": 475.0, "expiry": "2026-08-21",
-    "bid_ask_pct": 0.10, "open_interest": 200, "dte": 14, "short_delta": 0.25,
+    "bid_ask_pct": 0.10, "open_interest": 200, "dte": 30, "short_delta": 0.25,  # above the manage_dte+7 entry floor
     "earnings_flag": "no_earnings", "pop_predicted": 0.72, "exp_return": 0.20,
   }
 

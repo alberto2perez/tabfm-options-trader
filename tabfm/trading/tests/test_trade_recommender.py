@@ -5,7 +5,7 @@ _GOOD = {
   "ticker": "SPY", "direction": "put_spread",
   "spread_width_dollars": 5.0, "entry_credit": 2.25,
   "strike_short": 480.0, "strike_long": 475.0, "expiry": "2026-08-21",
-  "bid_ask_pct": 0.10, "open_interest": 200, "dte": 14, "short_delta": 0.25,
+  "bid_ask_pct": 0.10, "open_interest": 200, "dte": 30, "short_delta": 0.25,  # above the manage_dte+7 entry floor
   "earnings_flag": "no_earnings", "pop_predicted": 0.72, "exp_return": 0.20,
 }
 
@@ -42,7 +42,9 @@ def test_filter_rejects_low_oi():
 
 def test_filter_rejects_dte_out_of_range():
   assert not _passes_filters({**_GOOD, "dte": 3})
+  assert not _passes_filters({**_GOOD, "dte": 21})  # inside old window, now below floor
   assert not _passes_filters({**_GOOD, "dte": 60})
+  assert _passes_filters({**_GOOD, "dte": 28})
 
 
 def test_filter_rejects_delta_out_of_range():

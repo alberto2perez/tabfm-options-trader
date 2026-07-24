@@ -11,7 +11,11 @@ def _passes_filters(row: dict) -> bool:
     return False
   if row["open_interest"] < 100:
     return False
-  if not (7 <= row["dte"] <= 45):
+  # Entries must have room to live before DTE management (auditor closes at
+  # TABFM_MANAGE_DTE): floor = manage_dte + 7 so fresh trades aren't
+  # force-closed next session at breakeven, polluting win-rate/calibration.
+  manage_dte = int(os.environ.get("TABFM_MANAGE_DTE", "21"))
+  if not (manage_dte + 7 <= row["dte"] <= 45):
     return False
   if not (0.15 <= row["short_delta"] <= 0.40):
     return False

@@ -105,3 +105,13 @@ the free market number?".
 Correlation-aware exposure, slippage/commissions, exp_return calibration,
 naive baseline arm, VIX term structure, LiveAdapter parity, assignment/pin
 risk, Kelly sizing, roll management.
+
+## Amendment (2026-07-24): entry-DTE floor
+
+Final review found entries at 7–21 DTE would be force-closed by the DTE rule
+the next session at ~breakeven, labeled "partial" (a win), polluting win
+rate, Platt labels, and the Brier benchmark. Fix: the gauntlet's entry
+window is now `manage_dte + 7 <= dte <= 45` (default 28–45), so every new
+position has at least a week of life before management. The nearest-30-DTE
+monthly fetch naturally satisfies this; when the front monthly drops below
+28 DTE the fetch must roll to the next monthly.

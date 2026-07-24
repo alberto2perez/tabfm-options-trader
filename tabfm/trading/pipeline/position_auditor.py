@@ -125,5 +125,6 @@ def audit_positions(
       status = "partial" if pnl >= 0 else "stopped"
       close_trade(trade["trade_id"], status, pnl, str(as_of), db_path)
       closed.append({**trade, "status": status, "actual_pnl": pnl})
+      continue
 
   return closed

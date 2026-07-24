@@ -25,7 +25,9 @@ The agent starts with a fresh clone of this repo and must push state back.
    - `get_equity_historicals` (interval=day, start ~5 months back) for each
      ticker — used for indicators.
    - For each ticker, pick the monthly expiry nearest 30 DTE from
-     `get_option_chains`. Fetch `get_option_instruments`
+     `get_option_chains`. The expiry must be at least 28 DTE (entry floor =
+     TABFM_MANAGE_DTE + 7); when the front monthly is closer than that, use
+     the next monthly out. Fetch `get_option_instruments`
      (chain_symbol, expiration_dates, type) — jump to the near-the-money band
      with cursor = base64("p=<strike>.0000"); keep strikes 0.90–1.10 × spot at
      roughly $5 spacing (large underlyings) or $3 (IWM-sized). Then

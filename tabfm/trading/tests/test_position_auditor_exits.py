@@ -63,10 +63,10 @@ def _open_trade(db, credit=2.0, expiry="2026-08-21"):
 
 
 def _status(db, tid):
-  conn = sqlite3.connect(db)
-  conn.row_factory = sqlite3.Row
-  return dict(conn.execute(
-    "SELECT * FROM paper_trades WHERE trade_id=?", (tid,)).fetchone())
+  with sqlite3.connect(db) as conn:
+    conn.row_factory = sqlite3.Row
+    return dict(conn.execute(
+      "SELECT * FROM paper_trades WHERE trade_id=?", (tid,)).fetchone())
 
 
 def test_stop_loss_fires_at_double_credit(tmp_path):
@@ -144,3 +144,12 @@ def test_stopped_counts_as_loss_in_summary(tmp_path):
   audit_positions(_MarkAdapter(4.5, 0.4), AS_OF, db)  # -> stopped
   out = portfolio_summary(db, as_of=AS_OF)
   assert "(0W / 1L)" in out
+
+
+def test_stop_mult_env_override(tmp_path, monkeypatch):
+  monkeypatch.setenv("TABFM_STOP_LOSS_MULT", "3.0")
+  db = tmp_path / "j.db"
+  tid = _open_trade(db, credit=2.0)
+  # mark 4.1 >= 2x credit but < 3x credit -> no stop under override
+  audit_positions(_MarkAdapter(4.5, 0.4), AS_OF, db)
+  assert _status(db, tid)["status"] == "open"

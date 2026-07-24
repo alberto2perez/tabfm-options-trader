@@ -86,3 +86,20 @@ def test_brier_absent_without_pop_market(tmp_path):
   close_trade(tid, status, 200.0, "2026-07-18", db)
   m = report(db_path=db, verbose=False)
   assert "brier_tabfm" not in m
+
+
+def test_executor_persists_pop_market(tmp_path):
+  from tabfm.trading.pipeline.paper_executor import execute_paper_trade
+  from tabfm.trading.store.journal import get_open_trades
+  db = tmp_path / "j.db"
+  init_db(db)
+  trade = {
+    "ticker": "SPY", "direction": "put_spread", "strike_short": 700.0,
+    "strike_long": 695.0, "expiry": "2026-08-21", "dte": 28,
+    "entry_credit": 2.0, "spread_width_dollars": 5.0, "contracts": 1,
+    "pop_predicted": 0.7, "pop_raw": 0.72, "pop_market": 0.68,
+    "exp_return": 0.2, "vix_bucket": "normal", "trend_direction": "sideways",
+    "iv_regime": "fair",
+  }
+  execute_paper_trade(trade, date(2026, 7, 24), db)
+  assert get_open_trades(db)[0]["pop_market"] == 0.68
