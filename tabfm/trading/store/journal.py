@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS paper_trades (
   mae           REAL,
   exp_return    REAL NOT NULL,
   regime        TEXT NOT NULL,
+  strategy      TEXT NOT NULL DEFAULT 'model',
   status        TEXT NOT NULL DEFAULT 'open',
   actual_pnl    REAL,
   date_closed   TEXT
@@ -42,6 +43,9 @@ def init_db(path: Path = _DEFAULT_DB) -> None:
     for col in ("pop_raw", "pop_market", "mfe", "mae", "entry_credit_mid"):
       if col not in cols:
         conn.execute(f"ALTER TABLE paper_trades ADD COLUMN {col} REAL")
+    if "strategy" not in cols:
+      conn.execute("ALTER TABLE paper_trades ADD COLUMN strategy TEXT")
+    conn.execute("UPDATE paper_trades SET strategy='model' WHERE strategy IS NULL")
 
 
 def insert_trade(trade: dict, path: Path = _DEFAULT_DB) -> int:
@@ -50,26 +54,31 @@ def insert_trade(trade: dict, path: Path = _DEFAULT_DB) -> int:
       """INSERT INTO paper_trades
          (date_entered, ticker, direction, strike_short, strike_long, expiry,
           dte, entry_credit, entry_credit_mid, spread_width, contracts, max_loss, max_profit,
-          pop_predicted, pop_raw, pop_market, exp_return, regime)
+          pop_predicted, pop_raw, pop_market, exp_return, regime, strategy)
          VALUES (:date_entered, :ticker, :direction, :strike_short, :strike_long,
                  :expiry, :dte, :entry_credit, :entry_credit_mid, :spread_width, :contracts,
                  :max_loss, :max_profit, :pop_predicted, :pop_raw, :pop_market,
-                 :exp_return, :regime)""",
+                 :exp_return, :regime, :strategy)""",
       {
         **trade,
         "pop_raw": trade.get("pop_raw"),
         "pop_market": trade.get("pop_market"),
         "entry_credit_mid": trade.get("entry_credit_mid"),
+        "strategy": trade.get("strategy", "model"),
       },
     )
     return cur.lastrowid
 
 
-def get_open_trades(path: Path = _DEFAULT_DB) -> list[dict]:
+def get_open_trades(path: Path = _DEFAULT_DB, strategy: str | None = "model") -> list[dict]:
   with sqlite3.connect(path) as conn:
     conn.row_factory = sqlite3.Row
-    cur = conn.execute("SELECT * FROM paper_trades WHERE status = 'open'")
-    return [dict(r) for r in cur.fetchall()]
+    q = "SELECT * FROM paper_trades WHERE status = 'open'"
+    params: tuple = ()
+    if strategy is not None:
+      q += " AND strategy = ?"
+      params = (strategy,)
+    return [dict(r) for r in conn.execute(q, params).fetchall()]
 
 
 def close_trade(
@@ -86,11 +95,15 @@ def close_trade(
     )
 
 
-def get_all_closed_trades(path: Path = _DEFAULT_DB) -> list[dict]:
+def get_all_closed_trades(path: Path = _DEFAULT_DB, strategy: str | None = "model") -> list[dict]:
   with sqlite3.connect(path) as conn:
     conn.row_factory = sqlite3.Row
-    cur = conn.execute("SELECT * FROM paper_trades WHERE status != 'open'")
-    return [dict(r) for r in cur.fetchall()]
+    q = "SELECT * FROM paper_trades WHERE status != 'open'"
+    params: tuple = ()
+    if strategy is not None:
+      q += " AND strategy = ?"
+      params = (strategy,)
+    return [dict(r) for r in conn.execute(q, params).fetchall()]
 
 
 def update_excursions(

@@ -7,8 +7,8 @@ from ..store.journal import get_open_trades, get_all_closed_trades, _DEFAULT_DB
 
 
 def portfolio_summary(db_path: Path = _DEFAULT_DB, as_of: date | None = None) -> str:
-  opens = get_open_trades(db_path)
-  closed = get_all_closed_trades(db_path)
+  opens = get_open_trades(db_path, strategy="model")
+  closed = get_all_closed_trades(db_path, strategy="model")
   bk = get_bankroll(db_path)
 
   open_risk = sum(float(t["max_loss"] or 0) for t in opens)
@@ -54,5 +54,12 @@ def portfolio_summary(db_path: Path = _DEFAULT_DB, as_of: date | None = None) ->
   if closed:
     avg_pop = sum(float(t["pop_predicted"] or 0) for t in closed) / len(closed)
     lines.append(f"  Avg POP (closed): {avg_pop * 100:.1f}%  vs realized {wins / len(closed) * 100:.1f}%")
+  b_open = get_open_trades(db_path, strategy="baseline")
+  b_closed = get_all_closed_trades(db_path, strategy="baseline")
+  if b_open or b_closed:
+    b_pnl = sum(float(t["actual_pnl"] or 0) for t in b_closed)
+    lines.append(
+      f"  BASELINE (shadow): {len(b_open)} open · {len(b_closed)} closed · P&L ${b_pnl:,.2f}"
+    )
   lines.append("╚══════════════════════════════════════════════════════╝")
   return "\n".join(lines)

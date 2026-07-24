@@ -60,7 +60,7 @@ def audit_positions(
   MFE/MAE excursion tracking is updated from real marks only; the intrinsic
   fallback must never trigger the stop-loss or DTE rules.
   """
-  open_trades = get_open_trades(db_path)
+  open_trades = get_open_trades(db_path, strategy=None)
   closed = []
 
   for trade in open_trades:

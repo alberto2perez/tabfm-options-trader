@@ -21,6 +21,7 @@ from .pipeline.paper_executor import execute_paper_trade, format_recommendation
 from .pipeline.position_auditor import audit_positions
 from .pipeline.portfolio import portfolio_summary
 from .pipeline.event_gate import evaluate_event_gate, load_macro_calendar
+from .pipeline.baseline import enter_baseline_trade
 from .store.history_store import append_rows, label_expired_rows, compute_iv_rank, _DEFAULT_STORE
 from .store.journal import init_db, get_open_trades, _DEFAULT_DB
 from .store.market_history import record_market_day, load_market_history
@@ -68,6 +69,10 @@ def run(
     print(f"[PositionAuditor] Closed {len(closed)} position(s)")
 
   chain_data_list = fetch_chains(adapter, as_of)
+
+  # Baseline shadow book: sell one SPY ~30-delta put spread every night
+  # regardless of event gate — this is intentionally dumb.
+  enter_baseline_trade(chain_data_list, as_of, db_path)
 
   # --- Event risk gate -------------------------------------------------
   data_dir = Path(db_path).parent

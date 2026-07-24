@@ -4,7 +4,7 @@ from ..store.journal import get_all_closed_trades, _DEFAULT_DB
 
 
 def report(db_path: Path = _DEFAULT_DB, verbose: bool = True) -> dict:
-  trades = get_all_closed_trades(db_path)
+  trades = get_all_closed_trades(db_path, strategy="model")
   if not trades:
     if verbose:
       print("No closed trades yet.")
@@ -80,5 +80,17 @@ def report(db_path: Path = _DEFAULT_DB, verbose: bool = True) -> dict:
   if "brier_tabfm" in metrics and verbose:
     print(f"  Brier (lower=better): TabFM {metrics['brier_tabfm']:.4f} vs "
           f"market {metrics['brier_market']:.4f}  (n={metrics['brier_n']})")
+
+  baseline = get_all_closed_trades(db_path, strategy="baseline")
+  if baseline:
+    b_wins = sum(1 for t in baseline if t["status"] in ("won", "partial"))
+    b_pnl = sum(float(t["actual_pnl"] or 0) for t in baseline)
+    metrics["baseline_trades"] = len(baseline)
+    metrics["baseline_pnl"] = round(b_pnl, 2)
+    metrics["baseline_win_rate"] = round(b_wins / len(baseline), 4)
+    metrics["model_vs_baseline_pnl"] = round(cumulative_pnl - b_pnl, 2)
+    if verbose:
+      print(f"  Baseline (dumb): {len(baseline)} trades · ${b_pnl:,.2f} P&L · "
+            f"model − baseline = ${metrics['model_vs_baseline_pnl']:,.2f}")
 
   return metrics

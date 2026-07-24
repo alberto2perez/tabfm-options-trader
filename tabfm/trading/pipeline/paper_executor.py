@@ -36,7 +36,9 @@ def _apply_friction(mid_credit: float, bid_ask_pct: float) -> float:
   return round(max(mid_credit - slip_frac * combined_spread - fees_rt / 100.0, 0.01), 2)
 
 
-def execute_paper_trade(trade: dict, as_of: date, path: Path = _DEFAULT_DB) -> int:
+def execute_paper_trade(
+  trade: dict, as_of: date, path: Path = _DEFAULT_DB, strategy: str = "model"
+) -> int:
   init_db(path)
   mid_credit = trade["entry_credit"]
   fill_credit = _apply_friction(mid_credit, float(trade.get("bid_ask_pct") or 0.0))
@@ -58,7 +60,8 @@ def execute_paper_trade(trade: dict, as_of: date, path: Path = _DEFAULT_DB) -> i
     "pop_raw": trade.get("pop_raw", trade["pop_predicted"]),
     "pop_market": trade.get("pop_market"),
     "exp_return": trade["exp_return"],
-    "regime": f"{trade['vix_bucket']}|{trade['trend_direction']}|{trade['iv_regime']}",
+    "regime": f"{trade.get('vix_bucket', 'na')}|{trade.get('trend_direction', 'na')}|{trade.get('iv_regime', 'na')}",
+    "strategy": strategy,
   }
   return insert_trade(record, path)
 

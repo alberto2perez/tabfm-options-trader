@@ -65,9 +65,11 @@ def test_gated_night_places_no_trade_but_persists_rows(tmp_path, monkeypatch, ca
   assert "GOOGL" in out
   assert "PORTFOLIO SUMMARY" in out
 
-  # No journal entry
+  # No model journal entry (baseline rows with strategy='baseline' are allowed on gated nights)
   conn = sqlite3.connect(db)
-  assert conn.execute("SELECT COUNT(*) FROM paper_trades").fetchone()[0] == 0
+  assert conn.execute(
+    "SELECT COUNT(*) FROM paper_trades WHERE strategy = 'model'"
+  ).fetchone()[0] == 0
 
   # Feature rows still appended, with event features populated
   df = pd.read_parquet(store)
@@ -111,7 +113,10 @@ def test_ungated_night_reaches_selection(tmp_path, monkeypatch, capsys):
   assert "[EventGate] NO NEW ENTRIES" not in out
   assert result is not None  # cold-start credit-yield pick places a paper trade
   conn = sqlite3.connect(db)
-  assert conn.execute("SELECT COUNT(*) FROM paper_trades").fetchone()[0] == 1
+  # Baseline adds its own row; only count model trades for this assertion
+  assert conn.execute(
+    "SELECT COUNT(*) FROM paper_trades WHERE strategy = 'model'"
+  ).fetchone()[0] == 1
 
 
 def test_second_run_same_night_still_gated_on_iv_spike(tmp_path, monkeypatch):
