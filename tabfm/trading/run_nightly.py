@@ -16,6 +16,7 @@ from .pipeline.context_builder import build_context
 from .pipeline.tabfm_scorer import score_candidates_batch
 from .pipeline.calibrator import fit_calibration, calibrate_pop
 from .pipeline.trade_recommender import select_trade, _passes_filters
+from .pipeline.bankroll import get_bankroll
 from .pipeline.paper_executor import execute_paper_trade, format_recommendation
 from .pipeline.position_auditor import audit_positions
 from .pipeline.portfolio import portfolio_summary
@@ -154,7 +155,11 @@ def run(
     print(portfolio_summary(db_path, as_of))
     return None
 
-  best = select_trade(all_candidates, open_trades=get_open_trades(db_path))
+  best = select_trade(
+    all_candidates,
+    open_trades=get_open_trades(db_path),
+    bankroll=get_bankroll(db_path),
+  )
   if best is None:
     print("[TradeRecommender] No qualifying trade found today.")
     print(portfolio_summary(db_path, as_of))

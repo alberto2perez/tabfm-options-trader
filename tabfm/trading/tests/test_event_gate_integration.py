@@ -83,6 +83,7 @@ def test_gated_night_places_no_trade_but_persists_rows(tmp_path, monkeypatch, ca
 
 
 def test_ungated_night_reaches_selection(tmp_path, monkeypatch, capsys):
+  monkeypatch.setenv("TABFM_STARTING_CAPITAL", "5000")
   _patch_watchlist(monkeypatch)
 
   class _CalmStub(_GatedStubAdapter):
