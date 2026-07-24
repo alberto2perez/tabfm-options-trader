@@ -11,5 +11,6 @@ def _clean_bankroll_env(monkeypatch):
     "TABFM_STOP_LOSS_MULT", "TABFM_MANAGE_DTE",
     "TABFM_SLIPPAGE_FRAC", "TABFM_FEES_RT",
     "TABFM_BACKTEST_IV_PREMIUM",
+    "TABFM_BACKTEST_SKEW",
   ):
     monkeypatch.delenv(var, raising=False)

@@ -26,21 +26,31 @@ def _iv_premium() -> float:
   return float(os.environ.get("TABFM_BACKTEST_IV_PREMIUM", "1.25"))
 
 
+def _skew_slope() -> float:
+  """Equity-index volatility skew slope (per unit moneyness). OTM puts get
+  higher IV than ATM than OTM calls — matches the index smirk and makes the
+  modeled cost of closing a short put rise as spot falls toward the strike."""
+  return float(os.environ.get("TABFM_BACKTEST_SKEW", "2.5"))
+
+
 def _synthetic_chain(S: float, hv20: float, as_of: date) -> pd.DataFrame:
-  sigma = max(hv20 * _iv_premium(), 0.05)
+  base_sigma = max(hv20 * _iv_premium(), 0.05)
+  slope = _skew_slope()
   rows = []
   for dte in _DTE_WINDOWS:
     expiry = as_of + timedelta(days=dte)
     T = dte / 365.0
     for K in _strike_grid(S):
+      skew_factor = max(1 + slope * (1 - K / S), 0.4)
+      sigma_K = max(base_sigma * skew_factor, 0.05)
       for opt in ("call", "put"):
-        price = _bs_price(S, K, T, sigma, opt)
-        delta = abs(_bs_delta(S, K, T, sigma, opt))
+        price = _bs_price(S, K, T, sigma_K, opt)
+        delta = abs(_bs_delta(S, K, T, sigma_K, opt))
         rows.append({
           "strike": K, "expiry": expiry, "option_type": opt,
           "bid": round(price * 0.996, 2), "ask": round(price * 1.004, 2),
           "mid": round(price, 2), "open_interest": 500,
-          "delta": round(delta, 4), "iv": round(sigma, 4), "dte": dte,
+          "delta": round(delta, 4), "iv": round(sigma_K, 4), "dte": dte,
         })
   return pd.DataFrame(rows)
 
