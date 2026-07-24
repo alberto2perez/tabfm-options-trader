@@ -19,7 +19,8 @@ Snapshot schema:
                  delta, iv, dte}, ...]
     }
   },
-  "closes": {"<SYM>": [["YYYY-MM-DD", close], ...]}
+  "closes": {"<SYM>": [["YYYY-MM-DD", close], ...]},
+  "vix_series": [float, ...]  # ~252 trailing daily VIX closes on/before as_of (from yfinance ^VIX)
 }
 """
 import json

@@ -59,6 +59,10 @@ The agent starts with a fresh clone of this repo and must push state back.
    hv20, volume_zscore, momentum, RSI, MACD) are computed from the historicals
    with the helpers in `tabfm/trading/adapters/historical.py` (`_rsi`, `_macd`),
    appending today's live price as the final bar.
+   - The snapshot must include `vix_series` — ~252 trailing daily `^VIX` closes
+     on/before the run date, fetched from yfinance
+     (`yfinance.download("^VIX", ...)`), NOT from a VIXY proxy. It feeds the
+     IV-rank entry gate; without it iv_rank falls back to a neutral 50.
 
 4. Run the pipeline:
    ```python
