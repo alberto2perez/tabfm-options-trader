@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+import os
 import numpy as np
 import pandas as pd
 import yfinance as yf
@@ -7,8 +8,41 @@ from .base import DataAdapter
 
 _RISK_FREE_RATE = 0.045
 _DTE_WINDOWS = [7, 14, 21, 30, 45]
-# 1% steps — keeps spread width ≤ 1% of spot price per contract (~$7 for SPY at $744)
-_STRIKE_RANGE = np.arange(0.85, 1.16, 0.01)
+
+
+def _strike_grid(S: float) -> list[float]:
+  """Fixed-dollar strike grid matching real chains: $5 for large underlyings
+  (SPY/QQQ), $1 for small (IWM-sized). Spans ~0.85–1.15 × spot."""
+  step = 5.0 if S >= 50.0 else 1.0
+  lo = step * round(S * 0.85 / step)
+  hi = step * round(S * 1.15 / step)
+  n = int(round((hi - lo) / step)) + 1
+  return [round(lo + i * step, 2) for i in range(n)]
+
+
+def _iv_premium() -> float:
+  """Variance-risk premium: implied vol runs above realized. Synthetic IV =
+  hv20 × this so credit/width lands in the real-market range."""
+  return float(os.environ.get("TABFM_BACKTEST_IV_PREMIUM", "1.25"))
+
+
+def _synthetic_chain(S: float, hv20: float, as_of: date) -> pd.DataFrame:
+  sigma = max(hv20 * _iv_premium(), 0.05)
+  rows = []
+  for dte in _DTE_WINDOWS:
+    expiry = as_of + timedelta(days=dte)
+    T = dte / 365.0
+    for K in _strike_grid(S):
+      for opt in ("call", "put"):
+        price = _bs_price(S, K, T, sigma, opt)
+        delta = abs(_bs_delta(S, K, T, sigma, opt))
+        rows.append({
+          "strike": K, "expiry": expiry, "option_type": opt,
+          "bid": round(price * 0.996, 2), "ask": round(price * 1.004, 2),
+          "mid": round(price, 2), "open_interest": 500,
+          "delta": round(delta, 4), "iv": round(sigma, 4), "dte": dte,
+        })
+  return pd.DataFrame(rows)
 
 
 def _rsi(closes: pd.Series, period: int = 14) -> float:
@@ -119,29 +153,7 @@ class HistAdapter(DataAdapter):
   def get_options_chain(self, ticker: str, as_of: date) -> pd.DataFrame:
     self._assert_no_lookahead(as_of)
     u = self.get_underlying(ticker, as_of)
-    S, sigma = u["close"], max(u["hv20"], 0.05)
-    rows = []
-    for dte in _DTE_WINDOWS:
-      expiry = as_of + timedelta(days=dte)
-      T = dte / 365.0
-      for pct in _STRIKE_RANGE:
-        K = round(S * pct, 0)
-        for opt in ("call", "put"):
-          price = _bs_price(S, K, T, sigma, opt)
-          delta = abs(_bs_delta(S, K, T, sigma, opt))
-          rows.append({
-            "strike": K,
-            "expiry": expiry,
-            "option_type": opt,
-            "bid": round(price * 0.99, 2),
-            "ask": round(price * 1.01, 2),
-            "mid": round(price, 2),
-            "open_interest": 500,
-            "delta": round(delta, 4),
-            "iv": round(sigma, 4),
-            "dte": dte,
-          })
-    return pd.DataFrame(rows)
+    return _synthetic_chain(u["close"], u["hv20"], as_of)
 
   def get_vix(self, as_of: date) -> float:
     self._assert_no_lookahead(as_of)
