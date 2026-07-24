@@ -69,7 +69,7 @@ def get_bankroll(db_path: Path = _DEFAULT_DB) -> Bankroll:
   if not Path(db_path).exists():
     closed = []  # journal not created yet → fresh bankroll
   else:
-    closed = get_all_closed_trades(db_path)
+    closed = get_all_closed_trades(db_path, strategy="model")
   return _build(starting, risk_frac, max_exposure, brake, closed)
 
 

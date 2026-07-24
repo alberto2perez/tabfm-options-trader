@@ -89,3 +89,4 @@ def test_tracker_reports_both_arms(tmp_path):
   assert m["baseline_trades"] == 1
   assert m["baseline_pnl"] == -300.0
   assert m["model_vs_baseline_pnl"] == 500.0
+  assert m["baseline_win_rate"] == 0.0

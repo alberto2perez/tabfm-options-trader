@@ -32,7 +32,7 @@ def fit_calibration(
   Uses pop_raw (the uncalibrated model output) when recorded, falling back to
   pop_predicted for rows written before the pop_raw column existed.
   """
-  trades = get_all_closed_trades(db_path)
+  trades = get_all_closed_trades(db_path, strategy="model")
   if len(trades) < min_trades:
     return None
 

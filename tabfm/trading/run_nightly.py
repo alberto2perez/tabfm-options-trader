@@ -162,7 +162,7 @@ def run(
 
   best = select_trade(
     all_candidates,
-    open_trades=get_open_trades(db_path),
+    open_trades=get_open_trades(db_path, strategy="model"),
     bankroll=get_bankroll(db_path),
   )
   if best is None:
