@@ -97,6 +97,20 @@ The agent starts with a fresh clone of this repo and must push state back.
    first-Friday jobs report dates for the next two quarters; correct any
    drifted dates in the same commit.
 
+## Midday audit (~12:30pm ET, trading days only)
+
+A lighter pass that manages OPEN positions without entering new trades —
+value is catching a stop-loss breach hours before the close on a fast day.
+
+1. Query open positions: `get_open_trades(db, strategy=None)` — collect their
+   distinct tickers. If none, stop (nothing to audit).
+2. Fetch CURRENT option marks + underlying for those tickers only (no
+   events/vix_history needed). Build a light snapshot with `tickers`
+   (underlying + chain) and `closes`.
+3. Run: `python -m tabfm.trading.run_audit --snapshot data/snapshots/<date>-midday.json`
+4. Commit `data/` only if a position closed:
+   `git commit -m "midday-audit: <date> — closed N"`. Report the summary.
+
 6. Final message MUST include, in this order:
    - the recommendation block (or the no-trade reason),
    - one line on positions closed by the auditor tonight, if any,

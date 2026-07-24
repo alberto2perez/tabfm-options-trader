@@ -190,6 +190,23 @@ def run(
   return best
 
 
+def run_audit_only(
+  adapter, as_of: date | None = None,
+  db_path: Path = _DEFAULT_DB, store_path: Path = _DEFAULT_STORE,
+) -> list[dict]:
+  """Midday pass: manage OPEN positions (both books) without entering new
+  trades — catches a stop-loss breach hours before the nightly close on a
+  fast day. No chain scoring, gate, baseline, or selection."""
+  if as_of is None:
+    as_of = date.today()
+  print(f"[MiddayAudit] {as_of}")
+  init_db(db_path)
+  closed = audit_positions(adapter, as_of, db_path)
+  print(f"[MiddayAudit] Closed {len(closed)} position(s)")
+  print(portfolio_summary(db_path, as_of))
+  return closed
+
+
 def _log_gated_day(reasons: list, as_of: date, db_path: Path) -> None:
   md = Path(db_path).parent / "RECOMMENDATIONS.md"
   header = "# Nightly Recommendations\n\n"
