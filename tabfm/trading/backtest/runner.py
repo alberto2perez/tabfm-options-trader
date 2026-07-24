@@ -3,6 +3,7 @@ from pathlib import Path
 
 from ..adapters.historical import HistAdapter
 from ..pipeline.accuracy_tracker import report
+from ..pipeline.turning_points import turning_point_report
 from ..run_nightly import run
 from ..store.journal import init_db
 
@@ -61,4 +62,6 @@ def run_backtest(
     if (i + 1) % 20 == 0:
       print(f"[Backtest] {i+1}/{len(days)} days complete")
 
-  return report(db_path=db_path, verbose=True)
+  metrics = report(db_path=db_path, verbose=True)
+  turning_point_report(store_path, db_path, verbose=True)
+  return metrics
