@@ -18,6 +18,7 @@ from .pipeline.calibrator import fit_calibration, calibrate_pop
 from .pipeline.trade_recommender import select_trade, _passes_filters
 from .pipeline.paper_executor import execute_paper_trade, format_recommendation
 from .pipeline.position_auditor import audit_positions
+from .pipeline.portfolio import portfolio_summary
 from .store.history_store import append_rows, label_expired_rows, compute_iv_rank, _DEFAULT_STORE
 from .store.journal import init_db, get_open_trades, _DEFAULT_DB
 
@@ -103,12 +104,14 @@ def run(
   best = select_trade(all_candidates, open_trades=get_open_trades(db_path))
   if best is None:
     print("[TradeRecommender] No qualifying trade found today.")
+    print(portfolio_summary(db_path, as_of))
     return None
 
   trade_id = execute_paper_trade(best, as_of, db_path)
   rec_text = format_recommendation(best, trade_id, as_of)
   print(rec_text)
   _log_recommendation(rec_text, as_of, db_path)
+  print(portfolio_summary(db_path, as_of))
   return best
 
 

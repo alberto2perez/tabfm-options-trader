@@ -67,5 +67,9 @@ The agent starts with a fresh clone of this repo and must push state back.
    If no qualifying trade: commit the snapshot + any labeling updates with
    message "nightly: <date> — no qualifying trade".
 
-6. Final message: the recommendation block (or the no-trade reason) and one
-   line on positions closed by the auditor, if any.
+6. Final message MUST include, in this order:
+   - the recommendation block (or the no-trade reason),
+   - one line on positions closed by the auditor tonight, if any,
+   - the PORTFOLIO SUMMARY block the pipeline prints at the end of every run
+     (open contracts, closed count and win rate, realized P&L, total $ at
+     risk, open max profit). Never omit the summary.
