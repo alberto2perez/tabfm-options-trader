@@ -22,6 +22,29 @@ def _estimate_current_value(trade: dict, underlying_price: float) -> float:
   return min(intrinsic, width)
 
 
+def _spread_mark(adapter: DataAdapter, trade: dict, as_of: date) -> float | None:
+  """Cost to close the spread from real option marks, when the adapter has them.
+
+  Intrinsic-only valuation ignores time value, so an OTM spread looks like
+  instant max profit the day after entry — real marks prevent phantom early
+  closes. Returns None when the chain/strikes aren't available.
+  """
+  try:
+    import pandas as pd
+    chain = adapter.get_options_chain(trade["ticker"], as_of)
+    if chain is None or chain.empty:
+      return None
+    opt = "call" if trade["direction"] == "call_spread" else "put"
+    sub = chain[chain["option_type"] == opt].copy()
+    expiries = pd.to_datetime(sub["expiry"]).dt.strftime("%Y-%m-%d")
+    sub = sub[expiries == str(trade["expiry"])]
+    short_mid = float(sub[sub["strike"] == trade["strike_short"]]["mid"].iloc[0])
+    long_mid = float(sub[sub["strike"] == trade["strike_long"]]["mid"].iloc[0])
+    return max(0.0, short_mid - long_mid)
+  except Exception:
+    return None
+
+
 def audit_positions(
   adapter: DataAdapter, as_of: date, db_path: Path = _DEFAULT_DB
 ) -> list[dict]:
@@ -42,7 +65,9 @@ def audit_positions(
     width = trade["spread_width"]
     contracts = trade["contracts"]
 
-    current_val = _estimate_current_value(trade, S)
+    current_val = _spread_mark(adapter, trade, as_of)
+    if current_val is None:
+      current_val = _estimate_current_value(trade, S)
     unrealized = (credit - current_val) * contracts * 100
     max_profit = credit * contracts * 100
 
