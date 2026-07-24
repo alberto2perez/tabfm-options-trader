@@ -31,6 +31,14 @@ The agent starts with a fresh clone of this repo and must push state back.
      roughly $5 spacing (large underlyings) or $3 (IWM-sized). Then
      `get_option_quotes` for those instrument ids (batches ≤40). Skip rows
      with zero bid or null greeks.
+   - `get_earnings_calendar` (read-only) for the next 7 days; keep entries
+     whose symbol is in MEGA_CAPS (AAPL MSFT NVDA GOOGL AMZN META TSLA AVGO)
+     and write them into the snapshot as
+     `events: {"earnings": [{"symbol", "date" (YYYY-MM-DD), "when" (bmo|amc|unknown)}]}`.
+     Also copy the last ~10 rows of `data/market_history.csv` into the
+     snapshot as `vix_history: [[date, vix], ...]` plus today's VIX reading.
+     If the earnings fetch fails, omit `events` entirely — the pipeline
+     degrades gracefully and reports it.
 
 3. Build the snapshot JSON (schema documented in
    `tabfm/trading/adapters/snapshot.py`) and save to
@@ -66,6 +74,15 @@ The agent starts with a fresh clone of this repo and must push state back.
    ```
    If no qualifying trade: commit the snapshot + any labeling updates with
    message "nightly: <date> — no qualifying trade".
+
+5b. Event gate: when the run prints `[EventGate] NO NEW ENTRIES — ...`, that
+   is a correct outcome, not an error. Commit the snapshot/labels as usual
+   with message "nightly: <date> — GATED (<first reason>)".
+
+5c. Quarterly (first run of Jan/Apr/Jul/Oct): verify `data/macro_calendar.json`
+   against the published FOMC meeting schedule, BLS CPI release schedule, and
+   first-Friday jobs report dates for the next two quarters; correct any
+   drifted dates in the same commit.
 
 6. Final message MUST include, in this order:
    - the recommendation block (or the no-trade reason),

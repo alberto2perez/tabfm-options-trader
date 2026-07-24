@@ -19,8 +19,10 @@ from .pipeline.trade_recommender import select_trade, _passes_filters
 from .pipeline.paper_executor import execute_paper_trade, format_recommendation
 from .pipeline.position_auditor import audit_positions
 from .pipeline.portfolio import portfolio_summary
+from .pipeline.event_gate import evaluate_event_gate, load_macro_calendar
 from .store.history_store import append_rows, label_expired_rows, compute_iv_rank, _DEFAULT_STORE
 from .store.journal import init_db, get_open_trades, _DEFAULT_DB
+from .store.market_history import record_market_day, load_market_history
 
 
 def run(
@@ -65,27 +67,71 @@ def run(
     print(f"[PositionAuditor] Closed {len(closed)} position(s)")
 
   chain_data_list = fetch_chains(adapter, as_of)
+
+  # --- Event risk gate -------------------------------------------------
+  data_dir = Path(db_path).parent
+  vix_now = adapter.get_vix(as_of)
+  spy_chain = next(
+    (c for c in chain_data_list if c["ticker"] == "SPY"),
+    chain_data_list[0] if chain_data_list else None,
+  )
+  chain_stats = {}
+  if spy_chain is not None and len(spy_chain["chain"]):
+    prior = load_market_history(data_dir, n=1)
+    prior_iv = prior[-1]["median_iv"] if prior and prior[-1]["date"] != str(as_of) else None
+    chain_stats = {
+      "median_iv": float(spy_chain["chain"]["iv"].median()),
+      "hv20": float(spy_chain["underlying"]["hv20"]),
+      "prev_median_iv": prior_iv,
+    }
+  vix_history = adapter.get_vix_history(as_of)
+  if not vix_history:
+    vix_history = [[h["date"], h["vix"]] for h in load_market_history(data_dir, n=10)]
+  if not any(str(as_of) == str(d) for d, _ in vix_history):
+    vix_history = vix_history + [[str(as_of), vix_now]]
+  record_market_day(data_dir, as_of, vix_now, chain_stats.get("median_iv"))
+
+  gate = evaluate_event_gate(
+    events=adapter.get_events(as_of),
+    macro_calendar=load_macro_calendar(),
+    vix_history=vix_history,
+    chain_stats=chain_stats,
+    as_of=as_of,
+  )
+  if gate.degraded:
+    print("[EventGate] DEGRADED — earnings calendar unavailable")
+
+  # --- Feature engineering (always runs, gated or not) -----------------
   all_candidates = []
   all_feature_rows = []
+  scoring_groups: dict[tuple, list[dict]] = {}
 
   for chain_data in chain_data_list:
-    iv_rank = compute_iv_rank(adapter.get_vix(as_of), store_path)
-    feature_rows = engineer_features(chain_data, as_of, iv_rank)
-    # Pre-filter: only passing rows go to TabFM; failing rows get fallback.
-    passing = [r for r in feature_rows if _passes_filters(r)]
-    failing = [r for r in feature_rows if not _passes_filters(r)]
-    for row in failing:
-      all_candidates.append({**row, "pop_predicted": 0.5, "exp_return": 0.0})
-    # Batch score: group passing rows by regime, fit TabFM once per group.
-    groups: dict[tuple, list[dict]] = {}
-    for row in passing:
-      key = (row["vix_bucket"], row["trend_direction"], row["iv_regime"])
-      groups.setdefault(key, []).append(row)
-    for group_rows in groups.values():
-      context = build_context(group_rows[0], str(as_of), path=store_path)
-      scored = score_candidates_batch(group_rows, context, clf_model, reg_model)
-      all_candidates.extend(scored)
+    iv_rank = compute_iv_rank(vix_now, store_path)
+    hv20 = float(chain_data["underlying"]["hv20"]) or 0.0
+    chain_df = chain_data["chain"]
+    iv_spike = (
+      float(chain_df["iv"].median()) / hv20
+      if len(chain_df) and hv20 > 0 else 0.0
+    )
+    extra = {**gate.features, "iv_spike_score": round(iv_spike, 4)}
+    feature_rows = engineer_features(chain_data, as_of, iv_rank, extra_features=extra)
     all_feature_rows.extend(feature_rows)
+    if gate.gated:
+      continue
+    # Pre-filter: only passing rows go to TabFM; failing rows get fallback.
+    for row in feature_rows:
+      if not _passes_filters(row):
+        all_candidates.append({**row, "pop_predicted": 0.5, "exp_return": 0.0})
+        continue
+      key = (row["vix_bucket"], row["trend_direction"], row["iv_regime"])
+      scoring_groups.setdefault(key, []).append(row)
+
+  # Batch score: fit TabFM once per regime group.
+  for group_rows in scoring_groups.values():
+    context = build_context(group_rows[0], str(as_of), path=store_path)
+    scored = score_candidates_batch(group_rows, context, clf_model, reg_model)
+    all_candidates.extend(scored)
 
   # Platt calibration: map raw POP% onto realized win rates from the journal.
   calib = fit_calibration(db_path)
@@ -101,6 +147,12 @@ def run(
   if n_labeled:
     print(f"[HistoryStore] Labeled {n_labeled} expired rows")
 
+  if gate.gated:
+    print(f"[EventGate] NO NEW ENTRIES — {'; '.join(gate.reasons)}")
+    _log_gated_day(gate.reasons, as_of, db_path)
+    print(portfolio_summary(db_path, as_of))
+    return None
+
   best = select_trade(all_candidates, open_trades=get_open_trades(db_path))
   if best is None:
     print("[TradeRecommender] No qualifying trade found today.")
@@ -113,6 +165,19 @@ def run(
   _log_recommendation(rec_text, as_of, db_path)
   print(portfolio_summary(db_path, as_of))
   return best
+
+
+def _log_gated_day(reasons: list, as_of: date, db_path: Path) -> None:
+  md = Path(db_path).parent / "RECOMMENDATIONS.md"
+  header = "# Nightly Recommendations\n\n"
+  existing = ""
+  if md.exists():
+    existing = md.read_text()
+    if existing.startswith(header):
+      existing = existing[len(header):]
+  bullets = "\n".join(f"- {r}" for r in reasons)
+  entry = f"## {as_of}\n\nGATED — no new entries.\n{bullets}\n\n"
+  md.write_text(header + entry + existing)
 
 
 def _log_recommendation(rec_text: str, as_of: date, db_path: Path) -> None:
