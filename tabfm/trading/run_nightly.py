@@ -14,7 +14,7 @@ from .pipeline.chain_fetcher import fetch_chains
 from .pipeline.feature_engineer import engineer_features
 from .pipeline.context_builder import build_context
 from .pipeline.tabfm_scorer import score_candidates_batch
-from .pipeline.calibrator import fit_calibration, calibrate_pop
+from .pipeline.calibrator import fit_calibration, calibrate_pop, fit_return_calibration, calibrate_return
 from .pipeline.trade_recommender import select_trade, _passes_filters
 from .pipeline.bankroll import get_bankroll
 from .pipeline.paper_executor import execute_paper_trade, format_recommendation
@@ -148,6 +148,15 @@ def run(
         continue  # fallback-scored — nothing to calibrate
       c["pop_raw"] = c["pop_predicted"]
       c["pop_predicted"] = round(calibrate_pop(c["pop_raw"], calib), 4)
+
+  # Return calibration: map predicted exp_return onto realized fractions.
+  ret_params = fit_return_calibration(db_path)
+  if ret_params is not None:
+    for c in all_candidates:
+      if c["pop_predicted"] == 0.5 and c["exp_return"] == 0.0:
+        continue  # fallback-scored
+      c["exp_return_raw"] = c["exp_return"]
+      c["exp_return"] = round(calibrate_return(c["exp_return_raw"], ret_params), 4)
 
   append_rows(all_feature_rows, store_path)
   n_labeled = label_expired_rows(store_path, adapter, as_of)

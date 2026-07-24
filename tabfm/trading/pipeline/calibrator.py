@@ -52,3 +52,38 @@ def calibrate_pop(pop: float, params: tuple[float, float]) -> float:
   a, b = params
   z = a * _logit(pop) + b
   return float(1 / (1 + math.exp(-z)))
+
+
+def fit_return_calibration(
+  db_path: Path = _DEFAULT_DB, min_trades: int = 25
+) -> tuple[float, float] | None:
+  """Linear map from predicted exp_return to realized return fraction.
+
+  Realized fraction = actual_pnl / max_loss for closed model trades. Returns
+  (slope, intercept) or None below min_trades / without prediction variance.
+  """
+  trades = get_all_closed_trades(db_path, strategy="model")
+  xs, ys = [], []
+  for t in trades:
+    max_loss = float(t.get("max_loss") or 0)
+    if max_loss <= 0 or t.get("actual_pnl") is None:
+      continue
+    pred = t.get("exp_return_raw")
+    if pred is None:
+      pred = t.get("exp_return")
+    if pred is None:
+      continue
+    xs.append(float(pred))
+    ys.append(float(t["actual_pnl"]) / max_loss)
+  if len(xs) < min_trades:
+    return None
+  x_arr, y_arr = np.array(xs), np.array(ys)
+  if float(x_arr.std()) < 1e-9:
+    return None
+  slope, intercept = np.polyfit(x_arr, y_arr, 1)
+  return float(slope), float(intercept)
+
+
+def calibrate_return(exp_return: float, params: tuple[float, float]) -> float:
+  slope, intercept = params
+  return float(slope * exp_return + intercept)

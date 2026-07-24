@@ -60,6 +60,7 @@ def execute_paper_trade(
     "pop_raw": trade.get("pop_raw", trade["pop_predicted"]),
     "pop_market": trade.get("pop_market"),
     "exp_return": trade["exp_return"],
+    "exp_return_raw": trade.get("exp_return_raw", trade["exp_return"]),
     "regime": f"{trade.get('vix_bucket', 'na')}|{trade.get('trend_direction', 'na')}|{trade.get('iv_regime', 'na')}",
     "strategy": strategy,
   }
