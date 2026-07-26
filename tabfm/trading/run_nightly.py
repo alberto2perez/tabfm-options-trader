@@ -11,6 +11,7 @@ from datetime import date
 from pathlib import Path
 
 from .pipeline.chain_fetcher import fetch_chains
+from .pipeline.trend_guard import assess_trend_risk
 from .pipeline.feature_engineer import engineer_features
 from .pipeline.context_builder import build_context
 from .pipeline.tabfm_scorer import score_candidates_batch
@@ -67,6 +68,7 @@ def run(
   closed = audit_positions(adapter, as_of, db_path)
   if closed:
     print(f"[PositionAuditor] Closed {len(closed)} position(s)")
+  _emit_trend_guard(adapter, as_of, db_path)
 
   chain_data_list = fetch_chains(adapter, as_of)
 
@@ -205,6 +207,7 @@ def run_audit_only(
   init_db(db_path)
   closed = audit_positions(adapter, as_of, db_path)
   print(f"[MiddayAudit] Closed {len(closed)} position(s)")
+  _emit_trend_guard(adapter, as_of, db_path)
   print(portfolio_summary(db_path, as_of))
   return closed
 
@@ -219,6 +222,28 @@ def _log_gated_day(reasons: list, as_of: date, db_path: Path) -> None:
       existing = existing[len(header):]
   bullets = "\n".join(f"- {r}" for r in reasons)
   entry = f"## {as_of}\n\nGATED — no new entries.\n{bullets}\n\n"
+  md.write_text(header + entry + existing)
+
+
+def _emit_trend_guard(adapter, as_of: date, db_path: Path) -> None:
+  """Advise on open MODEL positions the trend has turned against — printed and
+  logged to RECOMMENDATIONS.md. Advisory only; never closes a position."""
+  from .store.journal import get_open_trades
+  alerts = assess_trend_risk(get_open_trades(db_path, strategy="model"), adapter, as_of)
+  if not alerts:
+    return
+  print("[TrendGuard] Directionally challenged open positions:")
+  for a in alerts:
+    print(f"  {a['action']}: {a['message']}")
+  md = Path(db_path).parent / "RECOMMENDATIONS.md"
+  header = "# Nightly Recommendations\n\n"
+  existing = ""
+  if md.exists():
+    existing = md.read_text()
+    if existing.startswith(header):
+      existing = existing[len(header):]
+  lines = "\n".join(f"- {a['action']}: {a['message']}" for a in alerts)
+  entry = f"## {as_of} — TREND ALERT\n\n{lines}\n\n"
   md.write_text(header + entry + existing)
 
 

@@ -121,3 +121,14 @@ value is catching a stop-loss breach hours before the close on a fast day.
    - the PORTFOLIO SUMMARY block the pipeline prints at the end of every run
      (open contracts, closed count and win rate, realized P&L, total $ at
      risk, open max profit). Never omit the summary.
+
+## Trend guard (advisory)
+
+Both the nightly run and the midday audit may print a `[TrendGuard]` section
+and prepend a `## <date> — TREND ALERT` block to `data/RECOMMENDATIONS.md`
+when an open MODEL position is directionally challenged (the underlying trend
+has flipped against it AND it is currently losing). These are recommendations
+to manage open contracts — CLOSE NOW (≥50% of max loss) or CONSIDER CLOSING —
+and are ADVISORY ONLY: the system never auto-closes. Include any trend alert
+in the final report alongside the recommendation and portfolio summary.
+Disable with `TABFM_TREND_GUARD=off`.
