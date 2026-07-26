@@ -20,7 +20,7 @@ class ReplayAdapter(HistAdapter):
     ].copy()
     if df.empty:
       return df
-    df["dte"] = df["expiry"].map(lambda e: (date.fromisoformat(str(e)) - as_of).days)
+    df["dte"] = df["expiry"].map(lambda e: (pd.Timestamp(e).date() - as_of).days)
     df = df[(df["dte"] >= 28) & (df["dte"] <= 45)]
     if df.empty:
       return df
