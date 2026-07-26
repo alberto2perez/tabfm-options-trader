@@ -88,6 +88,26 @@ def _bs_price(S: float, K: float, T: float, sigma: float, opt: str) -> float:
   return float(K * np.exp(-_RISK_FREE_RATE * T) * norm.cdf(-d2) - S * norm.cdf(-d1))
 
 
+def _implied_vol(price, S, K, T, opt, lo=0.01, hi=3.0, tol=1e-4):
+  """Back-solve implied vol so _bs_price(S,K,T,sigma,opt) == price, by
+  bisection. Returns None when price is outside the [lo,hi]-vol range (e.g.
+  below intrinsic or an unmatchable quote)."""
+  p_lo = _bs_price(S, K, T, lo, opt)
+  p_hi = _bs_price(S, K, T, hi, opt)
+  if not (p_lo <= price <= p_hi):
+    return None
+  for _ in range(60):
+    mid = (lo + hi) / 2
+    p = _bs_price(S, K, T, mid, opt)
+    if abs(p - price) < tol:
+      return mid
+    if p < price:
+      lo = mid
+    else:
+      hi = mid
+  return (lo + hi) / 2
+
+
 class HistAdapter(DataAdapter):
   persists_market_history = False  # backtests must not pollute live market_history.csv
 
