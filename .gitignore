@@ -34,3 +34,7 @@ docs/api
 
 # Archived debug data only — data/ directory IS committed (cloud-run state)
 tabfm/trading/history_store.debug-archive.parquet
+
+# Local scheduled-advisor secrets and run logs
+.env
+data/run-logs/
