@@ -105,11 +105,10 @@ validation with real skin.
 Loosening `TABFM_MAX_BUCKET_RISK` to 0.30–0.35 recovers return at higher
 drawdown; keep it at 0.25 for first real money.
 
-## One-time Cloud Setup (to make it hands-off) — optional
+## Hands-off scheduling — local (macOS)
 
-1. Install the Claude GitHub App on `alberto2perez/tabfm-options-trader`
-   (write access).
-2. Add Robinhood as a claude.ai connector (`https://agent.robinhood.com/mcp/trading`).
-3. Create a scheduled routine that runs `docs/NIGHTLY_CLOUD_RUN.md` weekday
-   evenings; it clones, fetches, runs, and pushes results back to `data/`.
-Until then, runs are session-assisted.
+Cloud routines were evaluated and dropped: the cloud sandbox blocks HuggingFace
+egress and is ephemeral, so the 12 GB TabFM model can't run there. Instead the
+advisor runs **locally on a schedule** — entry 10:00 / audit 12:00 weekdays —
+via `launchd` + a headless Claude session. See `docs/LOCAL_SCHEDULING.md` for
+setup. Until installed, runs are session-assisted ("run tonight's nightly").
