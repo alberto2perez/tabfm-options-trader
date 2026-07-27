@@ -21,11 +21,21 @@ def _passes_filters(row: dict) -> bool:
     return False
   if row["earnings_flag"] == "earnings_week":
     return False
-  # Entry quality: enough credit for the width, and only sell rich premium.
+  # Entry quality: a real expected-value gate (replaces the miscalibrated
+  # credit/width ratio floor, which rejected all real SPY spreads). Losses are
+  # capped near loss_mult × credit by the 2×-mark stop, so structural
+  # EV = P(win)·credit − P(loss)·(loss_mult·credit) with P(win) ≈ 1 − short_delta.
+  # An ABSOLUTE credit floor also excludes trades too thin to beat fees/slippage
+  # even when +EV (high IV *rank* with cheap *absolute* premium slips past a
+  # ratio floor but not this).
   credit = row.get("entry_credit")
   if credit is not None:
-    min_ratio = float(os.environ.get("TABFM_MIN_CREDIT_RATIO", "0.30"))
-    if credit / row["spread_width_dollars"] < min_ratio:
+    if credit < float(os.environ.get("TABFM_MIN_CREDIT_ABS", "0.25")):
+      return False
+    sd = float(row.get("short_delta", 0.30))
+    loss_mult = float(os.environ.get("TABFM_EV_LOSS_MULT", "2.0"))
+    ev = (1.0 - sd) * credit - sd * loss_mult * credit
+    if ev <= 0:
       return False
   min_iv_rank = float(os.environ.get("TABFM_MIN_IV_RANK", "30.0"))
   if float(row.get("iv_rank", 50.0)) < min_iv_rank:
