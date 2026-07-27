@@ -112,3 +112,9 @@ egress and is ephemeral, so the 12 GB TabFM model can't run there. Instead the
 advisor runs **locally on a schedule** — entry 10:00 / audit 12:00 weekdays —
 via `launchd` + a headless Claude session. See `docs/LOCAL_SCHEDULING.md` for
 setup. Until installed, runs are session-assisted ("run tonight's nightly").
+
+To watch a scheduled run, use `scripts/advisor_watch.sh` (process/status + live
+log tail) or `claude --resume` (the saved session transcript). If you want to
+watch the pipeline itself stream live, just run `python -m tabfm.trading.run_nightly`
+in a terminal — that bypasses the headless session and prints everything in real
+time.
