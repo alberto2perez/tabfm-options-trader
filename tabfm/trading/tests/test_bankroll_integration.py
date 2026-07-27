@@ -61,10 +61,10 @@ def test_sizing_shrinks_after_losses(tmp_path):
   best = select_trade([dict(candidate)], bankroll=get_bankroll(db))
   assert best["contracts"] == 3
 
-  # Crash below the brake: equity 2000, peak 6000 -> 66% drawdown -> recovery
+  # Crash: equity 2000, peak 6000 -> 66% drawdown -> past the 35% HALT
   tid = insert_trade(_trade(), db)
   close_trade(tid, "lost", -4000.0, "2026-07-21", db)
   bk = get_bankroll(db)
-  assert bk.recovery_mode is True
-  # slice 2000 * 0.075 = 150 < 275 -> no trade fits
-  assert select_trade([dict(candidate)], bankroll=bk) is None
+  assert bk.halted is True          # hard halt, not just the halved-slice brake
+  assert bk.slice_limit == 0.0
+  assert select_trade([dict(candidate)], bankroll=bk) is None  # no new trades

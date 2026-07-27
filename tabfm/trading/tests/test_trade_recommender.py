@@ -21,9 +21,28 @@ def _bk(equity=2000.0, slice_frac=0.15, exposure_frac=0.45, recovery=False):
   return Bankroll(
     starting=2000.0, realized=equity - 2000.0, equity=equity,
     peak_equity=max(equity, 2000.0), drawdown_pct=0.0, recovery_mode=recovery,
+    halted=False,
     slice_limit=round(equity * frac, 2),
     exposure_limit=round(equity * exposure_frac, 2),
   )
+
+
+def test_bucket_concentration_caps_correlated_risk():
+  # equity 2000, bucket cap 25% = $500. One open SPY put spread already risks
+  # $400 → only $100 of bucket headroom → a $275-loss candidate can't fit.
+  opens = [{"ticker": "SPY", "direction": "put_spread", "max_loss": 400.0,
+            "strike_short": 470.0, "strike_long": 465.0, "expiry": "2026-08-21"}]
+  cand = {**_GOOD, "strike_short": 460.0, "strike_long": 455.0}
+  assert select_trade([cand], open_trades=opens, bankroll=_bk()) is None
+
+
+def test_bucket_cap_allows_uncorrelated_ticker():
+  # A SPY position doesn't consume an (unrelated) XOM bucket's headroom
+  opens = [{"ticker": "SPY", "direction": "put_spread", "max_loss": 500.0,
+            "strike_short": 470.0, "strike_long": 465.0, "expiry": "2026-08-21"}]
+  cand = {**_GOOD, "ticker": "XOM", "strike_short": 100.0, "strike_long": 95.0}
+  best = select_trade([cand], open_trades=opens, bankroll=_bk())
+  assert best is not None and best["ticker"] == "XOM"
 
 
 # ---- filter gauntlet (unchanged checks) ----
@@ -92,7 +111,9 @@ def test_dedup_skips_identical_open_position():
 
 def test_dedup_allows_different_strikes():
   different = {**_GOOD, "strike_short": 470.0, "strike_long": 465.0}
-  best = select_trade([different], open_trades=[_OPEN_SAME], bankroll=_bk())
+  # equity 3000 → bucket cap $750 leaves headroom past the $275 open position,
+  # so this isolates the dedup rule (not the concentration cap).
+  best = select_trade([different], open_trades=[_OPEN_SAME], bankroll=_bk(equity=3000.0))
   assert best is not None
   assert best["strike_short"] == 470.0
 

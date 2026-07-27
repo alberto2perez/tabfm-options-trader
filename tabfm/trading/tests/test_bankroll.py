@@ -130,3 +130,24 @@ def test_brake_env_override(tmp_path, monkeypatch):
   bk = get_bankroll(db)
   assert bk.recovery_mode is False  # 29.2% < overridden 50% brake
   assert bk.slice_limit == pytest.approx(306.0)  # full 18% of 1700
+
+
+def test_hard_halt_zeroes_limits_beyond_threshold(tmp_path):
+  db = tmp_path / "j.db"
+  # Peak 2400, then losses to 1560: drawdown 840/2400 = 35% → exactly at halt
+  # threshold; push past it → halted, slice/exposure both 0.
+  _seed(db, [200.0, 200.0, -300.0, -300.0, -300.0])  # equity 1500, dd 900/2400=37.5%
+  bk = get_bankroll(db)
+  assert bk.equity == 1500.0
+  assert bk.halted is True
+  assert bk.slice_limit == 0.0
+  assert bk.exposure_limit == 0.0
+
+
+def test_halt_env_override(tmp_path, monkeypatch):
+  monkeypatch.setenv("TABFM_DRAWDOWN_HALT", "0.50")
+  db = tmp_path / "j.db"
+  _seed(db, [200.0, 200.0, -300.0, -300.0, -300.0])  # 37.5% drawdown < 50% halt
+  bk = get_bankroll(db)
+  assert bk.halted is False  # below the overridden 50% halt → still trades (recovery)
+  assert bk.slice_limit > 0

@@ -1,9 +1,21 @@
 import math
 import os
+from collections import defaultdict
 
 from .bankroll import Bankroll, default_bankroll
 
 _MAX_CONTRACTS = 10
+# Correlated-risk buckets: SPY/QQQ/IWM are ~0.9 correlated, so short puts
+# across them are ONE levered short-vol bet, not diversification.
+_INDEX_ETFS = {"SPY", "QQQ", "IWM"}
+
+
+def _bucket_bias(ticker, direction) -> tuple:
+  """Group a position by correlated underlying + directional bias, so
+  concentration is capped per correlated bet, not per ticker."""
+  bucket = "index" if ticker in _INDEX_ETFS else ticker
+  bias = "bullish" if direction == "put_spread" else "bearish"
+  return (bucket, bias)
 
 
 def _passes_filters(row: dict) -> bool:
@@ -73,6 +85,12 @@ def select_trade(
     bankroll = default_bankroll()
 
   open_risk = sum(float(t.get("max_loss") or 0) for t in open_trades)
+  # Per-correlated-bucket open risk, to cap concentration in one directional bet
+  bucket_open: dict = defaultdict(float)
+  for t in open_trades:
+    bucket_open[_bucket_bias(t.get("ticker"), t.get("direction"))] += float(t.get("max_loss") or 0)
+  max_bucket_risk = bankroll.equity * float(os.environ.get("TABFM_MAX_BUCKET_RISK", "0.25"))
+
   budget = min(bankroll.slice_limit, bankroll.exposure_limit - open_risk)
   if budget <= 0:
     return None
@@ -90,7 +108,11 @@ def select_trade(
     loss_per_contract = (c["spread_width_dollars"] - c.get("entry_credit", 0.0)) * 100
     if loss_per_contract <= 0:
       continue
-    c["contracts"] = min(math.floor(budget / loss_per_contract), _MAX_CONTRACTS)
+    # Tightest of: per-trade slice, total exposure headroom, AND the
+    # per-correlated-bucket concentration cap (prevents piling into one bet).
+    bb = _bucket_bias(c.get("ticker"), c.get("direction"))
+    budget_c = min(budget, max_bucket_risk - bucket_open[bb])
+    c["contracts"] = min(math.floor(budget_c / loss_per_contract), _MAX_CONTRACTS)
     if c["contracts"] < 1:
       continue  # doesn't fit the bankroll budget
     sized.append(c)

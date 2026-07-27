@@ -20,11 +20,12 @@ class Bankroll:
   peak_equity: float
   drawdown_pct: float
   recovery_mode: bool
+  halted: bool
   slice_limit: float
   exposure_limit: float
 
 
-def _config() -> tuple[float, float, float, float]:
+def _config() -> tuple[float, float, float, float, float]:
   return (
     float(os.environ.get("TABFM_STARTING_CAPITAL", "2000")),
     # 18% slice: a realistic $5-wide S&P credit spread risks ~$335/contract,
@@ -32,11 +33,15 @@ def _config() -> tuple[float, float, float, float]:
     float(os.environ.get("TABFM_RISK_PER_TRADE", "0.18")),
     float(os.environ.get("TABFM_MAX_EXPOSURE", "0.45")),
     float(os.environ.get("TABFM_DRAWDOWN_BRAKE", "0.25")),
+    # Hard halt: beyond this drawdown from peak, place NO new trades (slice and
+    # exposure both 0) until equity recovers. Halving (the brake) is not enough
+    # when correlated positions lose together — a real replay hit 80% drawdown.
+    float(os.environ.get("TABFM_DRAWDOWN_HALT", "0.35")),
   )
 
 
 def _build(starting: float, risk_frac: float, max_exposure: float,
-           brake: float, closed: list[dict]) -> Bankroll:
+           brake: float, halt: float, closed: list[dict]) -> Bankroll:
   ordered = sorted(
     closed,
     key=lambda t: (str(t.get("date_closed") or ""), t.get("trade_id") or 0),
@@ -52,8 +57,10 @@ def _build(starting: float, risk_frac: float, max_exposure: float,
   # path; only the exposed equity is clamped to zero.
   equity = max(equity, 0.0)
   drawdown = (peak - equity) / peak if peak > 0 else 0.0
-  recovery = drawdown > brake
+  halted = drawdown > halt
+  recovery = drawdown > brake and not halted
   slice_frac = risk_frac * (0.5 if recovery else 1.0)
+  tradeable = equity > 0 and not halted
   return Bankroll(
     starting=starting,
     realized=round(realized, 2),
@@ -61,21 +68,22 @@ def _build(starting: float, risk_frac: float, max_exposure: float,
     peak_equity=round(peak, 2),
     drawdown_pct=round(drawdown, 4),
     recovery_mode=recovery,
-    slice_limit=round(equity * slice_frac, 2) if equity > 0 else 0.0,
-    exposure_limit=round(equity * max_exposure, 2) if equity > 0 else 0.0,
+    halted=halted,
+    slice_limit=round(equity * slice_frac, 2) if tradeable else 0.0,
+    exposure_limit=round(equity * max_exposure, 2) if tradeable else 0.0,
   )
 
 
 def get_bankroll(db_path: Path = _DEFAULT_DB) -> Bankroll:
-  starting, risk_frac, max_exposure, brake = _config()
+  starting, risk_frac, max_exposure, brake, halt = _config()
   if not Path(db_path).exists():
     closed = []  # journal not created yet → fresh bankroll
   else:
     closed = get_all_closed_trades(db_path, strategy="model")
-  return _build(starting, risk_frac, max_exposure, brake, closed)
+  return _build(starting, risk_frac, max_exposure, brake, halt, closed)
 
 
 def default_bankroll() -> Bankroll:
   """Bankroll as if the journal were empty — for callers without a db path."""
-  starting, risk_frac, max_exposure, brake = _config()
-  return _build(starting, risk_frac, max_exposure, brake, [])
+  starting, risk_frac, max_exposure, brake, halt = _config()
+  return _build(starting, risk_frac, max_exposure, brake, halt, [])

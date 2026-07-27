@@ -19,7 +19,8 @@ def portfolio_summary(db_path: Path = _DEFAULT_DB, as_of: date | None = None) ->
   lines.append("  PORTFOLIO SUMMARY" + (f"  ·  {as_of}" if as_of else ""))
   lines.append("╠══════════════════════════════════════════════════════╣")
 
-  mode = "RECOVERY (slice halved)" if bk.recovery_mode else "NORMAL"
+  mode = ("HALTED (drawdown — no new trades)" if bk.halted
+          else "RECOVERY (slice halved)" if bk.recovery_mode else "NORMAL")
   free = max(bk.exposure_limit - open_risk, 0.0)
   lines.append(f"  BANKROLL: equity ${bk.equity:,.2f}  (start ${bk.starting:,.0f} · realized ${bk.realized:,.2f})")
   lines.append(f"  Peak ${bk.peak_equity:,.2f} · drawdown {bk.drawdown_pct * 100:.1f}% · mode {mode}")

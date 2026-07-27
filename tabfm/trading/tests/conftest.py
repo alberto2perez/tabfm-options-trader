@@ -6,7 +6,7 @@ def _clean_bankroll_env(monkeypatch):
   """Sizing tests assume default bankroll config; shell exports must not leak in."""
   for var in (
     "TABFM_STARTING_CAPITAL", "TABFM_RISK_PER_TRADE",
-    "TABFM_MAX_EXPOSURE", "TABFM_DRAWDOWN_BRAKE",
+    "TABFM_MAX_EXPOSURE", "TABFM_DRAWDOWN_BRAKE", "TABFM_DRAWDOWN_HALT", "TABFM_MAX_BUCKET_RISK",
     "TABFM_MIN_CREDIT_ABS", "TABFM_EV_LOSS_MULT", "TABFM_MIN_IV_RANK",
     "TABFM_STOP_LOSS_MULT", "TABFM_MANAGE_DTE",
     "TABFM_SLIPPAGE_FRAC", "TABFM_FEES_RT",
