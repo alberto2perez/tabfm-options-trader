@@ -52,6 +52,10 @@ contracts. Translate:
 ## Phase 1 — Paper (start here, ~2 weeks)
 
 The book is already fresh: $2,000, zero trades, default config. Just start.
+TabFM scores from night one — the history store is pre-seeded with 582 real
+labeled outcomes, so POP% / expected-return are real from the first run (no
+weeks-long cold-start). Your journal and the P&L calibrator still start
+empty and learn only from your actual closed trades.
 
 **What 2 weeks of paper actually validates** (be clear): NOT win-rate/P&L —
 trades are 28–45 DTE so almost none close in 2 weeks, and the P&L evidence
@@ -94,6 +98,9 @@ validation with real skin.
 | `TABFM_MANAGE_DTE` | 21 | close open positions at/under this DTE |
 | `TABFM_TREND_GUARD` | on | trend-reversal advisory |
 | `TABFM_EVENT_GATE` | on | earnings/macro/VIX gate |
+| `TABFM_MIN_IV_RANK` | 30.0 | min IV rank (percentile) to sell |
+| `TABFM_MIN_CREDIT_ABS` | 0.25 | min absolute credit ($) to bother |
+| `TABFM_EV_LOSS_MULT` | 2.0 | EV-gate loss multiple (admits short_delta < 1/(1+this)) |
 
 Loosening `TABFM_MAX_BUCKET_RISK` to 0.30–0.35 recovers return at higher
 drawdown; keep it at 0.25 for first real money.
