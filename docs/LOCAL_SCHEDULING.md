@@ -28,11 +28,31 @@ pipeline, sends a macOS banner, and commits + pushes `data/`.
 - A real manual run (during market hours): `scripts/run_advisor.sh entry`
 - Logs: `data/run-logs/` (`<stamp>-<mode>.log`, plus `launchd-*.out/.err`).
 
+## Watching a run
+
+A scheduled `claude -p` run does NOT show up in the interactive Claude TUI or on
+claude.ai — it's headless. You can see it three ways:
+
+- **`scripts/advisor_watch.sh [entry|audit]`** — shows whether a run is active,
+  the launchd job status (a numeric PID = running now), and tails the latest run
+  log live. This is the quickest "what's happening now" view.
+- **The run log** — each run appends to `data/run-logs/<stamp>-<mode>.log` with
+  `starting…` / `run finished — exit N` markers. `tail -f` the newest to follow.
+- **`claude --resume`** — every run is saved as a Claude session; pick the
+  scheduled run from the list to read its full transcript.
+
+To watch the *pipeline itself* stream live (bypassing the headless session
+entirely), just run `python -m tabfm.trading.run_nightly` in a terminal.
+
+Each run is bounded by a hard timeout (default 30 min, `ADVISOR_TIMEOUT` env to
+change); on overrun the whole process tree is killed and you get a TIMED OUT
+banner.
+
 ## Notifications
 
-macOS banners on completion (`Advisor ✓/❌ …`). Lid-closed banners queue in
-Notification Center and appear on next unlock. Full detail is in
-`data/RECOMMENDATIONS.md`.
+macOS banners on completion (`Advisor ✓/❌ …`) via `terminal-notifier` — clicking
+the banner opens the results (`data/RECOMMENDATIONS.md`) or the run log. Lid-closed
+banners queue in Notification Center and appear on next unlock.
 
 ## Maintenance
 
