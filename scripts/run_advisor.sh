@@ -29,7 +29,11 @@ esac
 
 # Activate venv and load optional .env (RH_USER/RH_PASS).
 # shellcheck disable=SC1091
-source "$REPO/venv/bin/activate"
+if ! source "$REPO/venv/bin/activate"; then
+  echo "venv activation failed: $REPO/venv/bin/activate" | tee "$LOG"
+  notify "Advisor ❌" "$MODE: venv activation failed"
+  exit 1
+fi
 if [ -f "$REPO/.env" ]; then set -a; . "$REPO/.env"; set +a; fi
 
 # Plumbing self-test: no Claude, no trades, no commits.

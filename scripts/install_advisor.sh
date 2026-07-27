@@ -1,6 +1,6 @@
 #!/bin/bash
 # Install / uninstall the advisor LaunchAgents.
-# Usage: install_advisor.sh {install|uninstall|status}
+# Usage: install_advisor.sh {install|install-wake|uninstall|status}
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
@@ -48,5 +48,5 @@ case "${1:-install}" in
     echo "wake layer installed. NOTE: only reliable on AC power."
     ;;
   *)
-    echo "usage: install_advisor.sh {install|uninstall|status}"; exit 2 ;;
+    echo "usage: install_advisor.sh {install|install-wake|uninstall|status}"; exit 2 ;;
 esac
