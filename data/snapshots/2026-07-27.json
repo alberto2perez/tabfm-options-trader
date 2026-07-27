@@ -1,0 +1,3406 @@
+{
+ "as_of": "2026-07-27",
+ "vix": 18.85,
+ "tickers": {
+  "SPY": {
+   "sector": "broad_market",
+   "underlying": {
+    "close": 738.93,
+    "sma20": 746.65,
+    "sma50": 745.0004000000001,
+    "atr14": 5.642871428571425,
+    "hv20": 0.11316887203398117,
+    "volume": 48048085.1,
+    "volume_zscore": 0.141692174221903,
+    "momentum_5d": -0.004258243609265855,
+    "momentum_20d": 0.01363530363928156,
+    "rsi_14": 45.21755500407377,
+    "macd_line": -0.18505342646790268,
+    "macd_signal": 1.381924566255622,
+    "macd_histogram": -1.5669779927235248
+   },
+   "chain": [
+    {
+     "strike": 670.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 75.12,
+     "ask": 77.94,
+     "mid": 76.53,
+     "open_interest": 3389,
+     "delta": 0.880407,
+     "iv": 0.239238,
+     "dte": 53,
+     "pop_market": 0.539981
+    },
+    {
+     "strike": 675.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 70.62,
+     "ask": 73.31,
+     "mid": 71.97,
+     "open_interest": 5732,
+     "delta": 0.868332,
+     "iv": 0.233874,
+     "dte": 53,
+     "pop_market": 0.542697
+    },
+    {
+     "strike": 680.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 67.14,
+     "ask": 68.73,
+     "mid": 67.94,
+     "open_interest": 5011,
+     "delta": 0.847739,
+     "iv": 0.236109,
+     "dte": 53,
+     "pop_market": 0.548346
+    },
+    {
+     "strike": 685.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 61.4,
+     "ask": 64.2,
+     "mid": 62.8,
+     "open_interest": 5195,
+     "delta": 0.842862,
+     "iv": 0.220463,
+     "dte": 53,
+     "pop_market": 0.548433
+    },
+    {
+     "strike": 690.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 56.99,
+     "ask": 59.72,
+     "mid": 58.36,
+     "open_interest": 6326,
+     "delta": 0.82685,
+     "iv": 0.2148,
+     "dte": 53,
+     "pop_market": 0.552456
+    },
+    {
+     "strike": 695.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 52.63,
+     "ask": 55.3,
+     "mid": 53.97,
+     "open_interest": 8615,
+     "delta": 0.809236,
+     "iv": 0.208989,
+     "dte": 53,
+     "pop_market": 0.557061
+    },
+    {
+     "strike": 700.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 49.36,
+     "ask": 50.85,
+     "mid": 50.11,
+     "open_interest": 9942,
+     "delta": 0.782368,
+     "iv": 0.209883,
+     "dte": 53,
+     "pop_market": 0.565185
+    },
+    {
+     "strike": 705.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 44.0,
+     "ask": 46.6,
+     "mid": 45.3,
+     "open_interest": 8833,
+     "delta": 0.767654,
+     "iv": 0.197068,
+     "dte": 53,
+     "pop_market": 0.568725
+    },
+    {
+     "strike": 710.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 39.63,
+     "ask": 41.23,
+     "mid": 40.43,
+     "open_interest": 6639,
+     "delta": 0.751513,
+     "iv": 0.183359,
+     "dte": 53,
+     "pop_market": 0.572653
+    },
+    {
+     "strike": 715.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 36.85,
+     "ask": 37.12,
+     "mid": 36.98,
+     "open_interest": 12908,
+     "delta": 0.717678,
+     "iv": 0.184402,
+     "dte": 53,
+     "pop_market": 0.583963
+    },
+    {
+     "strike": 720.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 32.9,
+     "ask": 33.14,
+     "mid": 33.02,
+     "open_interest": 17396,
+     "delta": 0.688205,
+     "iv": 0.178292,
+     "dte": 53,
+     "pop_market": 0.593704
+    },
+    {
+     "strike": 725.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 29.09,
+     "ask": 29.3,
+     "mid": 29.2,
+     "open_interest": 17635,
+     "delta": 0.655446,
+     "iv": 0.172332,
+     "dte": 53,
+     "pop_market": 0.605193
+    },
+    {
+     "strike": 730.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 25.43,
+     "ask": 25.63,
+     "mid": 25.53,
+     "open_interest": 30463,
+     "delta": 0.619237,
+     "iv": 0.16652,
+     "dte": 53,
+     "pop_market": 0.618534
+    },
+    {
+     "strike": 735.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 21.92,
+     "ask": 22.11,
+     "mid": 22.02,
+     "open_interest": 12529,
+     "delta": 0.579604,
+     "iv": 0.16056,
+     "dte": 53,
+     "pop_market": 0.634093
+    },
+    {
+     "strike": 740.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 18.63,
+     "ask": 18.68,
+     "mid": 18.66,
+     "open_interest": 10202,
+     "delta": 0.536388,
+     "iv": 0.154153,
+     "dte": 53,
+     "pop_market": 0.652213
+    },
+    {
+     "strike": 745.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 15.54,
+     "ask": 15.59,
+     "mid": 15.56,
+     "open_interest": 16985,
+     "delta": 0.489448,
+     "iv": 0.148341,
+     "dte": 53,
+     "pop_market": 0.673229
+    },
+    {
+     "strike": 750.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 12.72,
+     "ask": 12.76,
+     "mid": 12.74,
+     "open_interest": 35758,
+     "delta": 0.439397,
+     "iv": 0.142828,
+     "dte": 53,
+     "pop_market": 0.697203
+    },
+    {
+     "strike": 755.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 10.18,
+     "ask": 10.21,
+     "mid": 10.2,
+     "open_interest": 15230,
+     "delta": 0.386917,
+     "iv": 0.137463,
+     "dte": 53,
+     "pop_market": 0.72438
+    },
+    {
+     "strike": 760.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 7.96,
+     "ask": 8.0,
+     "mid": 7.98,
+     "open_interest": 19036,
+     "delta": 0.333182,
+     "iv": 0.132397,
+     "dte": 53,
+     "pop_market": 0.754465
+    },
+    {
+     "strike": 765.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 6.08,
+     "ask": 6.12,
+     "mid": 6.1,
+     "open_interest": 16281,
+     "delta": 0.280135,
+     "iv": 0.127926,
+     "dte": 53,
+     "pop_market": 0.78643
+    },
+    {
+     "strike": 770.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 4.54,
+     "ask": 4.58,
+     "mid": 4.56,
+     "open_interest": 11660,
+     "delta": 0.229673,
+     "iv": 0.124052,
+     "dte": 53,
+     "pop_market": 0.81914
+    },
+    {
+     "strike": 775.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 3.32,
+     "ask": 3.35,
+     "mid": 3.33,
+     "open_interest": 8967,
+     "delta": 0.183867,
+     "iv": 0.120923,
+     "dte": 53,
+     "pop_market": 0.850859
+    },
+    {
+     "strike": 780.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 2.38,
+     "ask": 2.4,
+     "mid": 2.39,
+     "open_interest": 18613,
+     "delta": 0.143144,
+     "iv": 0.118092,
+     "dte": 53,
+     "pop_market": 0.880857
+    },
+    {
+     "strike": 785.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 1.68,
+     "ask": 1.7,
+     "mid": 1.69,
+     "open_interest": 18107,
+     "delta": 0.109198,
+     "iv": 0.116006,
+     "dte": 53,
+     "pop_market": 0.907192
+    },
+    {
+     "strike": 790.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 1.17,
+     "ask": 1.19,
+     "mid": 1.18,
+     "open_interest": 11865,
+     "delta": 0.08183,
+     "iv": 0.114515,
+     "dte": 53,
+     "pop_market": 0.929315
+    },
+    {
+     "strike": 795.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 0.82,
+     "ask": 0.83,
+     "mid": 0.82,
+     "open_interest": 10033,
+     "delta": 0.061088,
+     "iv": 0.113919,
+     "dte": 53,
+     "pop_market": 0.946644
+    },
+    {
+     "strike": 800.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 0.57,
+     "ask": 0.59,
+     "mid": 0.58,
+     "open_interest": 21917,
+     "delta": 0.044854,
+     "iv": 0.113472,
+     "dte": 53,
+     "pop_market": 0.960536
+    },
+    {
+     "strike": 805.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 0.41,
+     "ask": 0.42,
+     "mid": 0.41,
+     "open_interest": 3780,
+     "delta": 0.033721,
+     "iv": 0.114217,
+     "dte": 53,
+     "pop_market": 0.970233
+    },
+    {
+     "strike": 810.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 0.3,
+     "ask": 0.31,
+     "mid": 0.3,
+     "open_interest": 5454,
+     "delta": 0.025579,
+     "iv": 0.11541,
+     "dte": 53,
+     "pop_market": 0.977403
+    },
+    {
+     "strike": 670.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 3.94,
+     "ask": 3.95,
+     "mid": 3.95,
+     "open_interest": 81632,
+     "delta": 0.116971,
+     "iv": 0.236109,
+     "dte": 53,
+     "pop_market": 0.878425
+    },
+    {
+     "strike": 675.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 4.3,
+     "ask": 4.33,
+     "mid": 4.31,
+     "open_interest": 18737,
+     "delta": 0.128567,
+     "iv": 0.230297,
+     "dte": 53,
+     "pop_market": 0.868626
+    },
+    {
+     "strike": 680.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 4.72,
+     "ask": 4.74,
+     "mid": 4.73,
+     "open_interest": 22170,
+     "delta": 0.141303,
+     "iv": 0.224337,
+     "dte": 53,
+     "pop_market": 0.858186
+    },
+    {
+     "strike": 685.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 5.18,
+     "ask": 5.21,
+     "mid": 5.2,
+     "open_interest": 16580,
+     "delta": 0.155776,
+     "iv": 0.218675,
+     "dte": 53,
+     "pop_market": 0.846592
+    },
+    {
+     "strike": 690.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 5.71,
+     "ask": 5.73,
+     "mid": 5.72,
+     "open_interest": 18226,
+     "delta": 0.171871,
+     "iv": 0.213012,
+     "dte": 53,
+     "pop_market": 0.834069
+    },
+    {
+     "strike": 695.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 6.3,
+     "ask": 6.32,
+     "mid": 6.31,
+     "open_interest": 7065,
+     "delta": 0.189778,
+     "iv": 0.20735,
+     "dte": 53,
+     "pop_market": 0.820629
+    },
+    {
+     "strike": 700.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 6.96,
+     "ask": 6.98,
+     "mid": 6.97,
+     "open_interest": 43624,
+     "delta": 0.209701,
+     "iv": 0.201687,
+     "dte": 53,
+     "pop_market": 0.806204
+    },
+    {
+     "strike": 705.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 7.7,
+     "ask": 7.73,
+     "mid": 7.71,
+     "open_interest": 7886,
+     "delta": 0.232021,
+     "iv": 0.196174,
+     "dte": 53,
+     "pop_market": 0.790637
+    },
+    {
+     "strike": 710.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 8.53,
+     "ask": 8.55,
+     "mid": 8.54,
+     "open_interest": 65202,
+     "delta": 0.25652,
+     "iv": 0.190362,
+     "dte": 53,
+     "pop_market": 0.774331
+    },
+    {
+     "strike": 715.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 9.47,
+     "ask": 9.5,
+     "mid": 9.48,
+     "open_interest": 30817,
+     "delta": 0.284055,
+     "iv": 0.184849,
+     "dte": 53,
+     "pop_market": 0.756806
+    },
+    {
+     "strike": 720.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 10.53,
+     "ask": 10.56,
+     "mid": 10.54,
+     "open_interest": 27333,
+     "delta": 0.314453,
+     "iv": 0.179186,
+     "dte": 53,
+     "pop_market": 0.738492
+    },
+    {
+     "strike": 725.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 11.72,
+     "ask": 11.75,
+     "mid": 11.73,
+     "open_interest": 18026,
+     "delta": 0.348136,
+     "iv": 0.173524,
+     "dte": 53,
+     "pop_market": 0.719296
+    },
+    {
+     "strike": 730.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 13.07,
+     "ask": 13.09,
+     "mid": 13.08,
+     "open_interest": 23738,
+     "delta": 0.385377,
+     "iv": 0.167862,
+     "dte": 53,
+     "pop_market": 0.69935
+    },
+    {
+     "strike": 735.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 14.59,
+     "ask": 14.62,
+     "mid": 14.61,
+     "open_interest": 15327,
+     "delta": 0.426435,
+     "iv": 0.162199,
+     "dte": 53,
+     "pop_market": 0.678984
+    },
+    {
+     "strike": 740.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 16.33,
+     "ask": 16.36,
+     "mid": 16.34,
+     "open_interest": 12824,
+     "delta": 0.471539,
+     "iv": 0.156686,
+     "dte": 53,
+     "pop_market": 0.65827
+    },
+    {
+     "strike": 745.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 18.3,
+     "ask": 18.34,
+     "mid": 18.32,
+     "open_interest": 5512,
+     "delta": 0.520769,
+     "iv": 0.151172,
+     "dte": 53,
+     "pop_market": 0.637668
+    },
+    {
+     "strike": 750.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 20.44,
+     "ask": 20.64,
+     "mid": 20.54,
+     "open_interest": 22056,
+     "delta": 0.57421,
+     "iv": 0.145659,
+     "dte": 53,
+     "pop_market": 0.617501
+    },
+    {
+     "strike": 755.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 22.98,
+     "ask": 23.21,
+     "mid": 23.09,
+     "open_interest": 6564,
+     "delta": 0.631305,
+     "iv": 0.140592,
+     "dte": 53,
+     "pop_market": 0.598451
+    },
+    {
+     "strike": 760.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 24.79,
+     "ask": 26.16,
+     "mid": 25.48,
+     "open_interest": 8150,
+     "delta": 0.701766,
+     "iv": 0.130311,
+     "dte": 53,
+     "pop_market": 0.579704
+    },
+    {
+     "strike": 765.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 27.88,
+     "ask": 29.48,
+     "mid": 28.68,
+     "open_interest": 3051,
+     "delta": 0.772283,
+     "iv": 0.124052,
+     "dte": 53,
+     "pop_market": 0.564331
+    },
+    {
+     "strike": 770.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 31.5,
+     "ask": 33.19,
+     "mid": 32.34,
+     "open_interest": 3367,
+     "delta": 0.846263,
+     "iv": 0.118241,
+     "dte": 53,
+     "pop_market": 0.552564
+    },
+    {
+     "strike": 775.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 35.52,
+     "ask": 37.94,
+     "mid": 36.73,
+     "open_interest": 4015,
+     "delta": 0.901572,
+     "iv": 0.117794,
+     "dte": 53,
+     "pop_market": 0.54542
+    },
+    {
+     "strike": 780.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 40.0,
+     "ask": 42.84,
+     "mid": 41.42,
+     "open_interest": 1271,
+     "delta": 0.944588,
+     "iv": 0.119284,
+     "dte": 53,
+     "pop_market": 0.540969
+    }
+   ]
+  },
+  "QQQ": {
+   "sector": "tech",
+   "underlying": {
+    "close": 681.79,
+    "sma20": 710.4765,
+    "sma50": 717.6288000000001,
+    "atr14": 9.40742142857142,
+    "hv20": 0.23276232180898918,
+    "volume": 38028128.65,
+    "volume_zscore": 0.05701311926871914,
+    "momentum_5d": -0.02050110622647472,
+    "momentum_20d": -0.03500254769857902,
+    "rsi_14": 38.48938404912217,
+    "macd_line": -7.323870377641015,
+    "macd_signal": -3.6448990635766747,
+    "macd_histogram": -3.67897131406434
+   },
+   "chain": [
+    {
+     "strike": 620.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 73.37,
+     "ask": 74.04,
+     "mid": 73.71,
+     "open_interest": 3677,
+     "delta": 0.814884,
+     "iv": 0.31434,
+     "dte": 53,
+     "pop_market": 0.564128
+    },
+    {
+     "strike": 625.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 69.03,
+     "ask": 69.8,
+     "mid": 69.41,
+     "open_interest": 4614,
+     "delta": 0.800504,
+     "iv": 0.308082,
+     "dte": 53,
+     "pop_market": 0.567899
+    },
+    {
+     "strike": 630.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 64.98,
+     "ask": 66.04,
+     "mid": 65.51,
+     "open_interest": 10182,
+     "delta": 0.782224,
+     "iv": 0.306144,
+     "dte": 53,
+     "pop_market": 0.573312
+    },
+    {
+     "strike": 635.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 60.84,
+     "ask": 61.92,
+     "mid": 61.38,
+     "open_interest": 3233,
+     "delta": 0.765411,
+     "iv": 0.300184,
+     "dte": 53,
+     "pop_market": 0.578131
+    },
+    {
+     "strike": 640.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 57.01,
+     "ask": 57.59,
+     "mid": 57.3,
+     "open_interest": 5244,
+     "delta": 0.747461,
+     "iv": 0.294074,
+     "dte": 53,
+     "pop_market": 0.583414
+    },
+    {
+     "strike": 645.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 53.13,
+     "ask": 53.55,
+     "mid": 53.34,
+     "open_interest": 9110,
+     "delta": 0.727951,
+     "iv": 0.288412,
+     "dte": 53,
+     "pop_market": 0.589458
+    },
+    {
+     "strike": 650.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 49.39,
+     "ask": 49.75,
+     "mid": 49.57,
+     "open_interest": 7490,
+     "delta": 0.706471,
+     "iv": 0.283942,
+     "dte": 53,
+     "pop_market": 0.596484
+    },
+    {
+     "strike": 655.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 45.76,
+     "ask": 45.96,
+     "mid": 45.86,
+     "open_interest": 4786,
+     "delta": 0.683933,
+     "iv": 0.279024,
+     "dte": 53,
+     "pop_market": 0.604108
+    },
+    {
+     "strike": 660.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 42.17,
+     "ask": 42.37,
+     "mid": 42.27,
+     "open_interest": 23892,
+     "delta": 0.659938,
+     "iv": 0.274405,
+     "dte": 53,
+     "pop_market": 0.612516
+    },
+    {
+     "strike": 665.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 38.69,
+     "ask": 38.89,
+     "mid": 38.79,
+     "open_interest": 2896,
+     "delta": 0.634692,
+     "iv": 0.269637,
+     "dte": 53,
+     "pop_market": 0.621774
+    },
+    {
+     "strike": 670.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 35.33,
+     "ask": 35.51,
+     "mid": 35.42,
+     "open_interest": 8441,
+     "delta": 0.608137,
+     "iv": 0.264868,
+     "dte": 53,
+     "pop_market": 0.63187
+    },
+    {
+     "strike": 675.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 32.13,
+     "ask": 32.3,
+     "mid": 32.22,
+     "open_interest": 10561,
+     "delta": 0.580254,
+     "iv": 0.260398,
+     "dte": 53,
+     "pop_market": 0.643024
+    },
+    {
+     "strike": 680.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 29.03,
+     "ask": 29.22,
+     "mid": 29.12,
+     "open_interest": 10710,
+     "delta": 0.551202,
+     "iv": 0.255927,
+     "dte": 53,
+     "pop_market": 0.655012
+    },
+    {
+     "strike": 685.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 26.1,
+     "ask": 26.28,
+     "mid": 26.19,
+     "open_interest": 9807,
+     "delta": 0.521053,
+     "iv": 0.251308,
+     "dte": 53,
+     "pop_market": 0.668121
+    },
+    {
+     "strike": 690.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 23.31,
+     "ask": 23.44,
+     "mid": 23.38,
+     "open_interest": 13864,
+     "delta": 0.489889,
+     "iv": 0.246689,
+     "dte": 53,
+     "pop_market": 0.682177
+    },
+    {
+     "strike": 695.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 20.69,
+     "ask": 20.86,
+     "mid": 20.77,
+     "open_interest": 2292,
+     "delta": 0.457987,
+     "iv": 0.242516,
+     "dte": 53,
+     "pop_market": 0.697311
+    },
+    {
+     "strike": 700.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 18.24,
+     "ask": 18.38,
+     "mid": 18.31,
+     "open_interest": 17964,
+     "delta": 0.42542,
+     "iv": 0.238195,
+     "dte": 53,
+     "pop_market": 0.713371
+    },
+    {
+     "strike": 705.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 15.96,
+     "ask": 16.13,
+     "mid": 16.05,
+     "open_interest": 4845,
+     "delta": 0.39259,
+     "iv": 0.234172,
+     "dte": 53,
+     "pop_market": 0.730409
+    },
+    {
+     "strike": 710.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 13.87,
+     "ask": 14.01,
+     "mid": 13.94,
+     "open_interest": 28262,
+     "delta": 0.359626,
+     "iv": 0.230148,
+     "dte": 53,
+     "pop_market": 0.748202
+    },
+    {
+     "strike": 715.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 11.94,
+     "ask": 12.1,
+     "mid": 12.02,
+     "open_interest": 4965,
+     "delta": 0.326904,
+     "iv": 0.226274,
+     "dte": 53,
+     "pop_market": 0.766704
+    },
+    {
+     "strike": 720.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 10.24,
+     "ask": 10.36,
+     "mid": 10.3,
+     "open_interest": 11954,
+     "delta": 0.294888,
+     "iv": 0.222698,
+     "dte": 53,
+     "pop_market": 0.785642
+    },
+    {
+     "strike": 725.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 8.68,
+     "ask": 8.8,
+     "mid": 8.74,
+     "open_interest": 7239,
+     "delta": 0.263598,
+     "iv": 0.219122,
+     "dte": 53,
+     "pop_market": 0.804911
+    },
+    {
+     "strike": 730.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 7.32,
+     "ask": 7.41,
+     "mid": 7.37,
+     "open_interest": 10868,
+     "delta": 0.233875,
+     "iv": 0.215992,
+     "dte": 53,
+     "pop_market": 0.823942
+    },
+    {
+     "strike": 735.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 6.11,
+     "ask": 6.22,
+     "mid": 6.17,
+     "open_interest": 8200,
+     "delta": 0.205852,
+     "iv": 0.213161,
+     "dte": 53,
+     "pop_market": 0.842561
+    },
+    {
+     "strike": 740.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 5.09,
+     "ask": 5.16,
+     "mid": 5.12,
+     "open_interest": 16075,
+     "delta": 0.179596,
+     "iv": 0.210479,
+     "dte": 53,
+     "pop_market": 0.86065
+    },
+    {
+     "strike": 745.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 4.18,
+     "ask": 4.27,
+     "mid": 4.22,
+     "open_interest": 5639,
+     "delta": 0.155287,
+     "iv": 0.207946,
+     "dte": 53,
+     "pop_market": 0.877932
+    },
+    {
+     "strike": 620.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 8.21,
+     "ask": 8.3,
+     "mid": 8.26,
+     "open_interest": 39591,
+     "delta": 0.180829,
+     "iv": 0.306889,
+     "dte": 53,
+     "pop_market": 0.818984
+    },
+    {
+     "strike": 625.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 8.96,
+     "ask": 9.07,
+     "mid": 9.02,
+     "open_interest": 14050,
+     "delta": 0.196227,
+     "iv": 0.301972,
+     "dte": 53,
+     "pop_market": 0.807362
+    },
+    {
+     "strike": 630.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 9.81,
+     "ask": 9.92,
+     "mid": 9.87,
+     "open_interest": 25238,
+     "delta": 0.21308,
+     "iv": 0.297502,
+     "dte": 53,
+     "pop_market": 0.794961
+    },
+    {
+     "strike": 635.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 10.73,
+     "ask": 10.84,
+     "mid": 10.79,
+     "open_interest": 9554,
+     "delta": 0.231035,
+     "iv": 0.292882,
+     "dte": 53,
+     "pop_market": 0.782238
+    },
+    {
+     "strike": 640.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 11.73,
+     "ask": 11.84,
+     "mid": 11.79,
+     "open_interest": 8311,
+     "delta": 0.250247,
+     "iv": 0.288263,
+     "dte": 53,
+     "pop_market": 0.769105
+    },
+    {
+     "strike": 645.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 12.82,
+     "ask": 12.95,
+     "mid": 12.88,
+     "open_interest": 7336,
+     "delta": 0.270852,
+     "iv": 0.283793,
+     "dte": 53,
+     "pop_market": 0.755528
+    },
+    {
+     "strike": 650.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 14.01,
+     "ask": 14.15,
+     "mid": 14.08,
+     "open_interest": 40160,
+     "delta": 0.292711,
+     "iv": 0.279173,
+     "dte": 53,
+     "pop_market": 0.741745
+    },
+    {
+     "strike": 655.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 15.3,
+     "ask": 15.45,
+     "mid": 15.38,
+     "open_interest": 3770,
+     "delta": 0.316099,
+     "iv": 0.274852,
+     "dte": 53,
+     "pop_market": 0.727481
+    },
+    {
+     "strike": 660.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 16.7,
+     "ask": 16.85,
+     "mid": 16.77,
+     "open_interest": 51358,
+     "delta": 0.340729,
+     "iv": 0.270233,
+     "dte": 53,
+     "pop_market": 0.713227
+    },
+    {
+     "strike": 665.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 18.22,
+     "ask": 18.38,
+     "mid": 18.3,
+     "open_interest": 2785,
+     "delta": 0.366833,
+     "iv": 0.265762,
+     "dte": 53,
+     "pop_market": 0.69873
+    },
+    {
+     "strike": 670.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 19.87,
+     "ask": 20.03,
+     "mid": 19.95,
+     "open_interest": 23281,
+     "delta": 0.394369,
+     "iv": 0.261441,
+     "dte": 53,
+     "pop_market": 0.684089
+    },
+    {
+     "strike": 675.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 21.67,
+     "ask": 21.82,
+     "mid": 21.75,
+     "open_interest": 14595,
+     "delta": 0.423253,
+     "iv": 0.25712,
+     "dte": 53,
+     "pop_market": 0.669584
+    },
+    {
+     "strike": 680.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 23.56,
+     "ask": 23.7,
+     "mid": 23.63,
+     "open_interest": 23012,
+     "delta": 0.452885,
+     "iv": 0.252798,
+     "dte": 53,
+     "pop_market": 0.655364
+    },
+    {
+     "strike": 685.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 25.63,
+     "ask": 25.79,
+     "mid": 25.71,
+     "open_interest": 9295,
+     "delta": 0.484299,
+     "iv": 0.248477,
+     "dte": 53,
+     "pop_market": 0.641169
+    },
+    {
+     "strike": 690.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 27.87,
+     "ask": 28.04,
+     "mid": 27.95,
+     "open_interest": 22805,
+     "delta": 0.516806,
+     "iv": 0.244454,
+     "dte": 53,
+     "pop_market": 0.627184
+    },
+    {
+     "strike": 695.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 30.28,
+     "ask": 30.44,
+     "mid": 30.36,
+     "open_interest": 3243,
+     "delta": 0.550395,
+     "iv": 0.240132,
+     "dte": 53,
+     "pop_market": 0.613738
+    },
+    {
+     "strike": 700.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 32.84,
+     "ask": 33.04,
+     "mid": 32.94,
+     "open_interest": 63664,
+     "delta": 0.58475,
+     "iv": 0.236109,
+     "dte": 53,
+     "pop_market": 0.600699
+    },
+    {
+     "strike": 705.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 35.61,
+     "ask": 35.82,
+     "mid": 35.72,
+     "open_interest": 5363,
+     "delta": 0.619677,
+     "iv": 0.232235,
+     "dte": 53,
+     "pop_market": 0.588374
+    },
+    {
+     "strike": 710.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 38.56,
+     "ask": 38.77,
+     "mid": 38.67,
+     "open_interest": 8362,
+     "delta": 0.655179,
+     "iv": 0.228211,
+     "dte": 53,
+     "pop_market": 0.576789
+    },
+    {
+     "strike": 715.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 39.95,
+     "ask": 42.13,
+     "mid": 41.04,
+     "open_interest": 9417,
+     "delta": 0.69983,
+     "iv": 0.215843,
+     "dte": 53,
+     "pop_market": 0.564387
+    },
+    {
+     "strike": 720.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 43.42,
+     "ask": 45.7,
+     "mid": 44.56,
+     "open_interest": 7031,
+     "delta": 0.734857,
+     "iv": 0.213608,
+     "dte": 53,
+     "pop_market": 0.554765
+    },
+    {
+     "strike": 725.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 47.0,
+     "ask": 49.29,
+     "mid": 48.14,
+     "open_interest": 4000,
+     "delta": 0.770802,
+     "iv": 0.210181,
+     "dte": 53,
+     "pop_market": 0.545872
+    },
+    {
+     "strike": 730.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 51.55,
+     "ask": 53.06,
+     "mid": 52.3,
+     "open_interest": 4266,
+     "delta": 0.797891,
+     "iv": 0.212118,
+     "dte": 53,
+     "pop_market": 0.539077
+    },
+    {
+     "strike": 735.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 54.66,
+     "ask": 57.1,
+     "mid": 55.88,
+     "open_interest": 5198,
+     "delta": 0.841255,
+     "iv": 0.202879,
+     "dte": 53,
+     "pop_market": 0.531451
+    },
+    {
+     "strike": 740.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 58.77,
+     "ask": 61.24,
+     "mid": 60.01,
+     "open_interest": 3067,
+     "delta": 0.875881,
+     "iv": 0.198707,
+     "dte": 53,
+     "pop_market": 0.526023
+    },
+    {
+     "strike": 745.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 64.25,
+     "ask": 65.49,
+     "mid": 64.87,
+     "open_interest": 3979,
+     "delta": 0.886516,
+     "iv": 0.206754,
+     "dte": 53,
+     "pop_market": 0.522773
+    }
+   ]
+  },
+  "IWM": {
+   "sector": "small_cap",
+   "underlying": {
+    "close": 293.06,
+    "sma20": 295.5235,
+    "sma50": 291.3988,
+    "atr14": 3.2621428571428503,
+    "hv20": 0.11337214087267368,
+    "volume": 21879021.8,
+    "volume_zscore": 0.2555113732003361,
+    "momentum_5d": 0.0025657692176115354,
+    "momentum_20d": -0.02257946169496039,
+    "rsi_14": 49.00346716230638,
+    "macd_line": 0.18116676476927296,
+    "macd_signal": 1.004365190733029,
+    "macd_histogram": -0.8231984259637561
+   },
+   "chain": [
+    {
+     "strike": 267.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 28.19,
+     "ask": 30.16,
+     "mid": 29.18,
+     "open_interest": 10,
+     "delta": 0.87627,
+     "iv": 0.232682,
+     "dte": 53,
+     "pop_market": 0.540518
+    },
+    {
+     "strike": 270.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 26.73,
+     "ask": 27.04,
+     "mid": 26.88,
+     "open_interest": 18966,
+     "delta": 0.840858,
+     "iv": 0.241026,
+     "dte": 53,
+     "pop_market": 0.550691
+    },
+    {
+     "strike": 273.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 24.18,
+     "ask": 24.49,
+     "mid": 24.34,
+     "open_interest": 4,
+     "delta": 0.814634,
+     "iv": 0.235811,
+     "dte": 53,
+     "pop_market": 0.557671
+    },
+    {
+     "strike": 276.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 21.68,
+     "ask": 22.0,
+     "mid": 21.84,
+     "open_interest": 5,
+     "delta": 0.785734,
+     "iv": 0.229701,
+     "dte": 53,
+     "pop_market": 0.565827
+    },
+    {
+     "strike": 279.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 19.27,
+     "ask": 19.6,
+     "mid": 19.44,
+     "open_interest": 0,
+     "delta": 0.752545,
+     "iv": 0.224188,
+     "dte": 53,
+     "pop_market": 0.57584
+    },
+    {
+     "strike": 282.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 17.02,
+     "ask": 17.28,
+     "mid": 17.15,
+     "open_interest": 3,
+     "delta": 0.714965,
+     "iv": 0.219271,
+     "dte": 53,
+     "pop_market": 0.587879
+    },
+    {
+     "strike": 285.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 14.87,
+     "ask": 15.05,
+     "mid": 14.96,
+     "open_interest": 30459,
+     "delta": 0.673758,
+     "iv": 0.213906,
+     "dte": 53,
+     "pop_market": 0.60209
+    },
+    {
+     "strike": 288.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 12.78,
+     "ask": 12.95,
+     "mid": 12.86,
+     "open_interest": 31,
+     "delta": 0.628708,
+     "iv": 0.208244,
+     "dte": 53,
+     "pop_market": 0.618589
+    },
+    {
+     "strike": 291.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 10.84,
+     "ask": 11.01,
+     "mid": 10.93,
+     "open_interest": 17,
+     "delta": 0.57966,
+     "iv": 0.202879,
+     "dte": 53,
+     "pop_market": 0.638019
+    },
+    {
+     "strike": 294.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 9.04,
+     "ask": 9.15,
+     "mid": 9.09,
+     "open_interest": 338,
+     "delta": 0.527162,
+     "iv": 0.196919,
+     "dte": 53,
+     "pop_market": 0.660229
+    },
+    {
+     "strike": 297.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 7.41,
+     "ask": 7.52,
+     "mid": 7.46,
+     "open_interest": 135,
+     "delta": 0.471707,
+     "iv": 0.191703,
+     "dte": 53,
+     "pop_market": 0.68582
+    },
+    {
+     "strike": 300.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 5.95,
+     "ask": 6.05,
+     "mid": 6.0,
+     "open_interest": 29322,
+     "delta": 0.41444,
+     "iv": 0.186339,
+     "dte": 53,
+     "pop_market": 0.714303
+    },
+    {
+     "strike": 303.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 4.69,
+     "ask": 4.78,
+     "mid": 4.74,
+     "open_interest": 367,
+     "delta": 0.357042,
+     "iv": 0.182018,
+     "dte": 53,
+     "pop_market": 0.745216
+    },
+    {
+     "strike": 306.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 3.61,
+     "ask": 3.69,
+     "mid": 3.65,
+     "open_interest": 155,
+     "delta": 0.30034,
+     "iv": 0.177398,
+     "dte": 53,
+     "pop_market": 0.778285
+    },
+    {
+     "strike": 309.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 2.72,
+     "ask": 2.79,
+     "mid": 2.75,
+     "open_interest": 63,
+     "delta": 0.247151,
+     "iv": 0.173673,
+     "dte": 53,
+     "pop_market": 0.811657
+    },
+    {
+     "strike": 312.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 2.01,
+     "ask": 2.07,
+     "mid": 2.04,
+     "open_interest": 1170,
+     "delta": 0.198365,
+     "iv": 0.170246,
+     "dte": 53,
+     "pop_market": 0.844423
+    },
+    {
+     "strike": 315.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 1.46,
+     "ask": 1.5,
+     "mid": 1.48,
+     "open_interest": 31776,
+     "delta": 0.155789,
+     "iv": 0.167564,
+     "dte": 53,
+     "pop_market": 0.874759
+    },
+    {
+     "strike": 318.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 1.02,
+     "ask": 1.07,
+     "mid": 1.04,
+     "open_interest": 74,
+     "delta": 0.119173,
+     "iv": 0.16503,
+     "dte": 53,
+     "pop_market": 0.902243
+    },
+    {
+     "strike": 321.0,
+     "expiry": "2026-09-18",
+     "option_type": "call",
+     "bid": 0.71,
+     "ask": 0.75,
+     "mid": 0.73,
+     "open_interest": 11,
+     "delta": 0.088907,
+     "iv": 0.162795,
+     "dte": 53,
+     "pop_market": 0.925936
+    },
+    {
+     "strike": 267.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 2.41,
+     "ask": 2.46,
+     "mid": 2.44,
+     "open_interest": 95,
+     "delta": 0.152056,
+     "iv": 0.264421,
+     "dte": 53,
+     "pop_market": 0.845997
+    },
+    {
+     "strike": 270.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 2.79,
+     "ask": 2.85,
+     "mid": 2.82,
+     "open_interest": 33158,
+     "delta": 0.174192,
+     "iv": 0.257716,
+     "dte": 53,
+     "pop_market": 0.828485
+    },
+    {
+     "strike": 273.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 3.24,
+     "ask": 3.3,
+     "mid": 3.27,
+     "open_interest": 3175,
+     "delta": 0.199634,
+     "iv": 0.251457,
+     "dte": 53,
+     "pop_market": 0.809238
+    },
+    {
+     "strike": 276.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 3.76,
+     "ask": 3.83,
+     "mid": 3.79,
+     "open_interest": 292,
+     "delta": 0.228522,
+     "iv": 0.245497,
+     "dte": 53,
+     "pop_market": 0.788495
+    },
+    {
+     "strike": 279.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 4.36,
+     "ask": 4.44,
+     "mid": 4.4,
+     "open_interest": 468,
+     "delta": 0.260727,
+     "iv": 0.239387,
+     "dte": 53,
+     "pop_market": 0.766631
+    },
+    {
+     "strike": 282.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 5.06,
+     "ask": 5.14,
+     "mid": 5.1,
+     "open_interest": 212,
+     "delta": 0.29669,
+     "iv": 0.233427,
+     "dte": 53,
+     "pop_market": 0.743741
+    },
+    {
+     "strike": 285.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 5.87,
+     "ask": 5.96,
+     "mid": 5.92,
+     "open_interest": 34268,
+     "delta": 0.336685,
+     "iv": 0.227913,
+     "dte": 53,
+     "pop_market": 0.719922
+    },
+    {
+     "strike": 288.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 6.8,
+     "ask": 6.89,
+     "mid": 6.84,
+     "open_interest": 161,
+     "delta": 0.380349,
+     "iv": 0.222251,
+     "dte": 53,
+     "pop_market": 0.695813
+    },
+    {
+     "strike": 291.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 7.86,
+     "ask": 7.96,
+     "mid": 7.91,
+     "open_interest": 430,
+     "delta": 0.427731,
+     "iv": 0.216588,
+     "dte": 53,
+     "pop_market": 0.671721
+    },
+    {
+     "strike": 294.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 9.07,
+     "ask": 9.17,
+     "mid": 9.12,
+     "open_interest": 372,
+     "delta": 0.478641,
+     "iv": 0.211224,
+     "dte": 53,
+     "pop_market": 0.647929
+    },
+    {
+     "strike": 297.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 10.44,
+     "ask": 10.56,
+     "mid": 10.5,
+     "open_interest": 188,
+     "delta": 0.532522,
+     "iv": 0.206158,
+     "dte": 53,
+     "pop_market": 0.62508
+    },
+    {
+     "strike": 300.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 11.95,
+     "ask": 12.13,
+     "mid": 12.04,
+     "open_interest": 16230,
+     "delta": 0.588801,
+     "iv": 0.201091,
+     "dte": 53,
+     "pop_market": 0.603538
+    },
+    {
+     "strike": 303.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 13.67,
+     "ask": 13.89,
+     "mid": 13.78,
+     "open_interest": 0,
+     "delta": 0.646257,
+     "iv": 0.196621,
+     "dte": 53,
+     "pop_market": 0.583924
+    },
+    {
+     "strike": 306.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 15.6,
+     "ask": 15.89,
+     "mid": 15.75,
+     "open_interest": 15,
+     "delta": 0.702602,
+     "iv": 0.193492,
+     "dte": 53,
+     "pop_market": 0.566852
+    },
+    {
+     "strike": 309.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 17.72,
+     "ask": 18.02,
+     "mid": 17.87,
+     "open_interest": 5,
+     "delta": 0.758768,
+     "iv": 0.189766,
+     "dte": 53,
+     "pop_market": 0.552209
+    },
+    {
+     "strike": 312.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 20.02,
+     "ask": 20.34,
+     "mid": 20.18,
+     "open_interest": 0,
+     "delta": 0.81198,
+     "iv": 0.186786,
+     "dte": 53,
+     "pop_market": 0.540316
+    },
+    {
+     "strike": 315.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 22.47,
+     "ask": 22.84,
+     "mid": 22.66,
+     "open_interest": 105,
+     "delta": 0.862077,
+     "iv": 0.183955,
+     "dte": 53,
+     "pop_market": 0.531277
+    },
+    {
+     "strike": 318.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 25.08,
+     "ask": 27.16,
+     "mid": 26.12,
+     "open_interest": 5,
+     "delta": 0.840068,
+     "iv": 0.218526,
+     "dte": 53,
+     "pop_market": 0.529033
+    },
+    {
+     "strike": 321.0,
+     "expiry": "2026-09-18",
+     "option_type": "put",
+     "bid": 27.85,
+     "ask": 29.99,
+     "mid": 28.92,
+     "open_interest": 0,
+     "delta": 0.86137,
+     "iv": 0.226423,
+     "dte": 53,
+     "pop_market": 0.523685
+    }
+   ]
+  }
+ },
+ "closes": {
+  "SPY": [
+   [
+    "2026-02-02",
+    695.41
+   ],
+   [
+    "2026-02-03",
+    689.53
+   ],
+   [
+    "2026-02-04",
+    686.19
+   ],
+   [
+    "2026-02-05",
+    677.62
+   ],
+   [
+    "2026-02-06",
+    690.62
+   ],
+   [
+    "2026-02-09",
+    693.95
+   ],
+   [
+    "2026-02-10",
+    692.12
+   ],
+   [
+    "2026-02-11",
+    691.96
+   ],
+   [
+    "2026-02-12",
+    681.27
+   ],
+   [
+    "2026-02-13",
+    681.75
+   ],
+   [
+    "2026-02-17",
+    682.85
+   ],
+   [
+    "2026-02-18",
+    686.29
+   ],
+   [
+    "2026-02-19",
+    684.48
+   ],
+   [
+    "2026-02-20",
+    689.43
+   ],
+   [
+    "2026-02-23",
+    682.39
+   ],
+   [
+    "2026-02-24",
+    687.35
+   ],
+   [
+    "2026-02-25",
+    693.15
+   ],
+   [
+    "2026-02-26",
+    689.3
+   ],
+   [
+    "2026-02-27",
+    685.99
+   ],
+   [
+    "2026-03-02",
+    686.38
+   ],
+   [
+    "2026-03-03",
+    680.33
+   ],
+   [
+    "2026-03-04",
+    685.13
+   ],
+   [
+    "2026-03-05",
+    681.31
+   ],
+   [
+    "2026-03-06",
+    672.38
+   ],
+   [
+    "2026-03-09",
+    678.27
+   ],
+   [
+    "2026-03-10",
+    677.18
+   ],
+   [
+    "2026-03-11",
+    676.33
+   ],
+   [
+    "2026-03-12",
+    666.06
+   ],
+   [
+    "2026-03-13",
+    662.29
+   ],
+   [
+    "2026-03-16",
+    669.03
+   ],
+   [
+    "2026-03-17",
+    670.79
+   ],
+   [
+    "2026-03-18",
+    661.43
+   ],
+   [
+    "2026-03-19",
+    659.8
+   ],
+   [
+    "2026-03-20",
+    648.57
+   ],
+   [
+    "2026-03-23",
+    655.38
+   ],
+   [
+    "2026-03-24",
+    653.18
+   ],
+   [
+    "2026-03-25",
+    656.82
+   ],
+   [
+    "2026-03-26",
+    645.09
+   ],
+   [
+    "2026-03-27",
+    634.09
+   ],
+   [
+    "2026-03-30",
+    631.97
+   ],
+   [
+    "2026-03-31",
+    650.34
+   ],
+   [
+    "2026-04-01",
+    655.24
+   ],
+   [
+    "2026-04-02",
+    655.83
+   ],
+   [
+    "2026-04-06",
+    658.93
+   ],
+   [
+    "2026-04-07",
+    659.22
+   ],
+   [
+    "2026-04-08",
+    676.01
+   ],
+   [
+    "2026-04-09",
+    679.91
+   ],
+   [
+    "2026-04-10",
+    679.46
+   ],
+   [
+    "2026-04-13",
+    686.1
+   ],
+   [
+    "2026-04-14",
+    694.46
+   ],
+   [
+    "2026-04-15",
+    699.94
+   ],
+   [
+    "2026-04-16",
+    701.66
+   ],
+   [
+    "2026-04-17",
+    710.14
+   ],
+   [
+    "2026-04-20",
+    708.72
+   ],
+   [
+    "2026-04-21",
+    704.08
+   ],
+   [
+    "2026-04-22",
+    711.21
+   ],
+   [
+    "2026-04-23",
+    708.45
+   ],
+   [
+    "2026-04-24",
+    713.94
+   ],
+   [
+    "2026-04-27",
+    715.17
+   ],
+   [
+    "2026-04-28",
+    711.69
+   ],
+   [
+    "2026-04-29",
+    711.58
+   ],
+   [
+    "2026-04-30",
+    718.66
+   ],
+   [
+    "2026-05-01",
+    720.65
+   ],
+   [
+    "2026-05-04",
+    718.01
+   ],
+   [
+    "2026-05-05",
+    723.77
+   ],
+   [
+    "2026-05-06",
+    733.83
+   ],
+   [
+    "2026-05-07",
+    731.58
+   ],
+   [
+    "2026-05-08",
+    737.62
+   ],
+   [
+    "2026-05-11",
+    739.3
+   ],
+   [
+    "2026-05-12",
+    738.18
+   ],
+   [
+    "2026-05-13",
+    742.31
+   ],
+   [
+    "2026-05-14",
+    748.17
+   ],
+   [
+    "2026-05-15",
+    739.17
+   ],
+   [
+    "2026-05-18",
+    738.65
+   ],
+   [
+    "2026-05-19",
+    733.73
+   ],
+   [
+    "2026-05-20",
+    741.25
+   ],
+   [
+    "2026-05-21",
+    742.72
+   ],
+   [
+    "2026-05-22",
+    745.64
+   ],
+   [
+    "2026-05-26",
+    750.59
+   ],
+   [
+    "2026-05-27",
+    750.46
+   ],
+   [
+    "2026-05-28",
+    754.6
+   ],
+   [
+    "2026-05-29",
+    756.48
+   ],
+   [
+    "2026-06-01",
+    758.54
+   ],
+   [
+    "2026-06-02",
+    759.57
+   ],
+   [
+    "2026-06-03",
+    754.24
+   ],
+   [
+    "2026-06-04",
+    757.09
+   ],
+   [
+    "2026-06-05",
+    737.55
+   ],
+   [
+    "2026-06-08",
+    739.22
+   ],
+   [
+    "2026-06-09",
+    737.05
+   ],
+   [
+    "2026-06-10",
+    725.43
+   ],
+   [
+    "2026-06-11",
+    737.76
+   ],
+   [
+    "2026-06-12",
+    741.75
+   ],
+   [
+    "2026-06-15",
+    754.83
+   ],
+   [
+    "2026-06-16",
+    750.33
+   ],
+   [
+    "2026-06-17",
+    740.96
+   ],
+   [
+    "2026-06-18",
+    746.74
+   ],
+   [
+    "2026-06-22",
+    744.39
+   ],
+   [
+    "2026-06-23",
+    733.58
+   ],
+   [
+    "2026-06-24",
+    733.24
+   ],
+   [
+    "2026-06-25",
+    734.3
+   ],
+   [
+    "2026-06-26",
+    728.99
+   ],
+   [
+    "2026-06-29",
+    741.0
+   ],
+   [
+    "2026-06-30",
+    746.77
+   ],
+   [
+    "2026-07-01",
+    745.76
+   ],
+   [
+    "2026-07-02",
+    744.78
+   ],
+   [
+    "2026-07-06",
+    751.28
+   ],
+   [
+    "2026-07-07",
+    747.71
+   ],
+   [
+    "2026-07-08",
+    745.4
+   ],
+   [
+    "2026-07-09",
+    751.71
+   ],
+   [
+    "2026-07-10",
+    754.95
+   ],
+   [
+    "2026-07-13",
+    749.17
+   ],
+   [
+    "2026-07-14",
+    751.83
+   ],
+   [
+    "2026-07-15",
+    754.81
+   ],
+   [
+    "2026-07-16",
+    750.72
+   ],
+   [
+    "2026-07-17",
+    743.29
+   ],
+   [
+    "2026-07-20",
+    742.09
+   ],
+   [
+    "2026-07-21",
+    748.28
+   ],
+   [
+    "2026-07-22",
+    747.41
+   ],
+   [
+    "2026-07-23",
+    738.18
+   ],
+   [
+    "2026-07-24",
+    738.93
+   ],
+   [
+    "2026-07-27",
+    738.93
+   ]
+  ],
+  "QQQ": [
+   [
+    "2026-02-02",
+    626.14
+   ],
+   [
+    "2026-02-03",
+    616.52
+   ],
+   [
+    "2026-02-04",
+    605.75
+   ],
+   [
+    "2026-02-05",
+    597.03
+   ],
+   [
+    "2026-02-06",
+    609.65
+   ],
+   [
+    "2026-02-09",
+    614.32
+   ],
+   [
+    "2026-02-10",
+    611.47
+   ],
+   [
+    "2026-02-11",
+    613.11
+   ],
+   [
+    "2026-02-12",
+    600.64
+   ],
+   [
+    "2026-02-13",
+    601.92
+   ],
+   [
+    "2026-02-17",
+    601.3
+   ],
+   [
+    "2026-02-18",
+    605.79
+   ],
+   [
+    "2026-02-19",
+    603.47
+   ],
+   [
+    "2026-02-20",
+    608.81
+   ],
+   [
+    "2026-02-23",
+    601.41
+   ],
+   [
+    "2026-02-24",
+    607.87
+   ],
+   [
+    "2026-02-25",
+    616.68
+   ],
+   [
+    "2026-02-26",
+    609.24
+   ],
+   [
+    "2026-02-27",
+    607.29
+   ],
+   [
+    "2026-03-02",
+    608.09
+   ],
+   [
+    "2026-03-03",
+    601.58
+   ],
+   [
+    "2026-03-04",
+    610.75
+   ],
+   [
+    "2026-03-05",
+    608.91
+   ],
+   [
+    "2026-03-06",
+    599.75
+   ],
+   [
+    "2026-03-09",
+    607.76
+   ],
+   [
+    "2026-03-10",
+    607.77
+   ],
+   [
+    "2026-03-11",
+    607.69
+   ],
+   [
+    "2026-03-12",
+    597.26
+   ],
+   [
+    "2026-03-13",
+    593.72
+   ],
+   [
+    "2026-03-16",
+    600.38
+   ],
+   [
+    "2026-03-17",
+    603.31
+   ],
+   [
+    "2026-03-18",
+    594.9
+   ],
+   [
+    "2026-03-19",
+    593.02
+   ],
+   [
+    "2026-03-20",
+    582.06
+   ],
+   [
+    "2026-03-23",
+    588.0
+   ],
+   [
+    "2026-03-24",
+    583.98
+   ],
+   [
+    "2026-03-25",
+    587.82
+   ],
+   [
+    "2026-03-26",
+    573.79
+   ],
+   [
+    "2026-03-27",
+    562.58
+   ],
+   [
+    "2026-03-30",
+    558.28
+   ],
+   [
+    "2026-03-31",
+    577.18
+   ],
+   [
+    "2026-04-01",
+    584.31
+   ],
+   [
+    "2026-04-02",
+    584.98
+   ],
+   [
+    "2026-04-06",
+    588.5
+   ],
+   [
+    "2026-04-07",
+    588.59
+   ],
+   [
+    "2026-04-08",
+    606.09
+   ],
+   [
+    "2026-04-09",
+    610.19
+   ],
+   [
+    "2026-04-10",
+    611.07
+   ],
+   [
+    "2026-04-13",
+    617.39
+   ],
+   [
+    "2026-04-14",
+    628.6
+   ],
+   [
+    "2026-04-15",
+    637.4
+   ],
+   [
+    "2026-04-16",
+    640.47
+   ],
+   [
+    "2026-04-17",
+    648.85
+   ],
+   [
+    "2026-04-20",
+    646.79
+   ],
+   [
+    "2026-04-21",
+    644.33
+   ],
+   [
+    "2026-04-22",
+    655.11
+   ],
+   [
+    "2026-04-23",
+    651.42
+   ],
+   [
+    "2026-04-24",
+    663.88
+   ],
+   [
+    "2026-04-27",
+    664.23
+   ],
+   [
+    "2026-04-28",
+    657.55
+   ],
+   [
+    "2026-04-29",
+    661.57
+   ],
+   [
+    "2026-04-30",
+    667.74
+   ],
+   [
+    "2026-05-01",
+    674.15
+   ],
+   [
+    "2026-05-04",
+    672.88
+   ],
+   [
+    "2026-05-05",
+    681.61
+   ],
+   [
+    "2026-05-06",
+    695.77
+   ],
+   [
+    "2026-05-07",
+    694.94
+   ],
+   [
+    "2026-05-08",
+    711.23
+   ],
+   [
+    "2026-05-11",
+    713.29
+   ],
+   [
+    "2026-05-12",
+    707.24
+   ],
+   [
+    "2026-05-13",
+    714.71
+   ],
+   [
+    "2026-05-14",
+    719.79
+   ],
+   [
+    "2026-05-15",
+    708.93
+   ],
+   [
+    "2026-05-18",
+    705.88
+   ],
+   [
+    "2026-05-19",
+    701.53
+   ],
+   [
+    "2026-05-20",
+    713.15
+   ],
+   [
+    "2026-05-21",
+    714.51
+   ],
+   [
+    "2026-05-22",
+    717.54
+   ],
+   [
+    "2026-05-26",
+    730.28
+   ],
+   [
+    "2026-05-27",
+    729.45
+   ],
+   [
+    "2026-05-28",
+    735.6
+   ],
+   [
+    "2026-05-29",
+    738.31
+   ],
+   [
+    "2026-06-01",
+    742.74
+   ],
+   [
+    "2026-06-02",
+    746.16
+   ],
+   [
+    "2026-06-03",
+    744.21
+   ],
+   [
+    "2026-06-04",
+    740.61
+   ],
+   [
+    "2026-06-05",
+    705.06
+   ],
+   [
+    "2026-06-08",
+    716.07
+   ],
+   [
+    "2026-06-09",
+    707.83
+   ],
+   [
+    "2026-06-10",
+    693.69
+   ],
+   [
+    "2026-06-11",
+    717.12
+   ],
+   [
+    "2026-06-12",
+    721.34
+   ],
+   [
+    "2026-06-15",
+    744.0
+   ],
+   [
+    "2026-06-16",
+    729.86
+   ],
+   [
+    "2026-06-17",
+    722.51
+   ],
+   [
+    "2026-06-18",
+    740.62
+   ],
+   [
+    "2026-06-22",
+    737.95
+   ],
+   [
+    "2026-06-23",
+    713.65
+   ],
+   [
+    "2026-06-24",
+    710.62
+   ],
+   [
+    "2026-06-25",
+    716.38
+   ],
+   [
+    "2026-06-26",
+    706.52
+   ],
+   [
+    "2026-06-29",
+    724.08
+   ],
+   [
+    "2026-06-30",
+    736.4
+   ],
+   [
+    "2026-07-01",
+    725.17
+   ],
+   [
+    "2026-07-02",
+    712.6
+   ],
+   [
+    "2026-07-06",
+    722.82
+   ],
+   [
+    "2026-07-07",
+    709.43
+   ],
+   [
+    "2026-07-08",
+    711.44
+   ],
+   [
+    "2026-07-09",
+    723.28
+   ],
+   [
+    "2026-07-10",
+    725.51
+   ],
+   [
+    "2026-07-13",
+    711.74
+   ],
+   [
+    "2026-07-14",
+    719.69
+   ],
+   [
+    "2026-07-15",
+    717.74
+   ],
+   [
+    "2026-07-16",
+    705.94
+   ],
+   [
+    "2026-07-17",
+    695.33
+   ],
+   [
+    "2026-07-20",
+    696.06
+   ],
+   [
+    "2026-07-21",
+    708.97
+   ],
+   [
+    "2026-07-22",
+    705.35
+   ],
+   [
+    "2026-07-23",
+    691.96
+   ],
+   [
+    "2026-07-24",
+    684.23
+   ],
+   [
+    "2026-07-27",
+    681.79
+   ]
+  ],
+  "IWM": [
+   [
+    "2026-02-02",
+    262.18
+   ],
+   [
+    "2026-02-03",
+    262.78
+   ],
+   [
+    "2026-02-04",
+    260.52
+   ],
+   [
+    "2026-02-05",
+    255.83
+   ],
+   [
+    "2026-02-06",
+    265.02
+   ],
+   [
+    "2026-02-09",
+    266.88
+   ],
+   [
+    "2026-02-10",
+    266.16
+   ],
+   [
+    "2026-02-11",
+    264.95
+   ],
+   [
+    "2026-02-12",
+    259.54
+   ],
+   [
+    "2026-02-13",
+    262.96
+   ],
+   [
+    "2026-02-17",
+    263.04
+   ],
+   [
+    "2026-02-18",
+    263.99
+   ],
+   [
+    "2026-02-19",
+    264.6
+   ],
+   [
+    "2026-02-20",
+    264.61
+   ],
+   [
+    "2026-02-23",
+    260.49
+   ],
+   [
+    "2026-02-24",
+    263.33
+   ],
+   [
+    "2026-02-25",
+    264.58
+   ],
+   [
+    "2026-02-26",
+    265.99
+   ],
+   [
+    "2026-02-27",
+    261.41
+   ],
+   [
+    "2026-03-02",
+    263.81
+   ],
+   [
+    "2026-03-03",
+    259.24
+   ],
+   [
+    "2026-03-04",
+    261.76
+   ],
+   [
+    "2026-03-05",
+    256.76
+   ],
+   [
+    "2026-03-06",
+    250.89
+   ],
+   [
+    "2026-03-09",
+    253.62
+   ],
+   [
+    "2026-03-10",
+    253.36
+   ],
+   [
+    "2026-03-11",
+    252.85
+   ],
+   [
+    "2026-03-12",
+    247.41
+   ],
+   [
+    "2026-03-13",
+    246.59
+   ],
+   [
+    "2026-03-16",
+    248.92
+   ],
+   [
+    "2026-03-17",
+    250.05
+   ],
+   [
+    "2026-03-18",
+    246.02
+   ],
+   [
+    "2026-03-19",
+    247.63
+   ],
+   [
+    "2026-03-20",
+    242.22
+   ],
+   [
+    "2026-03-23",
+    247.45
+   ],
+   [
+    "2026-03-24",
+    248.78
+   ],
+   [
+    "2026-03-25",
+    251.82
+   ],
+   [
+    "2026-03-26",
+    247.44
+   ],
+   [
+    "2026-03-27",
+    243.1
+   ],
+   [
+    "2026-03-30",
+    239.61
+   ],
+   [
+    "2026-03-31",
+    248.0
+   ],
+   [
+    "2026-04-01",
+    249.56
+   ],
+   [
+    "2026-04-02",
+    251.29
+   ],
+   [
+    "2026-04-06",
+    252.36
+   ],
+   [
+    "2026-04-07",
+    252.91
+   ],
+   [
+    "2026-04-08",
+    260.47
+   ],
+   [
+    "2026-04-09",
+    261.96
+   ],
+   [
+    "2026-04-10",
+    261.3
+   ],
+   [
+    "2026-04-13",
+    265.07
+   ],
+   [
+    "2026-04-14",
+    268.72
+   ],
+   [
+    "2026-04-15",
+    269.39
+   ],
+   [
+    "2026-04-16",
+    269.95
+   ],
+   [
+    "2026-04-17",
+    275.78
+   ],
+   [
+    "2026-04-20",
+    277.35
+   ],
+   [
+    "2026-04-21",
+    274.51
+   ],
+   [
+    "2026-04-22",
+    276.48
+   ],
+   [
+    "2026-04-23",
+    275.52
+   ],
+   [
+    "2026-04-24",
+    276.65
+   ],
+   [
+    "2026-04-27",
+    277.14
+   ],
+   [
+    "2026-04-28",
+    273.91
+   ],
+   [
+    "2026-04-29",
+    272.08
+   ],
+   [
+    "2026-04-30",
+    277.97
+   ],
+   [
+    "2026-05-01",
+    279.28
+   ],
+   [
+    "2026-05-04",
+    277.88
+   ],
+   [
+    "2026-05-05",
+    282.56
+   ],
+   [
+    "2026-05-06",
+    286.8
+   ],
+   [
+    "2026-05-07",
+    282.26
+   ],
+   [
+    "2026-05-08",
+    284.17
+   ],
+   [
+    "2026-05-11",
+    285.33
+   ],
+   [
+    "2026-05-12",
+    282.57
+   ],
+   [
+    "2026-05-13",
+    282.67
+   ],
+   [
+    "2026-05-14",
+    284.45
+   ],
+   [
+    "2026-05-15",
+    277.6
+   ],
+   [
+    "2026-05-18",
+    275.97
+   ],
+   [
+    "2026-05-19",
+    273.0
+   ],
+   [
+    "2026-05-20",
+    279.87
+   ],
+   [
+    "2026-05-21",
+    282.49
+   ],
+   [
+    "2026-05-22",
+    285.12
+   ],
+   [
+    "2026-05-26",
+    290.51
+   ],
+   [
+    "2026-05-27",
+    290.37
+   ],
+   [
+    "2026-05-28",
+    292.03
+   ],
+   [
+    "2026-05-29",
+    290.43
+   ],
+   [
+    "2026-06-01",
+    288.98
+   ],
+   [
+    "2026-06-02",
+    291.66
+   ],
+   [
+    "2026-06-03",
+    287.67
+   ],
+   [
+    "2026-06-04",
+    292.01
+   ],
+   [
+    "2026-06-05",
+    281.65
+   ],
+   [
+    "2026-06-08",
+    284.11
+   ],
+   [
+    "2026-06-09",
+    285.02
+   ],
+   [
+    "2026-06-10",
+    282.05
+   ],
+   [
+    "2026-06-11",
+    290.41
+   ],
+   [
+    "2026-06-12",
+    292.95
+   ],
+   [
+    "2026-06-15",
+    294.64
+   ],
+   [
+    "2026-06-16",
+    292.08
+   ],
+   [
+    "2026-06-17",
+    289.88
+   ],
+   [
+    "2026-06-18",
+    295.59
+   ],
+   [
+    "2026-06-22",
+    298.18
+   ],
+   [
+    "2026-06-23",
+    295.32
+   ],
+   [
+    "2026-06-24",
+    296.69
+   ],
+   [
+    "2026-06-25",
+    298.91
+   ],
+   [
+    "2026-06-26",
+    299.83
+   ],
+   [
+    "2026-06-29",
+    298.97
+   ],
+   [
+    "2026-06-30",
+    300.45
+   ],
+   [
+    "2026-07-01",
+    299.32
+   ],
+   [
+    "2026-07-02",
+    297.58
+   ],
+   [
+    "2026-07-06",
+    298.9
+   ],
+   [
+    "2026-07-07",
+    296.19
+   ],
+   [
+    "2026-07-08",
+    293.48
+   ],
+   [
+    "2026-07-09",
+    297.24
+   ],
+   [
+    "2026-07-10",
+    295.99
+   ],
+   [
+    "2026-07-13",
+    293.48
+   ],
+   [
+    "2026-07-14",
+    294.51
+   ],
+   [
+    "2026-07-15",
+    295.77
+   ],
+   [
+    "2026-07-16",
+    295.59
+   ],
+   [
+    "2026-07-17",
+    294.04
+   ],
+   [
+    "2026-07-20",
+    292.31
+   ],
+   [
+    "2026-07-21",
+    296.54
+   ],
+   [
+    "2026-07-22",
+    293.79
+   ],
+   [
+    "2026-07-23",
+    292.09
+   ],
+   [
+    "2026-07-24",
+    291.17
+   ],
+   [
+    "2026-07-27",
+    293.06
+   ]
+  ]
+ },
+ "events": {
+  "earnings": [
+   {
+    "symbol": "MSFT",
+    "date": "2026-07-29",
+    "when": "amc"
+   },
+   {
+    "symbol": "META",
+    "date": "2026-07-29",
+    "when": "amc"
+   },
+   {
+    "symbol": "AAPL",
+    "date": "2026-07-30",
+    "when": "amc"
+   },
+   {
+    "symbol": "AMZN",
+    "date": "2026-07-30",
+    "when": "amc"
+   }
+  ]
+ },
+ "vix_history": [
+  [
+   "2026-07-24",
+   18.58
+  ],
+  [
+   "2026-07-27",
+   18.85
+  ]
+ ]
+}
