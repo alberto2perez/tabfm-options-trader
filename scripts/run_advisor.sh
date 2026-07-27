@@ -13,8 +13,8 @@ mkdir -p "$LOGDIR"
 STAMP="$(date +%Y-%m-%d-%H%M%S)"
 LOG="$LOGDIR/${STAMP}-${MODE:-none}.log"
 
-notify() { # $1=title $2=message
-  /usr/bin/osascript -e "display notification \"$2\" with title \"$1\"" >/dev/null 2>&1 || true
+notify() { # $1=title $2=message $3=optional open-target (file/folder)
+  bash "$REPO/scripts/notify.sh" "$1" "$2" "${3:-}" || true
 }
 
 case "$MODE" in
@@ -22,7 +22,7 @@ case "$MODE" in
   audit) PROMPT_FILE="$REPO/scripts/advisor_prompt_audit.md" ;;
   *)
     echo "usage: run_advisor.sh {entry|audit}" | tee "$LOG"
-    notify "Advisor ❌" "bad mode: '${MODE}'"
+    notify "Advisor ❌" "bad mode: '${MODE}'" "$LOG"
     exit 2
     ;;
 esac
@@ -31,7 +31,7 @@ esac
 # shellcheck disable=SC1091
 if ! source "$REPO/venv/bin/activate"; then
   echo "venv activation failed: $REPO/venv/bin/activate" | tee "$LOG"
-  notify "Advisor ❌" "$MODE: venv activation failed"
+  notify "Advisor ❌" "$MODE: venv activation failed" "$LOG"
   exit 1
 fi
 if [ -f "$REPO/.env" ]; then set -a; . "$REPO/.env"; set +a; fi
@@ -39,14 +39,14 @@ if [ -f "$REPO/.env" ]; then set -a; . "$REPO/.env"; set +a; fi
 # Plumbing self-test: no Claude, no trades, no commits.
 if [ "${ADVISOR_SELFTEST:-0}" = "1" ]; then
   echo "[selftest] mode=$MODE repo=$REPO python=$(command -v python)" | tee "$LOG"
-  notify "Advisor 🧪" "selftest $MODE OK"
+  notify "Advisor 🧪" "selftest $MODE OK" "$LOG"
   exit 0
 fi
 
 # Always start from the latest committed state (warn but continue on failure).
 echo "== git pull --rebase --autostash ==" | tee -a "$LOG"
 if ! git pull --rebase --autostash 2>&1 | tee -a "$LOG"; then
-  notify "Advisor ⚠️" "$MODE: git pull failed — running on local state"
+  notify "Advisor ⚠️" "$MODE: git pull failed — running on local state" "$LOG"
 fi
 
 # Real run: hold the Mac awake for the duration, drive via headless Claude.
@@ -58,6 +58,6 @@ caffeinate -i claude -p "$(cat "$PROMPT_FILE")" \
 STATUS="${PIPESTATUS[0]}"
 
 if [ "$STATUS" -ne 0 ]; then
-  notify "Advisor ❌" "$MODE run failed to launch (exit $STATUS) — see log"
+  notify "Advisor ❌" "$MODE run failed to launch (exit $STATUS) — see log" "$LOG"
 fi
 exit "$STATUS"

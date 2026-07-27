@@ -9,12 +9,17 @@ Run fully non-interactively — never ask questions, just act.
    PORTFOLIO SUMMARY.
 
 2. Read stdout and stderr.
+   Send every banner via the helper `scripts/notify.sh "<title>" "<message>"
+   "<open-target>"` — its third argument is the file/folder the banner opens
+   when clicked (do NOT use raw osascript; that opens Script Editor).
    - FAILURE (data fetch failed, Robinhood auth/token expired, weekend/holiday,
-     or any traceback): send a macOS banner and STOP without committing:
-     `osascript -e 'display notification "<short reason>" with title "Advisor ❌ entry"'`
+     or any traceback): notify and STOP without committing, opening the logs on
+     click:
+     `bash scripts/notify.sh "Advisor ❌ entry" "<short reason>" "data/run-logs"`
    - SUCCESS: craft a ONE-LINE headline of the outcome, e.g.
-     "SPY PUT 545/540 $0.62", "GATED — FOMC", or "No qualifying trade", then:
-     `osascript -e 'display notification "<headline>" with title "Advisor ✓ entry"'`
+     "SPY PUT 545/540 $0.62", "GATED — FOMC", or "No qualifying trade", then
+     notify with the results file as the click target:
+     `bash scripts/notify.sh "Advisor ✓ entry" "<headline>" "data/RECOMMENDATIONS.md"`
 
 3. On SUCCESS only, commit and push state — data/ ONLY, never source:
    `git add data/`
