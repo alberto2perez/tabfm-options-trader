@@ -7,6 +7,8 @@ REPO="$(cd "$(dirname "$0")/.." && pwd)"
 LA="$HOME/Library/LaunchAgents"
 UID_NUM="$(id -u)"
 AGENTS=(com.tabfm.advisor.entry com.tabfm.advisor.audit)
+WAKE_AGENT=com.tabfm.advisor.stayawake
+ALL_AGENTS=("${AGENTS[@]}" "$WAKE_AGENT")
 
 install_one() {
   local name="$1"
@@ -25,17 +27,25 @@ case "${1:-install}" in
     echo "done. schedule: entry 10:00 / audit 12:00 weekdays (local time)."
     ;;
   uninstall)
-    for a in "${AGENTS[@]}"; do
+    for a in "${ALL_AGENTS[@]}"; do
       launchctl bootout "gui/$UID_NUM/$a" 2>/dev/null || true
       rm -f "$LA/$a.plist"
       echo "removed: $a"
     done
+    sudo pmset repeat cancel 2>/dev/null || true
     ;;
   status)
-    for a in "${AGENTS[@]}"; do
+    for a in "${ALL_AGENTS[@]}"; do
       printf '%s: ' "$a"
       launchctl print "gui/$UID_NUM/$a" >/dev/null 2>&1 && echo "loaded" || echo "not loaded"
     done
+    ;;
+  install-wake)
+    mkdir -p "$LA"
+    install_one "$WAKE_AGENT"
+    echo "scheduling daily wake at 09:56 weekdays (requires sudo; AC power only)..."
+    sudo pmset repeat wakeorpoweron MTWRF 09:56:00
+    echo "wake layer installed. NOTE: only reliable on AC power."
     ;;
   *)
     echo "usage: install_advisor.sh {install|uninstall|status}"; exit 2 ;;
