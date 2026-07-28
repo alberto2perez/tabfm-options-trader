@@ -25,7 +25,11 @@ else
   elif printf '%s' "$TAIL" | grep -qE 'TIMEOUT|exit (143|137)'; then
     STATUS="⏱ timeout"
   elif printf '%s' "$TAIL" | grep -qE 'run finished — exit 0'; then
-    STATUS="✅ success"
+    if printf '%s' "$TAIL" | grep -q 'Outcome: FAILURE\|pipeline did not run'; then
+      STATUS="⚠️ exit 0 but run reported failure"
+    else
+      STATUS="✅ success"
+    fi
   elif printf '%s' "$TAIL" | grep -qE 'run finished — exit [1-9]'; then
     STATUS="❌ failed"
   else

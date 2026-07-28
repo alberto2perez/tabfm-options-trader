@@ -1,7 +1,7 @@
 ---
 name: latest-run-results
 description: Full current briefing on the advisor — last run outcome, latest recommendation, current book, and a live read-only Robinhood reconciliation with pending actions. Use when the user asks for the latest run results, run status, or where the book stands.
-allowed-tools: Bash(bash scripts/latest_results.sh), Bash(cat data/RECOMMENDATIONS.md), Bash(ls data/run-logs/*), Read, mcp__robinhood-trading__get_portfolio, mcp__robinhood-trading__get_accounts, mcp__robinhood-trading__get_equity_positions, mcp__robinhood-trading__get_option_positions
+allowed-tools: Bash(bash scripts/latest_results.sh), Read, mcp__robinhood-trading__get_portfolio, mcp__robinhood-trading__get_equity_positions, mcp__robinhood-trading__get_option_positions
 ---
 
 Produce ONE read-only briefing on the latest advisor run and current state.
