@@ -20,17 +20,20 @@ if [ -z "$LATEST_LOG" ]; then
   echo "  (no run logs yet)"
 else
   TAIL="$(tail -20 "$LATEST_LOG")"
+  # Completion is marked either by the scheduled wrapper ("... run finished —
+  # exit N ==", run_advisor.sh) or a session-assisted/manual run whose footer
+  # is a bare "== exit N ==". Both end in "exit <N> ==", so match on that.
   if printf '%s' "$TAIL" | grep -q '\[selftest\]'; then
     STATUS="🧪 selftest — no real run"
-  elif printf '%s' "$TAIL" | grep -qE 'TIMEOUT|exit (143|137)'; then
+  elif printf '%s' "$TAIL" | grep -qE 'TIMEOUT|exit (143|137) =='; then
     STATUS="⏱ timeout"
-  elif printf '%s' "$TAIL" | grep -qE 'run finished — exit 0'; then
+  elif printf '%s' "$TAIL" | grep -qE 'exit 0 =='; then
     if printf '%s' "$TAIL" | grep -q 'Outcome: FAILURE\|pipeline did not run'; then
       STATUS="⚠️ exit 0 but run reported failure"
     else
       STATUS="✅ success"
     fi
-  elif printf '%s' "$TAIL" | grep -qE 'run finished — exit [1-9]'; then
+  elif printf '%s' "$TAIL" | grep -qE 'exit [1-9][0-9]* =='; then
     STATUS="❌ failed"
   else
     STATUS="⚠️ no completion marker (incomplete or in progress)"
@@ -43,8 +46,14 @@ fi
 echo
 echo "== LATEST RECOMMENDATION =="
 if [ -f "$RECS" ]; then
-  # Print the last "## " section block of the file (header to EOF).
-  awk '/^## /{buf=""} {buf=buf $0 "\n"} END{printf "%s", buf}' "$RECS" | sed 's/^/  /'
+  # New entries are PREPENDED, so the newest card is the FIRST "## " block:
+  # print from the first "## " header up to (but not including) the next one.
+  CARD="$(awk '/^## /{if (seen) exit; seen=1} seen' "$RECS")"
+  if [ -n "$CARD" ]; then
+    printf '%s\n' "$CARD" | sed 's/^/  /'
+  else
+    echo "  none on record"
+  fi
 else
   echo "  none on record"
 fi

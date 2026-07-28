@@ -1,7 +1,7 @@
 ---
 name: latest-run-results
 description: Full current briefing on the advisor — last run outcome, latest recommendation, current book, and a live read-only Robinhood reconciliation with pending actions. Use when the user asks for the latest run results, run status, or where the book stands.
-allowed-tools: Bash(bash scripts/latest_results.sh), Read, mcp__robinhood-trading__get_portfolio, mcp__robinhood-trading__get_equity_positions, mcp__robinhood-trading__get_option_positions
+allowed-tools: Bash(bash scripts/latest_results.sh), Read, mcp__robinhood-trading__get_accounts, mcp__robinhood-trading__get_portfolio, mcp__robinhood-trading__get_equity_positions, mcp__robinhood-trading__get_option_positions
 ---
 
 Produce ONE read-only briefing on the latest advisor run and current state.
@@ -17,11 +17,13 @@ or `data/RECOMMENDATIONS.md`.
    mode, open positions, exposure via `portfolio_summary`). Treat this as the
    source of truth for the advisor's tracked state.
 
-2. **Gather live (Robinhood, read-only).** Call `get_portfolio` and
-   `get_option_positions` (and `get_equity_positions` if relevant) for current
-   brokerage state. If ANY MCP call fails or times out (offline / after-hours /
-   auth), do NOT retry endlessly and do NOT block — mark live data unavailable
-   and continue with local-only sections.
+2. **Gather live (Robinhood, read-only).** First call `get_accounts` to get the
+   `account_number` (use the default individual account — the one with an option
+   level, where credit spreads live); the other calls require it. Then call
+   `get_option_positions` (nonzero=true) and `get_portfolio` for that account
+   (`get_equity_positions` if relevant). If ANY MCP call fails or times out
+   (offline / after-hours / auth), do NOT retry endlessly and do NOT block —
+   mark live data unavailable and continue with local-only sections.
 
 3. **Reconcile.** Compare the advisor's open trades (from the book section)
    against live positions, in both directions:
