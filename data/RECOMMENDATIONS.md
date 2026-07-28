@@ -1,5 +1,10 @@
 # Nightly Recommendations
 
+## 2026-07-28
+
+GATED — no new entries.
+- FOMC rate decision next session
+
 ## 2026-07-24
 
 ```
