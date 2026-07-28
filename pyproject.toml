@@ -55,6 +55,10 @@ jax = [
 ]
 pytorch = [
     "torch",
+    # Required to load the model's `.safetensors` weights via
+    # huggingface-hub's PyTorchModelHubMixin.from_pretrained(); without it
+    # hub 1.x raises a bare `NameError: name 'safetensors' is not defined`.
+    "safetensors",
 ]
 
 # Development deps (unittest, linting, formating,...)
