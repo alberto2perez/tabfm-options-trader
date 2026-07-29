@@ -3,10 +3,11 @@
 Read-only. Emits one JSON object on stdout so the /order-ticket skill can build
 a ready-to-place ticket:
 
-  {"status": "trade", ...fields...}      a placeable credit-spread recommendation
-  {"status": "gated", "date", "reason"}  newest night was gated (no entry)
-  {"status": "none"}                     no recommendation card on record
-  {"status": "error", "reason"}          a card is present but couldn't be parsed
+  {"status": "trade", ...fields...}                  a placeable credit-spread recommendation
+  {"status": "gated", "date", "reason"}              newest night was gated (no entry)
+  {"status": "trend_alert", "date", "reason"}        advisory about an open position
+  {"status": "none"}                                 no recommendation card on record
+  {"status": "error", "reason"}                      a card is present but couldn't be parsed
 
 Usage: python scripts/parse_recommendation.py [--file PATH]
 """
@@ -19,6 +20,12 @@ _DEFAULT_RECS = Path(__file__).resolve().parent.parent / "data" / "RECOMMENDATIO
 
 _REQUIRED = ("ticker", "direction", "strike_short", "strike_long", "expiry",
              "dte", "entry_credit", "entry_credit_mid", "contracts", "spread_width")
+
+
+def _bullets(block: str) -> str | None:
+  """Join all '- ' bullet lines in a block with '; ', or None if none found."""
+  found = re.findall(r"^\s*-\s+(.*)$", block, re.MULTILINE)
+  return "; ".join(b.strip() for b in found) if found else None
 
 
 def newest_block(md_text: str) -> str | None:
@@ -39,10 +46,11 @@ def parse_card(block: str | None) -> dict:
   date_m = re.search(r"^##\s+(\S+)", block, re.MULTILINE)
   date = date_m.group(1) if date_m else None
 
-  if re.search(r"GATED|no new entries", block, re.IGNORECASE):
-    reason_m = re.search(r"^\s*-\s+(.*)$", block, re.MULTILINE)
-    return {"status": "gated", "date": date,
-            "reason": reason_m.group(1).strip() if reason_m else None}
+  if re.search(r"GATED", block, re.IGNORECASE):
+    return {"status": "gated", "date": date, "reason": _bullets(block)}
+
+  if "TREND ALERT" in block:
+    return {"status": "trend_alert", "date": date, "reason": _bullets(block)}
 
   if "NIGHTLY RECOMMENDATION" not in block:
     return {"status": "none"}

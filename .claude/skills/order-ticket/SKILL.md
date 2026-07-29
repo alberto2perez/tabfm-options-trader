@@ -16,6 +16,8 @@ multi-leg spreads anyway — the operator places the ticket by hand in the app.
    It prints one JSON object:
    - `{"status":"gated",...}` → print `Latest night was GATED (<reason>) —
      nothing to place.` and STOP.
+   - `{"status":"trend_alert",...}` → print `Latest note is a TREND ALERT on an
+     open position (<reason>) — no new trade to place.` and STOP.
    - `{"status":"none"}` → print `No recommendation on record — nothing to
      place.` and STOP.
    - `{"status":"error","reason":...}` → print `Could not parse the latest card

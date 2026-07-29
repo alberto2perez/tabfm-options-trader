@@ -44,6 +44,14 @@ _EMPTY = "# Nightly Recommendations\n"
 
 _MALFORMED = _CALL_CARD.replace("  Contracts    1  ->  max exposure $285\n", "")
 
+_TREND_ALERT = """# Nightly Recommendations
+
+## 2026-07-30 — TREND ALERT
+
+- CLOSE NOW: SPY 750/755 call spread — trend flipped bullish
+- CONSIDER CLOSING: QQQ put spread — momentum fading
+"""
+
 
 def _run(md: str, tmp_path) -> dict:
     f = tmp_path / "RECOMMENDATIONS.md"
@@ -93,3 +101,11 @@ def test_malformed_card(tmp_path):
     d = _run(_MALFORMED, tmp_path)
     assert d["status"] == "error"
     assert "contracts" in d["reason"].lower()
+
+
+def test_trend_alert_card(tmp_path):
+    d = _run(_TREND_ALERT, tmp_path)
+    assert d["status"] == "trend_alert"
+    assert d["date"] == "2026-07-30"
+    assert "CLOSE NOW" in (d["reason"] or "")
+    assert "CONSIDER CLOSING" in (d["reason"] or "")
