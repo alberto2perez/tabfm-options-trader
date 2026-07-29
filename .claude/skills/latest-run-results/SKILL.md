@@ -11,11 +11,14 @@ or `data/RECOMMENDATIONS.md`.
 ## Steps
 
 1. **Gather local (deterministic).** Run `bash scripts/latest_results.sh`. It
-   prints three sections — `== LAST RUN ==` (mode/timestamp/outcome of the
+   prints four sections — `== LAST RUN ==` (mode/timestamp/outcome of the
    newest `data/run-logs/*.log`), `== LATEST RECOMMENDATION ==` (the newest
-   `RECOMMENDATIONS.md` card), and `== CURRENT BOOK ==` (bankroll, drawdown,
-   mode, open positions, exposure via `portfolio_summary`). Treat this as the
-   source of truth for the advisor's tracked state.
+   `RECOMMENDATIONS.md` card), `== CURRENT BOOK ==` (bankroll, drawdown, mode,
+   open positions, exposure via `portfolio_summary`), and `== ACCURACY ==`
+   (closed-trade scorecard via `accuracy_tracker.report` — win rate, POP
+   calibration error, Brier vs market, cumulative P&L, max drawdown,
+   model-vs-baseline; prints "No closed trades yet." on a fresh book). Treat
+   this as the source of truth for the advisor's tracked state.
 
 2. **Gather live (Robinhood, read-only).** First call `get_accounts` to get the
    `account_number` (use the default individual account — the one with an option
@@ -47,6 +50,7 @@ or `data/RECOMMENDATIONS.md`.
       ─────────────────────────────────────────────
       BANKROLL     equity $<e> · drawdown <d>% · <MODE>
       BOOK         <k> open · exposure $<x>
+      ACCURACY     <win% · N closed · P&L · vs baseline>, or "no closed trades yet"
       ─────────────────────────────────────────────
       RECONCILE (advisor book ↔ live Robinhood)
         ✅ <trade> — matched

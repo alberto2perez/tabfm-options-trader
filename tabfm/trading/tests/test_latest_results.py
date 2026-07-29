@@ -19,7 +19,7 @@ def _run():
 def test_latest_results_smoke():
     result = _run()
     assert result.returncode == 0, f"nonzero exit: {result.stderr}"
-    for header in ("== LAST RUN ==", "== LATEST RECOMMENDATION ==", "== CURRENT BOOK =="):
+    for header in ("== LAST RUN ==", "== LATEST RECOMMENDATION ==", "== CURRENT BOOK ==", "== ACCURACY =="):
         assert header in result.stdout, f"missing {header!r}\n---stdout---\n{result.stdout}"
 
 

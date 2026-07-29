@@ -63,9 +63,23 @@ echo
 echo "== CURRENT BOOK =="
 # shellcheck disable=SC1091
 if source "$REPO/venv/bin/activate" 2>/dev/null; then
+  VENV_OK=1
   if ! python -c "from datetime import date; from tabfm.trading.pipeline.portfolio import portfolio_summary; print(portfolio_summary(as_of=date.today()))" 2>/dev/null | sed 's/^/  /'; then
     echo "  (book unavailable — could not compute portfolio summary)"
   fi
 else
+  VENV_OK=0
   echo "  (venv unavailable — cannot compute book)"
+fi
+
+# ---- Accuracy (closed-trade performance) ------------------------------------
+echo
+echo "== ACCURACY =="
+if [ "${VENV_OK:-0}" = "1" ]; then
+  # report() prints the scorecard, or "No closed trades yet." on a fresh book.
+  if ! python -c "from tabfm.trading.pipeline.accuracy_tracker import report; report()" 2>/dev/null | sed 's/^/  /'; then
+    echo "  (accuracy unavailable — could not compute report)"
+  fi
+else
+  echo "  (venv unavailable — cannot compute accuracy)"
 fi
